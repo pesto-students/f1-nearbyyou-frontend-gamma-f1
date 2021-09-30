@@ -8,10 +8,10 @@ const Home = () => {
 
     return (
         <>
-            <div class="site-blocks-cover inner-page-cover overlay"
+            <div class="site-blocks-cover inner-page-cover overlay small-header"
                 style={{ backgroundImage: 'url(/images/xhero_1.jpg.pagespeed.ic.7aSeOjD_oW.jpg)' }} data-aos="fade"
                 data-stellar-background-ratio="0.5">
-                <div class="container">
+                {/* <div class="container">
                     <div class="row align-items-center justify-content-center text-center">
                         <div class="col-md-10" data-aos="fade-up" data-aos-delay="400">
                             <div class="row justify-content-center">
@@ -22,8 +22,9 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
+            
             <div class="site-section">
                 <div class="container">
                     <div class="row align-items-center">

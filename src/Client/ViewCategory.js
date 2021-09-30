@@ -1,10 +1,10 @@
-import React,{useEffect} from 'react'
-import {NavLink} from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { NavLink } from 'react-router-dom'
 
 const ViewCategory = () => {
 
     useEffect(() => {
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [])
 
     return (
@@ -27,6 +27,13 @@ const ViewCategory = () => {
                     </div>
                 </div>
             </div>
+            {/* <div class="row justify-content-center mb-5 mt-5">
+                        <div class="col-md-7 text-center border-primary">
+                            <h2 class="font-weight-light text-primary">Popular Categories</h2>
+                            <p class="color-black-opacity-5">Far far away, behind the word mountains, far from the countries
+                                Vokalia and Consonantia, there live the blind texts.</p>
+                        </div>
+                    </div> */}
             {/* <div className="headerDiv">
                 </div> */}
             {/* <div class="site-section bg-light">
@@ -292,7 +299,7 @@ const ViewCategory = () => {
                             </a>
                         </div>
                     </div>
-                    <div class="row align-items-stretch" style={{marginTop : '25px'}}>
+                    <div class="row align-items-stretch" style={{ marginTop: '25px' }}>
                         <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
                             <a href="#" class="popular-category h-100">
                                 <span class="icon mb-3"><span class="flaticon-hotel"></span></span>
@@ -336,7 +343,7 @@ const ViewCategory = () => {
                             </a>
                         </div>
                     </div>
-                    <div class="row align-items-stretch" style={{marginTop : '25px'}}>
+                    <div class="row align-items-stretch" style={{ marginTop: '25px' }}>
                         <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
                             <a href="#" class="popular-category h-100">
                                 <span class="icon mb-3"><span class="flaticon-hotel"></span></span>
@@ -380,7 +387,7 @@ const ViewCategory = () => {
                             </a>
                         </div>
                     </div>
-                    <div class="row align-items-stretch" style={{marginTop : '25px'}}>
+                    <div class="row align-items-stretch" style={{ marginTop: '25px' }}>
                         <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
                             <a href="#" class="popular-category h-100">
                                 <span class="icon mb-3"><span class="flaticon-hotel"></span></span>
@@ -424,7 +431,7 @@ const ViewCategory = () => {
                             </a>
                         </div>
                     </div>
-                    <div class="row align-items-stretch" style={{marginTop : '25px'}}>
+                    <div class="row align-items-stretch" style={{ marginTop: '25px' }}>
                         <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
                             <a href="#" class="popular-category h-100">
                                 <span class="icon mb-3"><span class="flaticon-hotel"></span></span>
@@ -468,7 +475,7 @@ const ViewCategory = () => {
                             </a>
                         </div>
                     </div>
-                    <div class="row align-items-stretch" style={{marginTop : '25px'}}>
+                    <div class="row align-items-stretch" style={{ marginTop: '25px' }}>
                         <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
                             <a href="#" class="popular-category h-100">
                                 <span class="icon mb-3"><span class="flaticon-hotel"></span></span>
