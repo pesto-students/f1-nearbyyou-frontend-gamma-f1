@@ -9,7 +9,7 @@ const BookSlot = () => {
     return (
         <>
             <div class="site-blocks-cover inner-page-cover overlay"
-                style={{ backgroundImage: 'url(images/xhero_1.jpg.pagespeed.ic.7aSeOjD_oW.jpg)' }} data-aos="fade"
+                style={{ backgroundImage: 'url(/images/xhero_1.jpg.pagespeed.ic.7aSeOjD_oW.jpg)' }} data-aos="fade"
                 data-stellar-background-ratio="0.5">
                 <div class="container">
                     <div class="row align-items-center justify-content-center text-center">

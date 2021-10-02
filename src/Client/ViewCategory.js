@@ -10,7 +10,7 @@ const ViewCategory = () => {
     return (
         <>
             <div class="site-blocks-cover inner-page-cover overlay"
-                style={{ backgroundImage: 'url(images/xhero_1.jpg.pagespeed.ic.7aSeOjD_oW.jpg)' }}
+                style={{ backgroundImage: 'url(/images/xhero_1.jpg.pagespeed.ic.7aSeOjD_oW.jpg)' }}
                 data-aos="fade"
                 data-stellar-background-ratio="0.5">
                 <div class="container">
@@ -257,7 +257,7 @@ const ViewCategory = () => {
                     </div> */}
                     <div class="row align-items-stretch">
                         <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
-                            <NavLink to="/listings" class="popular-category h-100">
+                            <NavLink to="/app/listings" class="popular-category h-100">
                                 <span class="icon mb-3"><span class="flaticon-hotel"></span></span>
                                 <span class="caption mb-2 d-block">Hotels</span>
                                 <span class="number">4,89</span>

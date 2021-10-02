@@ -10,7 +10,7 @@ const Details = () => {
     return (
         <>
             <div class="site-blocks-cover inner-page-cover overlay"
-                style={{ backgroundImage: 'url(images/xhero_1.jpg.pagespeed.ic.7aSeOjD_oW.jpg)' }} data-aos="fade"
+                style={{ backgroundImage: 'url(/images/xhero_1.jpg.pagespeed.ic.7aSeOjD_oW.jpg)' }} data-aos="fade"
                 data-stellar-background-ratio="0.5">
                 <div class="container">
                     <div class="row align-items-center justify-content-center text-center">
@@ -31,7 +31,7 @@ const Details = () => {
                         <div class="col-lg-8">
                             <div class="">
                                 <p>
-                                    <img src="images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg" alt="Image" class="img-fluid mb-4" />
+                                    <img src="/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg" alt="Image" class="img-fluid mb-4" />
                                 </p>
 
                                 {/* <p>A small river named Duden flows by their place and supplies it with the necessary regelialia.
@@ -57,7 +57,7 @@ const Details = () => {
                         <div class="col-lg-3 ml-auto" style={{ paddingRight: '0' }}>
                             <div class="mb-4">
                                 <h3 class="h5 text-black mb-2" style={{ fontSize: '35px' }}>
-                                    <NavLink to="/"><i class="fa fa-whatsapp cursor-pointer" style={{ marginRight: '50px' }} title='Contact US'></i> </NavLink> <NavLink to="bookSlot"><i class="fa fa-ticket cursor-pointer" title="Book Slot"></i></NavLink>
+                                    <NavLink to="/"><i class="fa fa-whatsapp cursor-pointer" style={{ marginRight: '50px' }} title='Contact US'></i> </NavLink> <NavLink to="/app/bookSlot"><i class="fa fa-ticket cursor-pointer" title="Book Slot"></i></NavLink>
                                 </h3>
                             </div>
                             {/* <div class="mb-4">
@@ -363,7 +363,7 @@ const Details = () => {
                             <h2 class="mb-5 text-primary">More Listings</h2>
                             <div class="d-block d-md-flex listing-horizontal">
                                 <a href="#" class="img d-block"
-                                    style={{ backgroundImage: 'url(images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)' }} >
+                                    style={{ backgroundImage: 'url(/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)' }} >
                                     <span class="category">Restaurants</span>
                                 </a>
                                 <div class="lh-content">
@@ -382,7 +382,7 @@ const Details = () => {
                             </div>
                             <div class="d-block d-md-flex listing-horizontal">
                                 <a href="#" class="img d-block"
-                                    style={{ backgroundImage: 'url(images/ximg_1.jpg.pagespeed.ic.1JqK4ln2vg.jpg)' }}>
+                                    style={{ backgroundImage: 'url(/images/ximg_1.jpg.pagespeed.ic.1JqK4ln2vg.jpg)' }}>
                                     <span class="category">Hotels</span>
                                 </a>
                                 <div class="lh-content">
@@ -401,7 +401,7 @@ const Details = () => {
                             </div>
                             <div class="d-block d-md-flex listing-horizontal">
                                 <a href="#" class="img d-block"
-                                    style={{ backgroundImage: 'url(images/ximg_3.jpg.pagespeed.ic.2Xwi5rG8fo.jpg)' }}>
+                                    style={{ backgroundImage: 'url(/images/ximg_3.jpg.pagespeed.ic.2Xwi5rG8fo.jpg)' }}>
                                     <span class="category">Events</span>
                                 </a>
                                 <div class="lh-content">
@@ -420,7 +420,7 @@ const Details = () => {
                             </div>
                             <div class="d-block d-md-flex listing-horizontal">
                                 <a href="#" class="img d-block"
-                                    style={{ backgroundImage: 'url(images/ximg_4.jpg.pagespeed.ic.Xwk9OG0HJQ.jpg)' }}>
+                                    style={{ backgroundImage: 'url(/images/ximg_4.jpg.pagespeed.ic.Xwk9OG0HJQ.jpg)' }}>
                                     <span class="category">Others</span>
                                 </a>
                                 <div class="lh-content">
@@ -439,7 +439,7 @@ const Details = () => {
                             </div>
                             <div class="d-block d-md-flex listing-horizontal">
                                 <a href="#" class="img d-block"
-                                    style={{ backgroundImage: 'url(images/ximg_5.jpg.pagespeed.ic.CE7y7zGmo6.jpg)' }}>
+                                    style={{ backgroundImage: 'url(/images/ximg_5.jpg.pagespeed.ic.CE7y7zGmo6.jpg)' }}>
                                     <span class="category">Spa</span>
                                 </a>
                                 <div class="lh-content">
@@ -458,7 +458,7 @@ const Details = () => {
                             </div>
                             <div class="d-block d-md-flex listing-horizontal">
                                 <a href="#" class="img d-block"
-                                    style={{ backgroundImage: 'url(images/ximg_6.jpg.pagespeed.ic.cOZc6e0Yb7.jpg)' }}>
+                                    style={{ backgroundImage: 'url(/images/ximg_6.jpg.pagespeed.ic.cOZc6e0Yb7.jpg)' }}>
                                     <span class="category">Stores</span>
                                 </a>
                                 <div class="lh-content">
