@@ -12,6 +12,7 @@ import BookSlot from '../Client/BookSlot';
 import ViewCategory from '../Client/ViewCategory';
 import ViewTickets from '../Client/ViewTickets';
 import ClientPrivateRoute from './ClientPrivateRoute';
+import Counter from '../Client/Counter';
 
 const ClientRoute = () => {
 
@@ -43,6 +44,7 @@ const ClientRoute = () => {
 
                 <Redirect to="/" />
             </Switch>
+            {/* <Counter/> */}
             <Footer />
         </>
     )
