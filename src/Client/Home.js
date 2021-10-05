@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom'
 import CategoryList from '../Common_Pages/CategoryList';
+import axios from 'axios';
 
 const Home = () => {
 
@@ -61,13 +62,19 @@ const Home = () => {
     }
 
     //Click On Search
-    const searchEvent = () => {
+    const searchEvent = async () => {
         console.log("SearchForm :- ", searchForm);
         setSearchForm({
             freeText: '',
             pincode: '',
             category: ''
         })
+
+        // const res = await axios.get("http://localhost:3003/demo");
+
+        const res = await axios.post("http://localhost:3003/demo",{data:'Bharagv Patel'});
+
+        console.log("Res : -", res);
     }
 
 
