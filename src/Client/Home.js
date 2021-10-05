@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom'
 import CategoryList from '../Common_Pages/CategoryList';
-import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import { searchAPI, searchStatus, categoryAPI, categoryStatus } from '../Redux/Client/Listing/ListingSlice';
+import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
 
 const Home = () => {
 
-    //Useeffect
-    useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, [])
+    //object
+    const dispatch = useDispatch();
+
+    //get data from store
+    const { searchResult, isSearchStatus, categoryResult, isCategoryStatus, msg } = useSelector(state => state.listing);
 
     //State Manage
     const [categoryList, setCategoryList] = useState([
@@ -49,6 +51,43 @@ const Home = () => {
         category: ''
     })
 
+    //Useeffect
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [])
+
+    useEffect(() => {
+        dispatch(searchStatus(false));
+        dispatch(categoryStatus(false));
+        dispatch(categoryAPI({ type: "popular" }));
+    }, [])
+
+
+    useEffect(() => {
+        if (isSearchStatus) {
+            setSearchForm({
+                freeText: '',
+                pincode: '',
+                category: ''
+            })
+            dispatch(searchStatus(false));
+        }
+
+        if (!isSearchStatus && msg != '') {
+            dispatch(ErrorAlert(msg));
+        }
+    }, [isSearchStatus])
+
+    useEffect(() => {
+        if (isCategoryStatus) {
+            dispatch(categoryStatus(false));
+        }
+
+        if (!isCategoryStatus && msg != '') {
+            dispatch(ErrorAlert(msg));
+        }
+    }, [isCategoryStatus])
+
     //Function
 
     //Search Handle Chnage
@@ -63,18 +102,7 @@ const Home = () => {
 
     //Click On Search
     const searchEvent = async () => {
-        console.log("SearchForm :- ", searchForm);
-        setSearchForm({
-            freeText: '',
-            pincode: '',
-            category: ''
-        })
-
-        // const res = await axios.get("http://localhost:3003/demo");
-
-        const res = await axios.post("http://localhost:3003/demo",{data:'Bharagv Patel'});
-
-        console.log("Res : -", res);
+        dispatch(searchAPI({ freeText: searchForm.freeText, pincode: searchForm.pincode, category: searchForm.category }))
     }
 
 

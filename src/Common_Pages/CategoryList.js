@@ -13,13 +13,14 @@ const CategoryList = ({ data, type }) => {
 
     return (
         <>
-            <div class="site-section">
+            <div class="site-section" style={{paddingTop : '20px'}}>
                 <div class="container">
                     {
                         type == 'popular' && (
                             <div class="row justify-content-center mb-5">
                                 <div class="col-md-7 text-center border-primary">
-                                    <h2 class="font-weight-light text-primary">Popular Categories</h2>
+                                    {/* <h2 class="font-weight-light text-primary">Popular Categories</h2> */}
+                                    <h2 class="font-weight-light text-primary">Categories</h2>
                                     <p class="color-black-opacity-5">Far far away, behind the word mountains, far from the countries
                                         Vokalia and Consonantia, there live the blind texts.</p>
                                 </div>
