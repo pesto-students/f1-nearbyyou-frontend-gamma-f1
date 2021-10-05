@@ -9,7 +9,7 @@ function App() {
     <>
       <AlertSnackBar />
       <Switch>
-        <Route path="/admin" component={VendorRoute} />
+        <Route path="/vendor" component={VendorRoute} />
         <Route path="/" component={ClientRoute} />
         <Redirect to="/" />
       </Switch>
