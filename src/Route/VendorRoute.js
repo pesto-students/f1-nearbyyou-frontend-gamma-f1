@@ -1,17 +1,25 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import Header from '../Common_Pages/Header';
+import VendorHeader from '../Common_Pages/VendorHeader';
 import Footer from '../Common_Pages/Footer';
-import AdminHome from '../Vendor/Home'
+import VendorHome from '../Vendor/Home'
 import VendorPrivateRoute from './VendorPrivateRoute';
+import ViewTicket from '../Vendor/ViewTicket';
+import VendorProfile from '../Vendor/VendorProfile';
 
 const VendorRoute = () => {
     return (
         <>
-            <Header />
+            <VendorHeader />
             <Switch>
-                <VendorPrivateRoute path="/admin/app/home" >
-                    <AdminHome />
+                <VendorPrivateRoute path="/vendor/app/home" >
+                    <VendorHome />
+                </VendorPrivateRoute>
+                <VendorPrivateRoute path="/vendor/app/view_ticket" >
+                    <ViewTicket />
+                </VendorPrivateRoute>
+                <VendorPrivateRoute path="/vendor/app/profile" >
+                    <VendorProfile />
                 </VendorPrivateRoute>
                 <Redirect to="/login" />
             </Switch>
