@@ -1,7 +1,12 @@
-import React from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 
 const Header = () => {
+
+    //Objects
+    const location = useLocation();
+    const pathName = location.pathname;
+
     return (
         <div class="site-wrap">
             <div class="site-mobile-menu">
@@ -23,29 +28,12 @@ const Header = () => {
                         <div class="col-12 col-md-10 d-none d-xl-block">
                             <nav class="site-navigation position-relative text-right" role="navigation">
                                 <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block">
-                                    <li class="active"><Link to="/"><span>Home</span></Link></li>
-                                    {/* <li class="has-children">
-                                        <Link to="#"><span>Dropdown</span></Link>
-                                        <ul class="dropdown arrow-top">
-                                            <li><Link to="#">Menu One</Link></li>
-                                            <li><Link to="#">Menu Two</Link></li>
-                                            <li><Link to="#">Menu Three</Link></li>
-                                            <li class="has-children">
-                                                <Link to="#">Dropdown</Link>
-                                                <ul class="dropdown">
-                                                    <li><Link to="#">Menu One</Link></li>
-                                                    <li><Link to="#">Menu Two</Link></li>
-                                                    <li><Link to="#">Menu Three</Link></li>
-                                                    <li><Link to="#">Menu Four</Link></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li> */}
-                                    <li><Link to="/viewCategory"><span>All Categorys</span></Link></li>
-                                    <li><Link to="/about"><span>About</span></Link></li>
-                                    <li><Link to="/contact"><span>Contact</span></Link></li>
-                                    <li><Link to="/login"><span>Login</span></Link></li>
-                                    <li><Link to="/app/viewTickets"><span>View Tickets</span></Link></li>
+                                    <li class={pathName == "/" ?"active" : ""}><NavLink to="/"><span>Home</span></NavLink></li>
+                                    <li class={pathName == "/viewCategory" ?"active" : ""}><NavLink to="/viewCategory"><span>All Categorys</span></NavLink></li>
+                                    <li class={pathName == "/about" ?"active" : ""}><NavLink to="/about"><span>About</span></NavLink></li>
+                                    <li class={pathName == "/contact" ?"active" : ""}><NavLink to="/contact"><span>Contact</span></NavLink></li>
+                                    <li class={pathName == "/login" ?"active" : ""}><NavLink to="/login"><span>Login</span></NavLink></li>
+                                    <li class={pathName == "/app/viewTickets" ?"active" : ""}><NavLink to="/app/viewTickets"><span>View Tickets</span></NavLink></li>
                                 </ul>
                             </nav>
                         </div>

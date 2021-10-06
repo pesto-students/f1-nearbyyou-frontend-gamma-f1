@@ -88,3 +88,7 @@ code {
   background-color: #00918e;
   box-shadow: 5px 5px 10px #218886f5 ;
 }
+
+.justify-content-end{
+  justify-content: end;
+}

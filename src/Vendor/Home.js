@@ -49,7 +49,7 @@ const VendorHome = () => {
 								<th>Service Datetime</th>
 								<th>Customer Name</th>
 								<th>Customer Contact</th>
-								<th>Action</th>
+								<th>Action   </th>
 							</tr>
 						</thead>
 						<tbody>

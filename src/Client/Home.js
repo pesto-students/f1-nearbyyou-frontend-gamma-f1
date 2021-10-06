@@ -1,18 +1,92 @@
 import React, { useState, useEffect } from 'react';
-import {NavLink} from 'react-router-dom'
+import CategoryList from '../Common_Pages/CategoryList';
+import { useSelector, useDispatch } from 'react-redux';
+import { searchAPI, searchStatus, categoryAPI, categoryStatus } from '../Redux/Client/Listing/ListingSlice';
+import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
 
 const Home = () => {
 
-    useEffect(() => {
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    }, [])
+    //object
+    const dispatch = useDispatch();
+
+    //get data from store
+    const { searchResult, isSearchStatus, categoryResult, isCategoryStatus, msg } = useSelector(state => state.listing);
 
     //State Manage
+    const [categoryList, setCategoryList] = useState([
+        {
+            image: 'flaticon-hotel',
+            name: 'Hotels',
+            count: '489'
+        },
+        {
+            image: 'flaticon-microphone',
+            name: 'Events',
+            count: '482'
+        },
+        {
+            image: 'flaticon-flower',
+            name: 'Spa',
+            count: '194'
+        },
+        {
+            image: 'flaticon-restaurant',
+            name: 'Stores',
+            count: '1472'
+        },
+        {
+            image: 'flaticon-cutlery',
+            name: 'Restaurants',
+            count: '439'
+        },
+        {
+            image: 'flaticon-bike',
+            name: 'Others',
+            count: '692'
+        },
+    ])
     const [searchForm, setSearchForm] = useState({
         freeText: '',
         pincode: '',
         category: ''
     })
+
+    //Useeffect
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [])
+
+    useEffect(() => {
+        dispatch(searchStatus(false));
+        dispatch(categoryStatus(false));
+        dispatch(categoryAPI({ type: "popular" }));
+    }, [])
+
+
+    useEffect(() => {
+        if (isSearchStatus) {
+            setSearchForm({
+                freeText: '',
+                pincode: '',
+                category: ''
+            })
+            dispatch(searchStatus(false));
+        }
+
+        if (!isSearchStatus && msg != '') {
+            dispatch(ErrorAlert(msg));
+        }
+    }, [isSearchStatus])
+
+    useEffect(() => {
+        if (isCategoryStatus) {
+            dispatch(categoryStatus(false));
+        }
+
+        if (!isCategoryStatus && msg != '') {
+            dispatch(ErrorAlert(msg));
+        }
+    }, [isCategoryStatus])
 
     //Function
 
@@ -27,13 +101,8 @@ const Home = () => {
     }
 
     //Click On Search
-    const searchEvent = () => {
-        console.log("SearchForm :- ", searchForm);
-        setSearchForm({
-            freeText: '',
-            pincode: '',
-            category: ''
-        })
+    const searchEvent = async () => {
+        dispatch(searchAPI({ freeText: searchForm.freeText, pincode: searchForm.pincode, category: searchForm.category }))
     }
 
 
@@ -186,111 +255,10 @@ const Home = () => {
                     </div>
                 </div>
             </div> */}
-            <div class="site-section">
-                <div class="container">
-                    <div class="row justify-content-center mb-5">
-                        <div class="col-md-7 text-center border-primary">
-                            <h2 class="font-weight-light text-primary">Popular Categories</h2>
-                            <p class="color-black-opacity-5">Far far away, behind the word mountains, far from the countries
-                                Vokalia and Consonantia, there live the blind texts.</p>
-                        </div>
-                    </div>
-                    <div class="row align-items-stretch">
-                        <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
-                            <a href="#" class="popular-category h-100">
-                                <span class="icon mb-3"><span class="flaticon-hotel"></span></span>
-                                <span class="caption mb-2 d-block">Hotels</span>
-                                <span class="number">4,89</span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
-                            <a href="#" class="popular-category h-100">
-                                <span class="icon mb-3"><span class="flaticon-microphone"></span></span>
-                                <span class="caption mb-2 d-block">Events</span>
-                                <span class="number">482</span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
-                            <a href="#" class="popular-category h-100">
-                                <span class="icon mb-3"><span class="flaticon-flower"></span></span>
-                                <span class="caption mb-2 d-block">Spa</span>
-                                <span class="number">194</span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
-                            <a href="#" class="popular-category h-100">
-                                <span class="icon mb-3"><span class="flaticon-restaurant"></span></span>
-                                <span class="caption mb-2 d-block">Stores</span>
-                                <span class="number">1,472</span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
-                            <a href="#" class="popular-category h-100">
-                                <span class="icon mb-3"><span class="flaticon-cutlery"></span></span>
-                                <span class="caption mb-2 d-block">Restaurants</span>
-                                <span class="number">439</span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
-                            <a href="#" class="popular-category h-100">
-                                <span class="icon mb-3"><span class="flaticon-bike"></span></span>
-                                <span class="caption mb-2 d-block">Other</span>
-                                <span class="number">692</span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="row align-items-stretch" style={{marginTop : '25px'}}>
-                        <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
-                            <a href="#" class="popular-category h-100">
-                                <span class="icon mb-3"><span class="flaticon-hotel"></span></span>
-                                <span class="caption mb-2 d-block">Hotels</span>
-                                <span class="number">4,89</span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
-                            <a href="#" class="popular-category h-100">
-                                <span class="icon mb-3"><span class="flaticon-microphone"></span></span>
-                                <span class="caption mb-2 d-block">Events</span>
-                                <span class="number">482</span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
-                            <a href="#" class="popular-category h-100">
-                                <span class="icon mb-3"><span class="flaticon-flower"></span></span>
-                                <span class="caption mb-2 d-block">Spa</span>
-                                <span class="number">194</span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
-                            <a href="#" class="popular-category h-100">
-                                <span class="icon mb-3"><span class="flaticon-restaurant"></span></span>
-                                <span class="caption mb-2 d-block">Stores</span>
-                                <span class="number">1,472</span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
-                            <a href="#" class="popular-category h-100">
-                                <span class="icon mb-3"><span class="flaticon-cutlery"></span></span>
-                                <span class="caption mb-2 d-block">Restaurants</span>
-                                <span class="number">439</span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2">
-                            <a href="#" class="popular-category h-100">
-                                <span class="icon mb-3"><span class="flaticon-bike"></span></span>
-                                <span class="caption mb-2 d-block">Other</span>
-                                <span class="number">692</span>
-                            </a>
-                        </div>
-                    </div>
-                   
-                    <div class="row mt-5 justify-content-center tex-center">
-                        <div class="col-md-4">
-                            <NavLink to='/viewCategory' class="btn btn-block btn-outline-primary btn-md px-5">View AllCategories</NavLink>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+            <CategoryList data={categoryList} type='popular' />
+
+
             <div class="site-section">
                 <div class="container">
                     <div class="row">
