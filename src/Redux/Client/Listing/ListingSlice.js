@@ -3,14 +3,22 @@ import axios from 'axios';
 
 export const searchAPI = createAsyncThunk('Search API CALL', async ({ freeText, pincode, category }, { dispatch, rejectWithValue }) => {
     console.log("searchAPI :-", { freeText, pincode, category });
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('Near_By_You')
+    }
+
     try {
-        const response = await axios.post("http://localhost:3003/search",
+        const response = await axios.post("customer/search",
             {
                 params: {
                     freeText: freeText,
                     pincode: pincode,
                     category: category,
                 }
+            },
+            {
+                headers: headers
             });
         const responseData = {
             status: true
@@ -54,7 +62,7 @@ export const slice = createSlice({
     initialState: {
         searchResult: [],
         isSearchStatus: false,
-        categoryResult : [],
+        categoryResult: [],
         isCategoryStatus: false,
         msg: ''
     },
@@ -71,19 +79,19 @@ export const slice = createSlice({
     extraReducers: {
         [searchAPI.fulfilled]: (state, action) => {
             state.isSearchStatus = true;
-            state.msg = action.payload.data.msg
+            // state.msg = action.payload.data.msg
         },
         [searchAPI.rejected]: (state, action) => {
             state.isSearchStatus = false;
-            state.msg = action.payload.data.msg
+            // state.msg = action.payload.data.msg
         },
         [categoryAPI.fulfilled]: (state, action) => {
             state.isCategoryStatus = true;
-            state.msg = action.payload.data.msg
+            // state.msg = action.payload.data.msg
         },
         [categoryAPI.rejected]: (state, action) => {
             state.isCategoryStatus = false;
-            state.msg = action.payload.data.msg
+            // state.msg = action.payload.data.msg
         },
     }
 });

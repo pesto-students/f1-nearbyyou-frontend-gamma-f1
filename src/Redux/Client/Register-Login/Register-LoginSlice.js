@@ -1,29 +1,28 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { ErrorAlert, SuccessAlert } from '../../../Redux/SnackBar/SnackbarSlice';
 import axios from 'axios';
 
-export const registerAPI = createAsyncThunk('Register API CALL', async ({ user_name, user_role, email, contact_number }, { dispatch, rejectWithValue }) => {
-    console.log("registerAPI :-", { user_name, user_role, email, contact_number });
+export const registerAPI = createAsyncThunk('Register API CALL', async ({ user_name, user_role, email, contact_number, password }, { dispatch, rejectWithValue }) => {
     try {
-        const response = await axios.post("http://localhost:3003/register",
-            {
-                params: {
-                    user_name: user_name,
-                    user_role: user_role,
-                    email: email,
-                    contact_number: contact_number
-                }
-            });
-        const responseData = {
-            status: true
-        };
-        if (responseData.status) {
+        const response = await axios.post("customer/register", {
+            user_name: user_name,
+            user_role: user_role,
+            email: email,
+            contact_number: contact_number,
+            password: password
+        });
+        const responseData = response.data;
+
+        if (responseData.status == "success") {
+            dispatch(SuccessAlert(responseData.msg));
             return response;
         } else {
+            dispatch(ErrorAlert(responseData.msg));
             return rejectWithValue({ message: 'No Data Found' });
         }
     }
     catch (e) {
-        console.log("Error :- ", e)
+        dispatch(ErrorAlert('Something Want Wrong!!'));
     }
 });
 
@@ -31,24 +30,30 @@ export const registerAPI = createAsyncThunk('Register API CALL', async ({ user_n
 export const LoginAPI = createAsyncThunk('Login API CALL', async ({ username, password }, { dispatch, rejectWithValue }) => {
     console.log("loginAPI :-", { username, password });
     try {
-        const response = await axios.post("http://localhost:3003/login",
+        const response = await axios.post("customer/login",
             {
-                params: {
-                    username: username,
-                    password: password,
-                }
+                username: username,
+                password: password,
             });
-        const responseData = {
-            status: true
-        };
-        if (responseData.status) {
+        const responseData = response.data;
+
+        if (responseData.status == "success") {
+
+            let authToken = responseData.payload.data.token;
+
+            // axios.defaults.headers.common['Authorization'] = 'Bearer ' + authToken;
+            axios.defaults.headers.common['x-auth-token'] = authToken;
+            localStorage.setItem('Near_By_You', authToken)
+
+            dispatch(SuccessAlert(responseData.msg));
             return response;
         } else {
+            dispatch(ErrorAlert(responseData.msg));
             return rejectWithValue({ message: 'No Data Found' });
         }
     }
     catch (e) {
-        console.log("Error :- ", e)
+        dispatch(ErrorAlert('Something Want Wrong!!'));
     }
 });
 
@@ -58,34 +63,27 @@ export const slice = createSlice({
         value: 10,
         isUpdatedSuccessfully: false,
         isLoginStatus: false,
-        msg: ''
     },
     reducers: {
         registerStatus: (state, action) => {
             state.isUpdatedSuccessfully = action.payload;
-            state.msg = '';
         },
         loginStatus: (state, action) => {
             state.isLoginStatus = action.payload;
-            state.msg = '';
         },
     },
     extraReducers: {
         [registerAPI.fulfilled]: (state, action) => {
             state.isUpdatedSuccessfully = true;
-            state.msg = action.payload.data.msg
         },
         [registerAPI.rejected]: (state, action) => {
             state.isUpdatedSuccessfully = false;
-            state.msg = action.payload.data.msg
         },
         [LoginAPI.fulfilled]: (state, action) => {
             state.isLoginStatus = true;
-            state.msg = action.payload.data.msg
         },
         [LoginAPI.rejected]: (state, action) => {
             state.isLoginStatus = false;
-            state.msg = action.payload.data.msg
         }
     }
 });

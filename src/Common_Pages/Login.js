@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { registerAPI, registerStatus, LoginAPI, loginStatus } from '../Redux/Client/Register-Login/Register-LoginSlice'
-import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
 
 const Login = () => {
 
     //object
     const dispatch = useDispatch();
+    const history = useHistory();
 
     //get data from store
-    const { value, isUpdatedSuccessfully, msg, isLoginStatus } = useSelector(state => state.register);
+    const { value, isUpdatedSuccessfully, isLoginStatus } = useSelector(state => state.register);
 
     //Manage State
     const [form, setForm] = useState({
@@ -35,8 +36,7 @@ const Login = () => {
     }, [])
 
     useEffect(() => {
-        if (isUpdatedSuccessfully) {
-            dispatch(SuccessAlert(msg));
+        if (isUpdatedSuccessfully) {            
             setForm({
                 register_type: '',
                 c_fname: '',
@@ -46,24 +46,16 @@ const Login = () => {
             });
             dispatch(registerStatus(false));
         }
-
-        if (!isUpdatedSuccessfully && msg != '') {
-            dispatch(ErrorAlert(msg));
-        }
     }, [isUpdatedSuccessfully])
 
     useEffect(() => {
         if (isLoginStatus) {
-            dispatch(SuccessAlert(msg));
             setForm({
                 username: '',
                 password: ''
             });
             dispatch(loginStatus(false));
-        }
-
-        if (!isLoginStatus && msg != '') {
-            dispatch(ErrorAlert(msg));
+            history.push('/');
         }
     }, [isLoginStatus])
 
@@ -81,13 +73,13 @@ const Login = () => {
     //Register Click
     const registerClick = (e) => {
         e.preventDefault();
-        dispatch(registerAPI({ user_name: form.c_fname + " " + form.c_lname, user_role: form.register_type, email: form.c_email, contact_number: form.c_contact }));
+        dispatch(registerAPI({ user_name: form.c_fname + " " + form.c_lname, user_role: form.register_type, email: form.c_email, contact_number: form.c_contact, password : form.c_password }));
     }
 
     //Login Click
     const loginClick = (e) => {
         e.preventDefault();
-        dispatch(LoginAPI({ username : form.username, password : form.password }));
+        dispatch(LoginAPI({ username: form.username, password: form.password }));
     }
     return (
         <>
@@ -155,6 +147,18 @@ const Login = () => {
                                             </div>
                                             <div class="row form-group">
                                                 <div class="col-md-12">
+                                                    <label class="text-black" for="pass1">Password</label>
+                                                    <input type="password" name="c_password" id="pass1" class="form-control" onChange={handleChange} required/>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col-md-12">
+                                                    <label class="text-black" for="pass2">Re-type Password</label>
+                                                    <input type="password" name="c_rePassword" id="pass2" class="form-control" onChange={handleChange} required/>
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <div class="col-md-12">
                                                     <input type="submit" value="Sign Up" class="btn btn-primary btn-md text-white" />
                                                 </div>
                                             </div>
@@ -181,18 +185,6 @@ const Login = () => {
                                             </div>
                                             <div class="row form-group">
                                                 <div class="col-md-12">
-                                                    <label class="text-black" for="pass1">Password</label>
-                                                    <input type="password" id="pass1" class="form-control" />
-                                                </div>
-                                            </div>
-                                            <div class="row form-group">
-                                                <div class="col-md-12">
-                                                    <label class="text-black" for="pass2">Re-type Password</label>
-                                                    <input type="password" id="pass2" class="form-control" />
-                                                </div>
-                                            </div>
-                                            <div class="row form-group">
-                                                <div class="col-md-12">
                                                     <input type="submit" value="Sign Up" class="btn btn-primary btn-md text-white" />
                                                 </div>
                                             </div>
@@ -210,13 +202,13 @@ const Login = () => {
                                 <div class="row form-group">
                                     <div class="col-md-12">
                                         <label class="text-black" for="email">Email</label>
-                                        <input type="email" id="email2" name="username" class="form-control"  onChange={handleChange} />
+                                        <input type="email" id="email2" name="username" class="form-control" onChange={handleChange} />
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-12">
                                         <label class="text-black" for="pass1">Password</label>
-                                        <input type="password" id="pass3" name="password" class="form-control"  onChange={handleChange} />
+                                        <input type="password" id="pass3" name="password" class="form-control" onChange={handleChange} />
                                     </div>
                                 </div>
                                 <div class="row form-group">
