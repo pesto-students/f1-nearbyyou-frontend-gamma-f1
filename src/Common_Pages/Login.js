@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
 import { registerAPI, registerStatus, LoginAPI, loginStatus } from '../Redux/Client/Register-Login/Register-LoginSlice'
 
 const Login = () => {
@@ -36,7 +37,7 @@ const Login = () => {
     }, [])
 
     useEffect(() => {
-        if (isUpdatedSuccessfully) {            
+        if (isUpdatedSuccessfully) {
             setForm({
                 register_type: '',
                 c_fname: '',
@@ -73,7 +74,11 @@ const Login = () => {
     //Register Click
     const registerClick = (e) => {
         e.preventDefault();
-        dispatch(registerAPI({ user_name: form.c_fname + " " + form.c_lname, user_role: form.register_type, email: form.c_email, contact_number: form.c_contact, password : form.c_password }));
+        if (form.c_password == form.c_rePassword) {
+            dispatch(registerAPI({ user_name: form.c_fname + " " + form.c_lname, user_role: form.register_type, email: form.c_email, contact_number: form.c_contact, password: form.c_password }));
+        } else {
+            dispatch(ErrorAlert('Password and Repassword Not Match !!'));
+        }
     }
 
     //Login Click
@@ -148,13 +153,13 @@ const Login = () => {
                                             <div class="row form-group">
                                                 <div class="col-md-12">
                                                     <label class="text-black" for="pass1">Password</label>
-                                                    <input type="password" name="c_password" id="pass1" class="form-control" onChange={handleChange} required/>
+                                                    <input type="password" name="c_password" id="pass1" class="form-control" onChange={handleChange} required />
                                                 </div>
                                             </div>
                                             <div class="row form-group">
                                                 <div class="col-md-12">
                                                     <label class="text-black" for="pass2">Re-type Password</label>
-                                                    <input type="password" name="c_rePassword" id="pass2" class="form-control" onChange={handleChange} required/>
+                                                    <input type="password" name="c_rePassword" id="pass2" class="form-control" onChange={handleChange} required />
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -202,13 +207,13 @@ const Login = () => {
                                 <div class="row form-group">
                                     <div class="col-md-12">
                                         <label class="text-black" for="email">Email</label>
-                                        <input type="email" id="email2" name="username" class="form-control" onChange={handleChange} />
+                                        <input type="email" id="email2" name="username" class="form-control" onChange={handleChange} required />
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-12">
                                         <label class="text-black" for="pass1">Password</label>
-                                        <input type="password" id="pass3" name="password" class="form-control" onChange={handleChange} />
+                                        <input type="password" id="pass3" name="password" class="form-control" onChange={handleChange} required />
                                     </div>
                                 </div>
                                 <div class="row form-group">
