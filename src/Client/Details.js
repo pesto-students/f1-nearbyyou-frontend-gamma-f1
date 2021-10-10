@@ -1,11 +1,18 @@
-import React,{useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom'
 import ShopList from '../Common_Pages/ShopList';
+import { useSelector, useDispatch } from 'react-redux';
+import { detailAPI, detailStatus } from '../Redux/Client/Listing/ListingSlice';
 
 const Details = () => {
 
+    //object
+    const dispatch = useDispatch();
+
+    //get data from store
+    const { detailResult, isDetailStatus} = useSelector(state => state.listing);
+
     //State Manage
-    
     const [shopList, setShopList] = useState([
         {
             image: 'url(/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)',
@@ -48,10 +55,15 @@ const Details = () => {
             reviews: '492',
         }
     ]);
-    
+
     //Useeffect
     useEffect(() => {
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [])
+
+    useEffect(() => {
+        // dispatch(detailStatus(false));
+        // dispatch(detailAPI(10));
     }, [])
 
     return (

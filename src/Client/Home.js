@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import CategoryList from '../Common_Pages/CategoryList';
 import { useSelector, useDispatch } from 'react-redux';
 import { searchAPI, searchStatus, categoryAPI, categoryStatus } from '../Redux/Client/Listing/ListingSlice';
-import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
 
 const Home = () => {
 
@@ -10,7 +9,7 @@ const Home = () => {
     const dispatch = useDispatch();
 
     //get data from store
-    const { searchResult, isSearchStatus, categoryResult, isCategoryStatus, msg } = useSelector(state => state.listing);
+    const { searchResult, isSearchStatus, categoryResult, isCategoryStatus } = useSelector(state => state.listing);
 
     //State Manage
     const [categoryList, setCategoryList] = useState([
@@ -62,7 +61,6 @@ const Home = () => {
         dispatch(categoryAPI({ type: "popular" }));
     }, [])
 
-
     useEffect(() => {
         if (isSearchStatus) {
             setSearchForm({
@@ -72,19 +70,11 @@ const Home = () => {
             })
             dispatch(searchStatus(false));
         }
-
-        if (!isSearchStatus && msg != '') {
-            dispatch(ErrorAlert(msg));
-        }
     }, [isSearchStatus])
 
     useEffect(() => {
         if (isCategoryStatus) {
             dispatch(categoryStatus(false));
-        }
-
-        if (!isCategoryStatus && msg != '') {
-            dispatch(ErrorAlert(msg));
         }
     }, [isCategoryStatus])
 
@@ -104,7 +94,6 @@ const Home = () => {
     const searchEvent = async () => {
         dispatch(searchAPI({ freeText: searchForm.freeText, pincode: searchForm.pincode, category: searchForm.category }))
     }
-
 
     return (
         <>
