@@ -1,11 +1,29 @@
-import React,{useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux';
+import { viewTicketAPI, viewTicketStatus } from '../Redux/Client/Listing/ListingSlice';
 
 const ViewTickets = () => {
 
+    //object
+    const dispatch = useDispatch();
+
+    //get data from store
+    const { isViewTicketStatus, viewTicketData } = useSelector(state => state.listing);
+
+    //State Manage
+    const [viewTicket, setViewTicket] = useState([]);
+
+    //useeffect
     useEffect(() => {
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        dispatch(viewTicketStatus(false));
+        dispatch(viewTicketAPI({ custID: '123' }))
     }, [])
+
+    useEffect(() => {
+        setViewTicket(viewTicketData)
+    }, [viewTicketData])
 
     return (
         <>

@@ -1,10 +1,61 @@
-import React,{useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom'
+import { ticketAPI, ticketStatus } from '../Redux/Client/Listing/ListingSlice';
 
 const BookSlot = () => {
 
+    //object
+    const dispatch = useDispatch();
+    const history = useHistory();
+
+    //get data from store
+    const { isTicketStatus } = useSelector(state => state.listing);
+
+    //State Manage
+    const [form, setForm] = useState({
+        fname: '',
+        lname: '',
+        email: ''
+    })
+
+    //useeffect
     useEffect(() => {
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        dispatch(ticketStatus(false));
     }, [])
+
+    useEffect(() => {
+        if (isTicketStatus) {
+            setForm({
+                fname: '',
+                lname: '',
+                email: ''
+            })
+            history.push('/app/viewTickets')
+        }
+    }, [isTicketStatus])
+
+    //Functions
+
+    //handleChnage
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        setForm({
+            ...form,
+            [name]: value
+        })
+    }
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+
+        console.log("form :- ", form);
+
+        dispatch(ticketAPI({ firstName: form.fname, lastName: form.lname, email: form.email }))
+
+    }
 
     return (
         <>
@@ -28,34 +79,21 @@ const BookSlot = () => {
                 <div class="container">
                     <div class="row">
                         <div class="col-md-7 mb-5" data-aos="fade">
-                            <form action="#" class="p-5 bg-white" style={{ marginTop: '-150px' }}>
+                            <form method="post" onSubmit={onSubmit} class="p-5 bg-white" style={{ marginTop: '-150px' }}>
                                 <div class="row form-group">
                                     <div class="col-md-6 mb-3 mb-md-0">
                                         <label class="text-black" for="fname">First Name</label>
-                                        <input type="text" id="fname" class="form-control" />
+                                        <input type="text" id="fname" class="form-control" value={form.fname} name="fname" onChange={handleChange} required />
                                     </div>
                                     <div class="col-md-6">
                                         <label class="text-black" for="lname">Last Name</label>
-                                        <input type="text" id="lname" class="form-control" />
+                                        <input type="text" id="lname" class="form-control" value={form.lname} name="lname" onChange={handleChange} required />
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-12">
                                         <label class="text-black" for="email">Email</label>
-                                        <input type="email" id="email" class="form-control" />
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col-md-12">
-                                        <label class="text-black" for="subject">Subject</label>
-                                        <input type="subject" id="subject" class="form-control" />
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col-md-12">
-                                        <label class="text-black" for="message">Message</label>
-                                        <textarea name="message" id="message" cols="30" rows="7" class="form-control"
-                                            placeholder="Write your notes or questions here..."></textarea>
+                                        <input type="email" id="email" class="form-control" value={form.email} name="email" onChange={handleChange} required />
                                     </div>
                                 </div>
                                 <div class="row form-group">

@@ -48,7 +48,7 @@ export const LoginAPI = createAsyncThunk('Login API CALL', async ({ username, pa
             dispatch(SuccessAlert(responseData.msg));
             return response;
         } else {
-            dispatch(ErrorAlert(responseData.msg));
+            dispatch(ErrorAlert(responseData.message));
             return rejectWithValue({ message: 'No Data Found' });
         }
     }

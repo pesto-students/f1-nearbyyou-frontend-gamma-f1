@@ -84,7 +84,12 @@ const Login = () => {
     //Login Click
     const loginClick = (e) => {
         e.preventDefault();
-        dispatch(LoginAPI({ username: form.username, password: form.password }));
+        if(form.username != "" && form.password != ""){
+            dispatch(LoginAPI({ username: form.username, password: form.password }));
+        }else{
+            dispatch(ErrorAlert('Please Enter Username and Password !!'));
+        }
+        
     }
     return (
         <>
