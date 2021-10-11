@@ -117,7 +117,7 @@ const Details = () => {
                         <div class="col-lg-3 ml-auto" style={{ paddingRight: '0' }}>
                             <div class="mb-4">
                                 <h3 class="h5 text-black mb-2" style={{ fontSize: '35px' }}>
-                                    <NavLink to="/"><i class="fa fa-whatsapp cursor-pointer" style={{ marginRight: '50px' }} title='Contact US'></i> </NavLink> <NavLink to="/app/bookSlot"><i class="fa fa-ticket cursor-pointer" title="Book Slot"></i></NavLink>
+                                    <NavLink to="/"><i class="fa fa-whatsapp cursor-pointer" style={{ marginRight: '50px' }} title='Contact US'></i> </NavLink> <NavLink to={`/app/bookSlot`}><i class="fa fa-ticket cursor-pointer" title="Book Slot"></i></NavLink>
                                 </h3>
                             </div>
                         

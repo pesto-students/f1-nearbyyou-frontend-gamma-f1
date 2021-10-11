@@ -64,7 +64,9 @@ const ShopList = ({ filter }) => {
     const [searchForm, setSearchForm] = useState({
         freeText: '',
         pincode: '',
-        category: ''
+        category: '',
+        catID : '',
+        catName : '',
     });
 
     //Useeffect
@@ -72,8 +74,10 @@ const ShopList = ({ filter }) => {
         if (categoryId) {
             setSearchForm({
                 ...searchForm,
-                category: categoryId,
-                pincode : pincode
+                category: `${categoryId}||${categoryName}`,
+                pincode : pincode,
+                catID : categoryId,
+                catName : categoryName
             })
             dispatch(searchAPI({ freeText: '', pincode: pincode, category: categoryId }))
         } else {
@@ -93,19 +97,34 @@ const ShopList = ({ filter }) => {
     const searchHandleChange = (e) => {
         const { name, value } = e.target;
 
-        setSearchForm({
-            ...searchForm,
-            [name]: value
-        })
+        if(name == "category"){
+
+            const cat = value.split('||');
+
+            setSearchForm({
+                ...searchForm,
+                category: value,
+                catID : cat[0],
+                catName : cat[1]
+            })
+        }else{
+            setSearchForm({
+                ...searchForm,
+                [name]: value
+            })
+        }
+        
         debounceSearch(searchForm);
     }
 
     //Debounce Search
     const debounceSearch = useCallback(
         debounce((searchData) => {
-            dispatch(searchAPI({ freeText: searchData?.freeText, pincode: searchData?.pincode, category: searchData?.category }));
+            dispatch(searchAPI({ freeText: searchData?.freeText, pincode: searchData?.pincode, category: searchData?.catID }));
         }, 500), []
     );
+
+    console.log("searchForm :- ", searchForm);
 
     return (
         <>
@@ -123,10 +142,10 @@ const ShopList = ({ filter }) => {
                                     <div class="select-wrap">
                                         <span class="icon"><span class="icon-keyboard_arrow_down"></span></span>
                                         <select class="form-control" name="category" value={searchForm.category} onChange={searchHandleChange}>
-                                            <option value="">All Category</option>
+                                            {/* <option value="">All Category</option> */}
                                             {
                                                 avaCategory.length > 0 && avaCategory.map((item, index) => (
-                                                    <option value={item._id}>{item.name}</option>
+                                                    <option value={`${item._id}||${item.name}`}>{item.name}</option>
                                                 ))
                                             }
                                         </select>
@@ -156,9 +175,9 @@ const ShopList = ({ filter }) => {
                 {
                     shopList?.length > 0 && shopList.map((item, index) => (
                         <div class="d-block d-md-flex listing-horizontal">
-                            <NavLink to={`/app/${categoryName}/${categoryId}/${item._id}`} class="img d-block"
+                            <NavLink to={`/app/${searchForm.catName}/${searchForm.catID}/${item._id}`} class="img d-block"
                                 style={{ backgroundImage: 'url(/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)' }}>
-                                <span class="category">{categoryName}</span>
+                                <span class="category">{searchForm.catName}</span>
                             </NavLink>
                             <div class="lh-content">
                                 <a href="#" class="bookmark"><span class="icon-heart"></span></a>

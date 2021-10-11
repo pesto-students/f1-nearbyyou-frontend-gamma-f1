@@ -5,10 +5,13 @@ import CategoryList from '../Common_Pages/CategoryList';
 
 const Listings = () => {
 
+    //object
+    const { categoryName, categoryId, pincode } = useParams();
+
     //Useeffect
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, [])
+        window.scrollTo({ top: 200, behavior: 'smooth' });
+    }, [categoryId])
 
     return (
         <>

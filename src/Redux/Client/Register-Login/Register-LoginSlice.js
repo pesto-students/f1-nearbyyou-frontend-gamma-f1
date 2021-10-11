@@ -2,14 +2,22 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { ErrorAlert, SuccessAlert } from '../../../Redux/SnackBar/SnackbarSlice';
 import axios from 'axios';
 
-export const registerAPI = createAsyncThunk('Register API CALL', async ({ user_name, user_role, email, contact_number, password }, { dispatch, rejectWithValue }) => {
+export const registerAPI = createAsyncThunk('Register API CALL', async ({
+    user_name, user_role, email, contact_number, password, doorNumber, street, area, city, state, pincode
+}, { dispatch, rejectWithValue }) => {
     try {
         const response = await axios.post("customer/register", {
             user_name: user_name,
             user_role: user_role,
             email: email,
             contact_number: contact_number,
-            password: password
+            password: password,
+            doorNumber: doorNumber,
+            street: street,
+            area: area,
+            city: city,
+            state: state,
+            pincode: pincode
         });
         const responseData = response.data;
 
@@ -40,6 +48,10 @@ export const LoginAPI = createAsyncThunk('Login API CALL', async ({ username, pa
         if (responseData.status == "success") {
 
             let authToken = responseData.payload.data.token;
+
+            let userInfo = responseData.payload.data.userInfo;
+
+            localStorage.setItem('Near_By_You_Client', JSON.stringify(userInfo));
 
             // axios.defaults.headers.common['Authorization'] = 'Bearer ' + authToken;
             axios.defaults.headers.common['x-auth-token'] = authToken;

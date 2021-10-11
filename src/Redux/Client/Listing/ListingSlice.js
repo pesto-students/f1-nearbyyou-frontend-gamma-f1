@@ -8,11 +8,9 @@ export const searchAPI = createAsyncThunk('Search API CALL', async ({ freeText, 
     try {
         const response = await axios.post("customer/search",
             {
-                params: {
-                    freeText: freeText,
-                    pincode: parseInt(pincode),
-                    category: category,
-                }
+                freeText: freeText,
+                pincode: parseInt(pincode),
+                category: category,
             });
 
         const responseData = response.data;
@@ -56,7 +54,7 @@ export const categoryAPI = createAsyncThunk('Category API CALL', async ({ type, 
 export const detailAPI = createAsyncThunk('Details API CALL', async ({ shopID }, { dispatch, rejectWithValue }) => {
     console.log("DetailAPI :-", { shopID });
     try {
-        const response = await axios.post("customer/detail",{shopId: shopID});
+        const response = await axios.post("customer/detail", { shopId: shopID });
         const responseData = response.data;
 
         if (responseData.status == "success") {
@@ -72,13 +70,15 @@ export const detailAPI = createAsyncThunk('Details API CALL', async ({ shopID },
     }
 });
 
-export const ticketAPI = createAsyncThunk('Ticket API CALL', async ({ firstName, lastName }, { dispatch, rejectWithValue }) => {
-    console.log("ticketAPi :-", { firstName, lastName });
+export const ticketAPI = createAsyncThunk('Ticket API CALL', async ({ description, date, time, customerId }, { dispatch, rejectWithValue }) => {
+    console.log("ticketAPi :-", { description, date, time  });
     try {
         const response = await axios.post("customer/ticket",
             {
-                firstName : firstName,
-                lastName : lastName
+                description: description,
+                date: date,
+                time: time,
+                customerId : customerId
             });
         const responseData = response.data;
 
@@ -95,12 +95,12 @@ export const ticketAPI = createAsyncThunk('Ticket API CALL', async ({ firstName,
     }
 });
 
-export const viewTicketAPI = createAsyncThunk('Ciew Ticket API CALL', async ({ custId }, { dispatch, rejectWithValue }) => {
-    console.log("userId :-", { custId });
+export const viewTicketAPI = createAsyncThunk('Ciew Ticket API CALL', async ({ custID }, { dispatch, rejectWithValue }) => {
+    console.log("userId :-", { custID });
     try {
         const response = await axios.post("customer/viewTicket",
             {
-                custId : custId
+                custID: custID
             });
         const responseData = response.data;
 
@@ -116,6 +116,29 @@ export const viewTicketAPI = createAsyncThunk('Ciew Ticket API CALL', async ({ c
         console.log("Error :- ", e)
     }
 });
+
+export const customerDetailsAPI = createAsyncThunk('Customer Details API CALL', async ({ userID }, { dispatch, rejectWithValue }) => {
+    console.log("userID :-", { userID });
+    try {
+        const response = await axios.post("customer/userDetails",
+            {
+                userID: userID
+            });
+        const responseData = response.data;
+
+        if (responseData.status == "success") {
+            dispatch(SuccessAlert(responseData.msg));
+            return response;
+        } else {
+            dispatch(ErrorAlert(responseData.msg));
+            return rejectWithValue({ message: 'No Data Found' });
+        }
+    }
+    catch (e) {
+        console.log("Error :- ", e)
+    }
+});
+
 
 
 export const slice = createSlice({
@@ -128,9 +151,10 @@ export const slice = createSlice({
         isCategoryStatus: false,
         detailResult: [],
         isDetailStatus: false,
-        isTicketStatus : false,
-        isViewTicketStatus : false,
-        viewTicketData : []
+        isTicketStatus: false,
+        isViewTicketStatus: false,
+        viewTicketData: [],
+        customerDetails: [],
     },
     reducers: {
         searchStatus: (state, action) => {
@@ -184,11 +208,17 @@ export const slice = createSlice({
         },
         [viewTicketAPI.fulfilled]: (state, action) => {
             state.isViewTicketStatus = true;
-            state.viewTicketData = []
+            state.viewTicketData = action.payload.data.payload.data.data;
         },
         [viewTicketAPI.rejected]: (state, action) => {
             state.isViewTicketStatus = false;
             state.viewTicketData = []
+        },
+        [customerDetailsAPI.fulfilled]: (state, action) => {
+            state.customerDetails = action.payload.data.payload.data.data;
+        },
+        [customerDetailsAPI.rejected]: (state, action) => {
+            state.customerDetails = []
         },
     }
 });

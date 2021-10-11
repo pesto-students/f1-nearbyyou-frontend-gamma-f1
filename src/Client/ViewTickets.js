@@ -17,8 +17,10 @@ const ViewTickets = () => {
     //useeffect
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        let userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
         dispatch(viewTicketStatus(false));
-        dispatch(viewTicketAPI({ custID: '123' }))
+        console.log("userData :- ", userData, userData.id);
+        dispatch(viewTicketAPI({ custID: userData.id }))
     }, [])
 
     useEffect(() => {
@@ -48,6 +50,31 @@ const ViewTickets = () => {
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">
+{/* 
+                            {
+                                viewTicket?.length > 0 && viewTicket.map((item, index) => {
+                                    <div class="d-block d-md-flex listing-horizontal">
+                                        <NavLink to="/details" class="img d-block"
+                                            style={{ backgroundImage: 'url(/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)' }}>
+                                            <span class="category">Restaurants</span>
+                                        </NavLink>
+                                        <div class="lh-content">
+                                            <h3><a href="#">Jones Grill &amp; Restaurants</a></h3>
+                                            <p>Don St, Brooklyn, New York</p>
+                                            <p>
+                                                <span class="icon-star text-warning"></span>
+                                                <span class="icon-star text-warning"></span>
+                                                <span class="icon-star text-warning"></span>
+                                                <span class="icon-star text-warning"></span>
+                                                <span class="icon-star text-secondary"></span>
+                                                <span>(492 Reviews)</span>
+                                            </p>
+                                        </div>
+                                        <div><span class="statusButton">Pending</span></div>
+                                    </div>
+                                })
+                            } */}
+
                             <div class="d-block d-md-flex listing-horizontal">
                                 <NavLink to="/details" class="img d-block"
                                     style={{ backgroundImage: 'url(/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)' }}>
