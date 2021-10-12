@@ -110,6 +110,7 @@ const VendorHome = () => {
 			</div>
 		</>
 	)
+
 }
 
 export default VendorHome;
