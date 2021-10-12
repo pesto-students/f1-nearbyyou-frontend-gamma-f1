@@ -24,13 +24,17 @@ const ClientRoute = () => {
                 <Route exact path="/about" component={About} />
                 <Route exact path="/contact" component={ContactUs} />
                 <Route exact path="/login" component={Login} />
-                <Route exact path="/viewCategory" component={ViewCategory} />
+                <Route exact path="/category" component={ViewCategory} />
 
-                <ClientPrivateRoute exact path="/app/listings" >
+                <ClientPrivateRoute exact path="/app/:categoryName/:categoryId" >
                     <Listings />
                 </ClientPrivateRoute>
 
-                <ClientPrivateRoute exact path="/app/details" >
+                <ClientPrivateRoute exact path="/app/:categoryName/:categoryId/pincode/:pincode" >
+                    <Listings />
+                </ClientPrivateRoute>
+
+                <ClientPrivateRoute exact path="/app/:categoryName/:categoryId/:shopID" >
                     <Details />
                 </ClientPrivateRoute>
 

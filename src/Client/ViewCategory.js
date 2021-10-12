@@ -1,90 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import CategoryList from '../Common_Pages/CategoryList'
 import { useSelector, useDispatch } from 'react-redux';
-import { searchAPI, searchStatus, categoryAPI, categoryStatus } from '../Redux/Client/Listing/ListingSlice';
-import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
+import { categoryAPI, categoryStatus } from '../Redux/Client/Listing/ListingSlice';
 
 const ViewCategory = () => {
-
-    //Objects
-    const dispatch = useDispatch();
-
-    //get data from store
-    const { searchResult, isSearchStatus, categoryResult, isCategoryStatus, msg } = useSelector(state => state.listing);
-
-    //Manage State
-    const [categoryList, setCategoryList] = useState([
-        {
-            image: 'flaticon-hotel',
-            name: 'Hotels',
-            count: '489'
-        },
-        {
-            image: 'flaticon-microphone',
-            name: 'Events',
-            count: '482'
-        },
-        {
-            image: 'flaticon-flower',
-            name: 'Spa',
-            count: '194'
-        },
-        {
-            image: 'flaticon-restaurant',
-            name: 'Stores',
-            count: '1472'
-        },
-        {
-            image: 'flaticon-cutlery',
-            name: 'Restaurants',
-            count: '439'
-        },
-        {
-            image: 'flaticon-bike',
-            name: 'Others',
-            count: '692'
-        },
-    ])
-    const [searchData, setSearchData] = useState('');
 
     //useeffects
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [])
-
-    useEffect(() => {
-        dispatch(searchStatus(false));
-        dispatch(categoryStatus(false));
-        dispatch(categoryAPI({ type: "all" }));
-    }, [])
-
-
-    useEffect(() => {
-        if (isSearchStatus) {
-            dispatch(searchStatus(false));
-        }
-
-        if (!isSearchStatus && msg != '') {
-            dispatch(ErrorAlert(msg));
-        }
-    }, [isSearchStatus])
-
-    useEffect(() => {
-        if (isCategoryStatus) {
-            dispatch(categoryStatus(false));
-        }
-
-        if (!isCategoryStatus && msg != '') {
-            dispatch(ErrorAlert(msg));
-        }
-    }, [isCategoryStatus])
-
-    //Functions
-    const onSearchChange = (e) => {
-        const { name, value } = e.target;
-        setSearchData(value);
-        dispatch(searchAPI({ freeText: '', pincode: '', category: value }))
-    }
 
     return (
         <>
@@ -108,16 +32,7 @@ const ViewCategory = () => {
             </div>
             <div class="site-section" style={{ paddingTop: '40px' }}>
                 <div class="container">
-                    <div class="row form-group justify-content-end">
-                        <div className="col-md-3">
-                            <select class="form-control" value={searchData} name="register_type" onChange={onSearchChange}>
-                                <option value="">Select Category</option>
-                                <option value="customer">Register As Seeker</option>
-                                <option value="vendor">Register As Vendor</option>
-                            </select>
-                        </div>
-                    </div>
-                    <CategoryList data={categoryList} />
+                    <CategoryList type="all" searchDrop={true} />
                 </div>
             </div>
         </>

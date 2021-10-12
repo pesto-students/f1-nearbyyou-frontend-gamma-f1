@@ -13,6 +13,7 @@ const Login = () => {
 	//get data from store
 	const { value, isUpdatedSuccessfully, isLoginStatus } = useSelector(state => state.register);
 
+
 	//Manage State
 	const [form, setForm] = useState({
 		register_type: '',
@@ -34,10 +35,12 @@ const Login = () => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	}, [])
 
+
 	useEffect(() => {
 		dispatch(registerStatus(false));
 		dispatch(loginStatus(false));
 	}, [])
+
 
 	useEffect(() => {
 		if (isUpdatedSuccessfully) {

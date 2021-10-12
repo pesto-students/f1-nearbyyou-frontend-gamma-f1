@@ -46,6 +46,10 @@ code {
   min-height: 120px !important;
   height: calc(20vh) !important;
 }
+
+
+
+
 .vendorimagebanner{
   width: 8rem;
   height: 8rem;
@@ -92,3 +96,4 @@ code {
 .justify-content-end{
   justify-content: end;
 }
+

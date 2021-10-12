@@ -1,10 +1,98 @@
-import React,{useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom'
+import { ticketAPI, ticketStatus, customerDetailsAPI } from '../Redux/Client/Listing/ListingSlice';
 
 const BookSlot = () => {
 
+    //object
+    const dispatch = useDispatch();
+    const history = useHistory();
+
+    //get data from store
+    const { isTicketStatus, customerDetails } = useSelector(state => state.listing);
+
+    console.log("customerDetails-", customerDetails);
+
+    //State Manage
+    const [form, setForm] = useState({
+        fname: '',
+        lname: '',
+        email: '',
+        contact: '',
+        address: '',
+        description: '',
+        date: '',
+        time: '',
+        customerId : ''
+    })
+
+    //useeffect
     useEffect(() => {
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        dispatch(ticketStatus(false));
+        let userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
+
+        form.customerId = userData.id;
+        console.log("userData :- ", userData, userData.id);
+        if (userData) {
+            dispatch(customerDetailsAPI({ userID: userData.id }))
+        } else {
+            history.push('/');
+        }
     }, [])
+
+    useEffect(() => {
+        if (isTicketStatus) {
+            setForm({
+                fname: '',
+                lname: '',
+                email: '',
+                time: '',
+                contact: '',
+                address: '',
+                description: '',
+                date: '',
+                time: ''
+            })
+            history.push('/app/viewTickets')
+        }
+    }, [isTicketStatus])
+
+    useEffect(() => {
+        if (customerDetails) {
+            let data = customerDetails[0];
+            setForm({
+                ...form,
+                fname: data?.user_name.split(" ")[0],
+                lname: data?.user_name.split(" ")[1],
+                email: data?.email,
+                contact: data?.contact_number,
+                address: '',
+            })
+        }
+    }, [customerDetails])
+
+    //Functions
+
+    //handleChnage
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        setForm({
+            ...form,
+            [name]: value
+        })
+    }
+
+    //Onsubmit
+    const onSubmit = (e) => {
+        e.preventDefault();
+
+        console.log("form :- ", form);
+
+        dispatch(ticketAPI({ description: form.description, date: form.date, time: form.time, customerId : form.customerId }))
+    }
 
     return (
         <>
@@ -28,34 +116,51 @@ const BookSlot = () => {
                 <div class="container">
                     <div class="row">
                         <div class="col-md-7 mb-5" data-aos="fade">
-                            <form action="#" class="p-5 bg-white" style={{ marginTop: '-150px' }}>
+                            <form method="post" onSubmit={onSubmit} class="p-5 bg-white" style={{ marginTop: '-150px' }}>
                                 <div class="row form-group">
                                     <div class="col-md-6 mb-3 mb-md-0">
                                         <label class="text-black" for="fname">First Name</label>
-                                        <input type="text" id="fname" class="form-control" />
+                                        <input type="text" id="fname" class="form-control" value={form.fname} name="fname" onChange={handleChange} required readOnly disabled />
                                     </div>
                                     <div class="col-md-6">
                                         <label class="text-black" for="lname">Last Name</label>
-                                        <input type="text" id="lname" class="form-control" />
+                                        <input type="text" id="lname" class="form-control" value={form.lname} name="lname" onChange={handleChange} required readOnly disabled />
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <label class="text-black" for="email">Email</label>
-                                        <input type="email" id="email" class="form-control" />
+                                        <input type="email" id="email" class="form-control" value={form.email} name="email" onChange={handleChange} required readOnly disabled />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="text-black" for="contact">Contact No</label>
+                                        <input type="text" id="contact" class="form-control" value={form.contact} name="contact" onChange={handleChange} required readOnly disabled />
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-12">
-                                        <label class="text-black" for="subject">Subject</label>
-                                        <input type="subject" id="subject" class="form-control" />
+                                        <label class="text-black" for="address">Address</label>
+                                        <textarea name="address" className="form-control" onChange={handleChange} required readOnly disabled>
+                                            {form.address}
+                                        </textarea>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-12">
-                                        <label class="text-black" for="message">Message</label>
-                                        <textarea name="message" id="message" cols="30" rows="7" class="form-control"
-                                            placeholder="Write your notes or questions here..."></textarea>
+                                        <label class="text-black" for="description">Service Description</label>
+                                        <textarea name="description" className="form-control" onChange={handleChange} required>
+                                            {form.description}
+                                        </textarea>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-6">
+                                        <label class="text-black" for="email">Service Date</label>
+                                        <input type="date" min={'2021-10-11'} id="date" class="form-control" value={form.date} name="date" onChange={handleChange} required />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="text-black" for="email">Service Time</label>
+                                        <input type="time" id="time" class="form-control" value={form.time} name="time" onChange={handleChange} required />
                                     </div>
                                 </div>
                                 <div class="row form-group">

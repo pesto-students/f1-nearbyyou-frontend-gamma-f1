@@ -25,7 +25,6 @@ export const registerAPI = createAsyncThunk('Register API CALL', async ({ user_n
                 shop_name: shop_name
             });
         }
-
         const responseData = response.data;
         console.log(responseData);
         
@@ -58,6 +57,10 @@ export const LoginAPI = createAsyncThunk('Login API CALL', async ({ username, pa
 
             let authToken = responseData.payload.data.token;
 
+            let userInfo = responseData.payload.data.userInfo;
+
+            localStorage.setItem('Near_By_You_Client', JSON.stringify(userInfo));
+
             // axios.defaults.headers.common['Authorization'] = 'Bearer ' + authToken;
             axios.defaults.headers.common['x-auth-token'] = authToken;
             localStorage.setItem('Near_By_You', authToken)
@@ -65,7 +68,7 @@ export const LoginAPI = createAsyncThunk('Login API CALL', async ({ username, pa
             dispatch(SuccessAlert(responseData.msg));
             return response;
         } else {
-            dispatch(ErrorAlert(responseData.msg));
+            dispatch(ErrorAlert(responseData.message));
             return rejectWithValue({ message: 'No Data Found' });
         }
     }

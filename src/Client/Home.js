@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import CategoryList from '../Common_Pages/CategoryList';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { searchAPI, searchStatus, categoryAPI, categoryStatus } from '../Redux/Client/Listing/ListingSlice';
 
 const Home = () => {
 
-	//object
+
 	const dispatch = useDispatch();
 
 	//get data from store
@@ -61,6 +62,7 @@ const Home = () => {
 		dispatch(categoryAPI({ type: "popular" }));
 	}, [])
 
+
 	useEffect(() => {
 		if (isSearchStatus) {
 			setSearchForm({
@@ -72,6 +74,7 @@ const Home = () => {
 		}
 	}, [isSearchStatus])
 
+
 	useEffect(() => {
 		if (isCategoryStatus) {
 			dispatch(categoryStatus(false));
@@ -79,6 +82,7 @@ const Home = () => {
 	}, [isCategoryStatus])
 
 	//Function
+
 
 	//Search Handle Chnage
 	const searchHandleChange = (e) => {
@@ -239,14 +243,18 @@ const Home = () => {
                                     <h2 class="mb-1"><a href="listings-single.html">Super Market Mall</a></h2>
                                     <span class="address">West Orange, New York</span>
                                 </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div> */}
 
 			<CategoryList data={categoryList} type='popular' />
 
+
+            <CategoryList type='popular' />
 
 			<div class="site-section">
 				<div class="container">
@@ -427,11 +435,13 @@ const Home = () => {
                                         listen. She packed her seven versalia, put her initial into the belt and made herself on
                                         the way.&rdquo;</p>
                                 </blockquote>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
              */}
 			{/* <div class="site-section">
                 <div class="container">
@@ -479,13 +489,16 @@ const Home = () => {
                                     <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia,
                                         there live the blind texts.</p>
                                 </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
          */}
 		</>
 	)
+
 }
 export default Home;

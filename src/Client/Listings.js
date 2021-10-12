@@ -1,12 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { NavLink, useParams, useLocation } from 'react-router-dom';
 import ShopList from '../Common_Pages/ShopList';
 import CategoryList from '../Common_Pages/CategoryList';
-import { useSelector, useDispatch } from 'react-redux';
-import { debounce } from "lodash";
-import { searchAPI, searchStatus } from '../Redux/Client/Listing/ListingSlice';
 
 const Listings = () => {
+
 
 	//object
 	const dispatch = useDispatch();
