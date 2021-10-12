@@ -12,15 +12,19 @@ const VendorRoute = () => {
         <>
             <VendorHeader />
             <Switch>
+
                 <VendorPrivateRoute path="/vendor/app/home" >
                     <VendorHome />
                 </VendorPrivateRoute>
-                <VendorPrivateRoute path="/vendor/app/view_ticket" >
+
+                <VendorPrivateRoute path="/vendor/app/view_ticket/:ticketID" >
                     <ViewTicket />
                 </VendorPrivateRoute>
+
                 <VendorPrivateRoute path="/vendor/app/profile" >
                     <VendorProfile />
                 </VendorPrivateRoute>
+                
                 <Redirect to="/login" />
             </Switch>
             <Footer />

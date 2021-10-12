@@ -2,26 +2,34 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { ErrorAlert, SuccessAlert } from '../../../Redux/SnackBar/SnackbarSlice';
 import axios from 'axios';
 
-export const registerAPI = createAsyncThunk('Register API CALL', async ({
-    user_name, user_role, email, contact_number, password, doorNumber, street, area, city, state, pincode
-}, { dispatch, rejectWithValue }) => {
+export const registerAPI = createAsyncThunk('Register API CALL', async ({ user_name, user_role, email, contact_number, password, vendor_category, shop_name }, { dispatch, rejectWithValue }) => {
     try {
-        const response = await axios.post("customer/register", {
-            user_name: user_name,
-            user_role: user_role,
-            email: email,
-            contact_number: contact_number,
-            password: password,
-            doorNumber: doorNumber,
-            street: street,
-            area: area,
-            city: city,
-            state: state,
-            pincode: pincode
-        });
+        let response ;
+        if (user_role === "customer") {
+            response = await axios.post("customer/register", {
+                user_name: user_name,
+                user_role: user_role,
+                email: email,
+                contact_number: contact_number,
+                password: password
+            });
+        }
+        else {
+            response = await axios.post("vendor/signup", {
+                user_name: user_name,
+                role: user_role,
+                email: email,
+                contact_number: contact_number,
+                password: password,
+                vendor_category: vendor_category,
+                shop_name: shop_name
+            });
+        }
         const responseData = response.data;
+        console.log(responseData);
+        
 
-        if (responseData.status == "success") {
+        if (responseData.status === "success") {
             dispatch(SuccessAlert(responseData.msg));
             return response;
         } else {
@@ -45,7 +53,7 @@ export const LoginAPI = createAsyncThunk('Login API CALL', async ({ username, pa
             });
         const responseData = response.data;
 
-        if (responseData.status == "success") {
+        if (responseData.status === "success") {
 
             let authToken = responseData.payload.data.token;
 
