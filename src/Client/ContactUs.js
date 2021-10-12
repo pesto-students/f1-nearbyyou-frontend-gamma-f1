@@ -2,6 +2,7 @@ import React,{useEffect} from 'react'
 
 const ContactUs = () => {
 
+    //USeeffect
     useEffect(() => {
         window.scrollTo({top: 0, behavior: 'smooth'});
     }, [])

@@ -15,16 +15,18 @@ class Auth {
     //     cb()
     // }
 
-    // logout(cb){
-    //     this.authenticated = false
-    //     cb()
-    // }
+    logout(){
+        localStorage.removeItem('Near_By_You');
+        localStorage.removeItem('Near_By_You_Client');
+        delete axios.defaults.headers.common['x-auth-token'];
+    }
 
     isAuthenticated(){
         const access_token = this.getAccessToken();
 
         if (!access_token) {
             localStorage.removeItem('Near_By_You');
+            localStorage.removeItem('Near_By_You_Client');
             delete axios.defaults.headers.common['x-auth-token'];
 			return false;
 		}
@@ -37,7 +39,8 @@ class Auth {
         console.log("currentTime :- ", currentTime);
         
 		if (decoded.exp < currentTime) {
-            localStorage.removeItem('Near_By_You');            
+            localStorage.removeItem('Near_By_You');      
+            localStorage.removeItem('Near_By_You_Client');      
             delete axios.defaults.headers.common['x-auth-token'];
 			return false;
 		}

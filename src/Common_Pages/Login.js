@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
+import auth from '../Route/Auth';
 import { registerAPI, registerStatus, LoginAPI, loginStatus } from '../Redux/Client/Register-Login/Register-LoginSlice'
 
 const Login = () => {
@@ -21,6 +22,12 @@ const Login = () => {
 		c_lname: '',
 		c_email: '',
 		c_contact: '',
+		c_door_number: '',
+		c_street: '',
+		c_area: '',
+		c_pincode: '',
+		c_city: '',
+		c_state: '',
 		c_password: '',
 		c_rePassword: '',
 		username: '',
@@ -33,6 +40,9 @@ const Login = () => {
 	//Useeffect
 	useEffect(() => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
+		if (auth.isAuthenticated()) {
+			history.push('/')
+		}
 	}, [])
 
 
@@ -50,6 +60,12 @@ const Login = () => {
 				c_lname: '',
 				c_email: '',
 				c_contact: '',
+				c_door_number: '',
+				c_street: '',
+				c_area: '',
+				c_pincode: '',
+				c_city: '',
+				c_state: '',
 				c_password: '',
 				c_rePassword: '',
 				username: '',
@@ -87,7 +103,23 @@ const Login = () => {
 	const registerClick = (e) => {
 		e.preventDefault();
 		if (form.c_password == form.c_rePassword) {
-			dispatch(registerAPI({ user_name: form.c_fname + " " + form.c_lname, user_role: form.register_type, email: form.c_email, contact_number: form.c_contact, password: form.c_password, vendor_category: form.v_category, shop_name: form.v_shopName }));
+			dispatch(registerAPI(
+				{
+					user_name: form.c_fname + " " + form.c_lname,
+					user_role: form.register_type,
+					email: form.c_email,
+					contact_number: form.c_contact,
+					door_number: form.c_door_number,
+					street: form.c_street,
+					area: form.c_area,
+					pincode: form.c_pincode,
+					city: form.c_city,
+					state: form.c_state,
+					password: form.c_password,
+					vendor_category: form.v_category,
+					shop_name: form.v_shopName
+				}
+			));
 		} else {
 			dispatch(ErrorAlert('Password and Repassword Not Match !!'));
 		}
@@ -151,25 +183,59 @@ const Login = () => {
 												</div>
 											</div>
 											<div class="row form-group">
-												<div class="col-md-12">
+												<div class="col-md-6">
 													<label class="text-black" for="email">Email</label>
 													<input type="email" id="email" name="c_email" class="form-control" required onChange={handleChange} />
 												</div>
-											</div>
-											<div class="row form-group">
-												<div class="col-md-12">
+												<div class="col-md-6">
 													<label class="text-black" for="contact">Contact No</label>
 													<input type="text" id="contact" name="c_contact" class="form-control" required onChange={handleChange} />
 												</div>
 											</div>
 											<div class="row form-group">
-												<div class="col-md-12">
-													<label class="text-black" for="pass1">Password</label>
-													<input type="password" name="c_password" id="pass1" class="form-control" onChange={handleChange} required />
+												<div class="col-md-4">
+													<label class="text-black" for="door_number">Door Number</label>
+													<input type="text" id="door_number" name="c_door_number" class="form-control" required onChange={handleChange} />
+												</div>
+												<div class="col-md-4">
+													<label class="text-black" for="street">Street</label>
+													<input type="text" id="street" name="c_street" class="form-control" required onChange={handleChange} />
+												</div>
+												<div class="col-md-4">
+													<label class="text-black" for="area">Area</label>
+													<input type="text" id="area" name="c_area" class="form-control" required onChange={handleChange} />
 												</div>
 											</div>
 											<div class="row form-group">
-												<div class="col-md-12">
+												<div class="col-md-4">
+													<label class="text-black" for="pincode">Pincode</label>
+													<input type="text" id="pincode" name="c_pincode" class="form-control" required onChange={handleChange} />
+												</div>
+												<div class="col-md-4">
+													<label class="text-black" for="city">City</label>
+													<select name="c_city" required onChange={handleChange} class="form-control">
+														<option value="">Select...</option>
+														<option value="surat">Surat</option>
+														<option value="bardoli">Bardoli</option>
+													</select>
+													{/* <input type="text" id="city" name="c_city" class="form-control" required onChange={handleChange} /> */}
+												</div>
+												<div class="col-md-4">
+													<label class="text-black" for="stae">State</label>
+													<select name="c_state" required onChange={handleChange} class="form-control">
+														<option value="">Select...</option>
+														<option value="gujarat">Gujarat</option>
+														<option value="maharashtra">Maharashtra</option>
+													</select>
+													{/* <input type="text" id="stae" name="c_state" class="form-control" required onChange={handleChange} /> */}
+												</div>
+											</div>
+											<div class="row form-group">
+												<div class="col-md-6">
+													<label class="text-black" for="pass1">Password</label>
+													<input type="password" name="c_password" id="pass1" class="form-control" onChange={handleChange} required />
+												</div>
+												<div class="col-md-6">
 													<label class="text-black" for="pass2">Re-type Password</label>
 													<input type="password" name="c_rePassword" id="pass2" class="form-control" onChange={handleChange} required />
 												</div>

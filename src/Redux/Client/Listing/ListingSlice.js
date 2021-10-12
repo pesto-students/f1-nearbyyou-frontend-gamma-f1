@@ -71,14 +71,14 @@ export const detailAPI = createAsyncThunk('Details API CALL', async ({ shopID },
 });
 
 export const ticketAPI = createAsyncThunk('Ticket API CALL', async ({ description, date, time, customerId }, { dispatch, rejectWithValue }) => {
-    console.log("ticketAPi :-", { description, date, time  });
+    console.log("ticketAPi :-", { description, date, time });
     try {
         const response = await axios.post("customer/ticket",
             {
                 description: description,
                 date: date,
                 time: time,
-                customerId : customerId
+                customerId: customerId
             });
         const responseData = response.data;
 
@@ -139,6 +139,34 @@ export const customerDetailsAPI = createAsyncThunk('Customer Details API CALL', 
     }
 });
 
+export const editProfile = createAsyncThunk('Edit Profile API CALL', async ({ user_name, contact_number, door_number, street, area, pincode, city, state }, { dispatch, rejectWithValue }) => {
+    console.log("userId :-", { user_name, contact_number, door_number, street, area, pincode, city, state });
+    try {
+        const response = await axios.post("customer/profileEdit",
+            {
+                user_name: user_name,
+                contact_number: contact_number,
+                door_number: door_number,
+                street: street,
+                area: area,
+                pincode: pincode,
+                city: city,
+                state: state
+            });
+        const responseData = response.data;
+
+        if (responseData.status == "success") {
+            dispatch(SuccessAlert(responseData.msg));
+            return response;
+        } else {
+            dispatch(ErrorAlert(responseData.msg));
+            return rejectWithValue({ message: 'No Data Found' });
+        }
+    }
+    catch (e) {
+        console.log("Error :- ", e)
+    }
+});
 
 
 export const slice = createSlice({
@@ -155,6 +183,7 @@ export const slice = createSlice({
         isViewTicketStatus: false,
         viewTicketData: [],
         customerDetails: [],
+        isProfileStatus: false,
     },
     reducers: {
         searchStatus: (state, action) => {
@@ -171,7 +200,10 @@ export const slice = createSlice({
         },
         viewTicketStatus: (state, action) => {
             state.isViewTicketStatus = action.payload;
-        }
+        },
+        profileStatus: (state, action) => {
+            state.isProfileStatus = action.payload;
+        },
     },
     extraReducers: {
         [searchAPI.fulfilled]: (state, action) => {
@@ -220,9 +252,15 @@ export const slice = createSlice({
         [customerDetailsAPI.rejected]: (state, action) => {
             state.customerDetails = []
         },
+        [editProfile.fulfilled]: (state, action) => {
+            state.isProfileStatus = true;
+        },
+        [editProfile.rejected]: (state, action) => {
+            state.isProfileStatus = false;
+        },
     }
 });
 
-export const { searchStatus, categoryStatus, detailStatus, ticketStatus, viewTicketStatus } = slice.actions;
+export const { searchStatus, categoryStatus, detailStatus, ticketStatus, viewTicketStatus, profileStatus } = slice.actions;
 
 export default slice.reducer;

@@ -1,12 +1,31 @@
-import React, { useState } from 'react';
-import { NavLink, Link, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { NavLink, Link, useLocation, useHistory } from 'react-router-dom';
 import auth from '../Route/Auth';
 
 const Header = () => {
 
     //Objects
     const location = useLocation();
+    const history = useHistory();
     const pathName = location.pathname;
+
+    //State Manage
+    const [form, setForm] = useState({ fname: '' });
+
+    //useeffect
+    useEffect(() => {
+        let userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
+        setForm({
+            ...form,
+            fname: userData?.name?.split(" ")[0]
+        })
+    }, [])
+
+    //Function
+    const logout = () => {
+        auth.logout();
+        history.push('/');
+    }
 
     return (
         <div class="site-wrap">
@@ -35,7 +54,16 @@ const Header = () => {
                                     <li class={pathName == "/contact" ? "active" : ""}><NavLink to="/contact"><span>Contact</span></NavLink></li>
                                     {
                                         auth.isAuthenticated() ? (
-                                            <li class={pathName == "/app/viewTickets" ? "active" : ""}><NavLink to="/app/viewTickets"><span>View Tickets</span></NavLink></li>
+                                            <>
+                                                <li class={pathName == "/app/viewTickets" ? "active" : ""}><NavLink to="/app/viewTickets"><span>View Tickets</span></NavLink></li>
+                                                <li class="has-children">
+                                                    <a href="#"><span className="profile">{form?.fname?.charAt(0)}</span></a>
+                                                    <ul class="dropdown arrow-top">
+                                                        <li><NavLink to="/profile">My Profile</NavLink></li>
+                                                        <li><a onClick={logout}>Logout</a></li>
+                                                    </ul>
+                                                </li>
+                                            </>
                                         ) : (
                                             <li class={pathName == "/login" ? "active" : ""}><NavLink to="/login"><span>Login</span></NavLink></li>
                                         )
