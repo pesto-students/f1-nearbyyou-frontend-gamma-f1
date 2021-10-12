@@ -1,16 +1,36 @@
-import React,{useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux';
+import { viewTicketAPI, viewTicketStatus } from '../Redux/Client/Listing/ListingSlice';
 
 const ViewTickets = () => {
 
+    //object
+    const dispatch = useDispatch();
+
+    //get data from store
+    const { isViewTicketStatus, viewTicketData } = useSelector(state => state.listing);
+
+    //State Manage
+    const [viewTicket, setViewTicket] = useState([]);
+
+    //useeffect
     useEffect(() => {
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        let userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
+        dispatch(viewTicketStatus(false));
+        console.log("userData :- ", userData, userData.id);
+        dispatch(viewTicketAPI({ custID: userData.id }))
     }, [])
+
+    useEffect(() => {
+        setViewTicket(viewTicketData)
+    }, [viewTicketData])
 
     return (
         <>
             <div class="site-blocks-cover inner-page-cover overlay"
-                style={{ backgroundImage: 'url(images/xhero_1.jpg.pagespeed.ic.7aSeOjD_oW.jpg)' }}
+                style={{ backgroundImage: 'url(/images/xhero_1.jpg.pagespeed.ic.7aSeOjD_oW.jpg)' }}
                 data-aos="fade"
                 data-stellar-background-ratio="0.5">
                 <div class="container">
@@ -30,9 +50,34 @@ const ViewTickets = () => {
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">
+{/* 
+                            {
+                                viewTicket?.length > 0 && viewTicket.map((item, index) => {
+                                    <div class="d-block d-md-flex listing-horizontal">
+                                        <NavLink to="/details" class="img d-block"
+                                            style={{ backgroundImage: 'url(/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)' }}>
+                                            <span class="category">Restaurants</span>
+                                        </NavLink>
+                                        <div class="lh-content">
+                                            <h3><a href="#">Jones Grill &amp; Restaurants</a></h3>
+                                            <p>Don St, Brooklyn, New York</p>
+                                            <p>
+                                                <span class="icon-star text-warning"></span>
+                                                <span class="icon-star text-warning"></span>
+                                                <span class="icon-star text-warning"></span>
+                                                <span class="icon-star text-warning"></span>
+                                                <span class="icon-star text-secondary"></span>
+                                                <span>(492 Reviews)</span>
+                                            </p>
+                                        </div>
+                                        <div><span class="statusButton">Pending</span></div>
+                                    </div>
+                                })
+                            } */}
+
                             <div class="d-block d-md-flex listing-horizontal">
                                 <NavLink to="/details" class="img d-block"
-                                    style={{ backgroundImage: 'url(images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)' }}>
+                                    style={{ backgroundImage: 'url(/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)' }}>
                                     <span class="category">Restaurants</span>
                                 </NavLink>
                                 <div class="lh-content">
@@ -51,7 +96,7 @@ const ViewTickets = () => {
                             </div>
                             <div class="d-block d-md-flex listing-horizontal">
                                 <a href="#" class="img d-block"
-                                    style={{ backgroundImage: 'url(images/ximg_1.jpg.pagespeed.ic.1JqK4ln2vg.jpg)' }} >
+                                    style={{ backgroundImage: 'url(/images/ximg_1.jpg.pagespeed.ic.1JqK4ln2vg.jpg)' }} >
                                     <span class="category">Hotels</span>
                                 </a>
                                 <div class="lh-content">
@@ -71,7 +116,7 @@ const ViewTickets = () => {
                             </div>
                             <div class="d-block d-md-flex listing-horizontal">
                                 <a href="#" class="img d-block"
-                                    style={{ backgroundImage: 'url(images/ximg_3.jpg.pagespeed.ic.2Xwi5rG8fo.jpg)' }}>
+                                    style={{ backgroundImage: 'url(/images/ximg_3.jpg.pagespeed.ic.2Xwi5rG8fo.jpg)' }}>
                                     <span class="category">Events</span>
                                 </a>
                                 <div class="lh-content">
@@ -91,7 +136,7 @@ const ViewTickets = () => {
                             </div>
                             <div class="d-block d-md-flex listing-horizontal">
                                 <a href="#" class="img d-block"
-                                    style={{ backgroundImage: 'url(images/ximg_4.jpg.pagespeed.ic.Xwk9OG0HJQ.jpg)' }}>
+                                    style={{ backgroundImage: 'url(/images/ximg_4.jpg.pagespeed.ic.Xwk9OG0HJQ.jpg)' }}>
                                     <span class="category">Others</span>
                                 </a>
                                 <div class="lh-content">
@@ -111,7 +156,7 @@ const ViewTickets = () => {
                             </div>
                             <div class="d-block d-md-flex listing-horizontal">
                                 <a href="#" class="img d-block"
-                                    style={{ backgroundImage: 'url(images/ximg_5.jpg.pagespeed.ic.CE7y7zGmo6.jpg)' }}>
+                                    style={{ backgroundImage: 'url(/images/ximg_5.jpg.pagespeed.ic.CE7y7zGmo6.jpg)' }}>
                                     <span class="category">Spa</span>
                                 </a>
                                 <div class="lh-content">
@@ -131,7 +176,7 @@ const ViewTickets = () => {
                             </div>
                             <div class="d-block d-md-flex listing-horizontal">
                                 <a href="#" class="img d-block"
-                                    style={{ backgroundImage: 'url(images/ximg_6.jpg.pagespeed.ic.cOZc6e0Yb7.jpg)' }}>
+                                    style={{ backgroundImage: 'url(/images/ximg_6.jpg.pagespeed.ic.cOZc6e0Yb7.jpg)' }}>
                                     <span class="category">Stores</span>
                                 </a>
                                 <div class="lh-content">
