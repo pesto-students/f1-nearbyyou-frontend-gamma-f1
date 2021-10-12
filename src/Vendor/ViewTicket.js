@@ -1,7 +1,22 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import {UpdateTicketStatusAPI} from '../Redux/vendor/Home/HomeSlice';
+import { useParams } from 'react-router-dom';
+
 
 const ViewTicket = () => {
+
+  const dispatch = useDispatch();
+  const {ticketID} = useParams();
+
+  console.log("ticketID :- ", ticketID);
+
+  useEffect(() =>  {
+    if(ticketID){
+      
+    }
+  },[ticketID])
+
   const show_text_area_for_reason = (e) => {
     const checked = e.target.checked;
     if (checked) {
@@ -18,8 +33,14 @@ const ViewTicket = () => {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [])
+  }, []);
 
+  const [status, setStatus] = useState('')
+  const selectStatus = (e) => {
+    setStatus(e.target.value)
+    dispatch(UpdateTicketStatusAPI({ticket_status: status, ticket_number: '1'}))
+  }
+  console.log(status)
   return (
     <>
       <div class="site-blocks-cover inner-page-cover overlay"
@@ -40,7 +61,7 @@ const ViewTicket = () => {
       <div class="site-section bg-light">
         <div class="container">
           <div class="col-md-12 mb-5" data-aos="fade">
-            <form class="p-5 bg-white" style={{ marginTop: '-150px' }}>
+            <form class="p-5 bg-white" style={{ marginTop: '-150px' }} >
               <div class="row form-group">
                 <div class="col-md-6 mb-3 mb-md-0">
                   <label class="text-black" for="ticket_no">Ticket Number</label>
@@ -87,10 +108,10 @@ const ViewTicket = () => {
               </div>
               <div class="row form-group">
                 <div class="col-md-4">
-                  <input type="submit" value="Accept" class="btn btn-primary btn-md text-white" />
+                  <input type="submit" value="accept" onClick={selectStatus} class="btn btn-primary btn-md text-white" />
                 </div>
                 <div class="col-md-4">
-                  <input type="submit" value="Reject" class="btn btn-primary btn-md text-white" />
+                  <input type="submit" value="reject" onClick={selectStatus} class="btn btn-primary btn-md text-white" />
                 </div>
               </div>
               <div class="form-check">
@@ -115,7 +136,7 @@ const ViewTicket = () => {
                   ></textarea>
                 </div>
                 <div class="col-md-3 ">
-                  <input type="submit" value="Send Request" class="btn btn-primary btn-md text-white" />
+                  <input type="submit" value="hold" onClick={selectStatus} class="btn btn-primary btn-md text-white" />
                 </div>
               </div>
             </form>

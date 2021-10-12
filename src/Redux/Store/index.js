@@ -3,6 +3,7 @@ import counterReducer from '../Client/ClientSlice';
 import SnackBarReducer from '../SnackBar/SnackbarSlice';
 import registerReducer from '../Client/Register-Login/Register-LoginSlice';
 import ListingSlice from '../Client/Listing/ListingSlice'
+import ticketSlice from '../vendor/Home/HomeSlice'
 
 export default configureStore({
     reducer: {
@@ -10,5 +11,6 @@ export default configureStore({
         Alert : SnackBarReducer,
         register : registerReducer,
         listing : ListingSlice,
+        ticket: ticketSlice,
     },
 });
