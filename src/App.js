@@ -15,7 +15,7 @@ import ViewCategory from './Client/ViewCategory';
 import ViewTickets from './Client/ViewTickets';
 
 //Vendor Page
-import AdminHome from './Vendor/Home'
+import VendorHome from './Vendor/Home'
 
 function App() {
   return (
@@ -32,7 +32,7 @@ function App() {
         <Route exact path="/bookSlot" component={BookSlot} />
         <Route exact path="/viewTickets" component={ViewTickets} />
 
-        <Route exact path="/admin/home" component={AdminHome} />
+        <Route exact path="/vendor/home" component={VendorHome} />
         <Redirect to="/" />
       </Switch>
       <Footer />
