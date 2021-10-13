@@ -72,17 +72,17 @@ const Details = () => {
     useEffect(() => {
         if (categoryId && shopID) {
             console.log("shopID :- ", shopID);
-            dispatch(detailAPI({shopID : shopID}))
+            dispatch(detailAPI({ shopID: shopID }))
         } else {
             history.push('/');
         }
     }, [categoryId, shopID])
 
     useEffect(() => {
-        if(detailResult?.length > 0 ){
+        if (detailResult?.length > 0) {
             setDetails(detailResult[0]);
         }
-    },[detailResult])
+    }, [detailResult])
 
     console.log("details: - ", details);
 
@@ -117,10 +117,12 @@ const Details = () => {
                         <div class="col-lg-3 ml-auto" style={{ paddingRight: '0' }}>
                             <div class="mb-4">
                                 <h3 class="h5 text-black mb-2" style={{ fontSize: '35px' }}>
-                                    <NavLink to="/"><i class="fa fa-whatsapp cursor-pointer" style={{ marginRight: '50px' }} title='Contact US'></i> </NavLink> <NavLink to={`/app/bookSlot`}><i class="fa fa-ticket cursor-pointer" title="Book Slot"></i></NavLink>
+                                    <NavLink to="/"><i class="fa fa-whatsapp cursor-pointer" style={{ marginRight: '50px' }} title='Contact US'></i> </NavLink> 
+                                    {/* <NavLink to={`/app/bookSlot/shop/${shopID}`}><i class="fa fa-ticket cursor-pointer" title="Book Slot"></i></NavLink> */}
+                                    <NavLink to={`/app/bookSlot`}><i class="fa fa-ticket cursor-pointer" title="Book Slot"></i></NavLink>
                                 </h3>
                             </div>
-                        
+
                             <p class="mb-0 font-weight-bold">Shop Name</p>
                             <p class="mb-4">{details.shop_name}</p>
                             <p class="mb-0 font-weight-bold">Address</p>

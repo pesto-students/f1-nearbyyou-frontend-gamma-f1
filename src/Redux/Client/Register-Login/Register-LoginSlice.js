@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { ErrorAlert, SuccessAlert } from '../../../Redux/SnackBar/SnackbarSlice';
 import axios from 'axios';
 
-export const registerAPI = createAsyncThunk('Register API CALL', async ({ user_name, user_role, email, contact_number, password, vendor_category, shop_name }, { dispatch, rejectWithValue }) => {
+export const registerAPI = createAsyncThunk('Register API CALL', async ({ user_name, user_role, email, contact_number, door_number, street, area, pincode, city, state, password, vendor_category, shop_name }, { dispatch, rejectWithValue }) => {
     try {
         let response ;
         if (user_role === "customer") {
@@ -11,6 +11,12 @@ export const registerAPI = createAsyncThunk('Register API CALL', async ({ user_n
                 user_role: user_role,
                 email: email,
                 contact_number: contact_number,
+                door_number : door_number,
+                street : street,
+                area : area,
+                pincode : pincode,
+                city : city,
+                state : state,
                 password: password
             });
         }

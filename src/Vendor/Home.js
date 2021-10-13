@@ -3,7 +3,7 @@ import { Nav } from 'react-bootstrap';
 import { Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { GetAllTicketsAPI, ticketStatus } from '../Redux/vendor/Home/HomeSlice';
+import { GetAllTicketsAPI, ticketStatus } from '../Redux/Vendor/Home/HomeSlice';
 
 const VendorHome = () => {
 

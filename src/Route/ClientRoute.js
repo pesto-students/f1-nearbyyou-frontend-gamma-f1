@@ -13,6 +13,7 @@ import ViewCategory from '../Client/ViewCategory';
 import ViewTickets from '../Client/ViewTickets';
 import ClientPrivateRoute from './ClientPrivateRoute';
 import Counter from '../Client/Counter';
+import Profile from '../Client/Profile';
 
 const ClientRoute = () => {
 
@@ -25,6 +26,7 @@ const ClientRoute = () => {
                 <Route exact path="/contact" component={ContactUs} />
                 <Route exact path="/login" component={Login} />
                 <Route exact path="/category" component={ViewCategory} />
+                <Route exact path="/profile" component={Profile} />
 
                 <ClientPrivateRoute exact path="/app/:categoryName/:categoryId" >
                     <Listings />
