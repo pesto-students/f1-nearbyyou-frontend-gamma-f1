@@ -1,21 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {UpdateTicketStatusAPI} from '../Redux/vendor/Home/HomeSlice';
+import { UpdateTicketStatusAPI } from '../Redux/vendor/Home/HomeSlice';
 import { useParams } from 'react-router-dom';
-
+// import { useSelector, useDispatch } from 'react-redux';
+import { GetTicketsAPI, oneticketStatus } from '../Redux/vendor/Home/HomeSlice';
 
 const ViewTicket = () => {
 
   const dispatch = useDispatch();
-  const {ticketID} = useParams();
 
-  console.log("ticketID :- ", ticketID);
+  const { oneticketResults, isoneticketStatus } = useSelector(state => state.ticket);
+  console.log("ticket results ->", oneticketResults)
 
-  useEffect(() =>  {
-    if(ticketID){
-      
+
+  const ticket_details = oneticketResults.ticketdetails;
+  const customer_address = oneticketResults.ticket_customer_details;
+  // const customer_basic_details = customer_address;
+  console.log("ticket details separate-->", ticket_details)
+  console.log("customer address details separate-->", customer_address)
+  // console.log("customer basic details separate-->",customer_basic_details )  
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (isoneticketStatus) {
+
+      dispatch(oneticketStatus(false))
     }
-  },[ticketID])
+  }, [isoneticketStatus])
+
+  console.log("ticketID :- ", id);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(GetTicketsAPI({ ticket_id: id }));
+    }
+  }, [id])
 
   const show_text_area_for_reason = (e) => {
     const checked = e.target.checked;
@@ -38,7 +58,7 @@ const ViewTicket = () => {
   const [status, setStatus] = useState('')
   const selectStatus = (e) => {
     setStatus(e.target.value)
-    dispatch(UpdateTicketStatusAPI({ticket_status: status, ticket_number: '1'}))
+    dispatch(UpdateTicketStatusAPI({ ticket_status: status, ticket_number: '1' }))
   }
   console.log(status)
   return (
@@ -95,8 +115,36 @@ const ViewTicket = () => {
 
               <div class="row form-group">
                 <div class="col-md-12">
-                  <label class="text-black" for="address">Address</label>
-                  <input type="text" id="address" class="form-control" disabled />
+                  <h4 class="text-black" for="address">Address</h4>
+                  {/* <input type="text" id="address" class="form-control" disabled /> */}
+                  <div class="row form-group">
+                    <div class="col-md-3">
+                      <label class="text-black" for="address">Door Number</label>
+                      <input type="text" id="door_number" class="form-control" disabled />
+                    </div>
+                    <div class="col-md-5">
+                      <label class="text-black" for="address">Street</label>
+                      <input type="text" id="street" class="form-control" disabled />
+                    </div>
+                    <div class="col-md-4">
+                      <label class="text-black" for="address">Area</label>
+                      <input type="text" id="area" class="form-control" disabled />
+                    </div>
+                  </div>
+                  <div class="row form-group">
+                    <div class="col-md-5">
+                      <label class="text-black" for="address">City</label>
+                      <input type="text" id="city" class="form-control" disabled />
+                    </div>
+                    <div class="col-md-4">
+                      <label class="text-black" for="address">State</label>
+                      <input type="text" id="state" class="form-control" disabled />
+                    </div>
+                    <div class="col-md-1">
+                      <label class="text-black" for="address">Pincode</label>
+                      <input type="text" id="pincode" class="form-control" disabled />
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="row form-group">

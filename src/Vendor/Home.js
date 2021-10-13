@@ -14,17 +14,21 @@ const VendorHome = () => {
 	const [activeMenu, setActiveMenu] = useState('new');
 	const [activePincode, setActivePincode] = useState('989898');
 
-	let data = [{
-		ticketNo: '1',
-		date: '12-10-291',
-		cno: '8989898989',
-		cname: 'pppp'
+	// const tickets = ticketResults;
+
+	let tickets = [{
+		_id: '61631ca475e19cd2ddbca4ea',
+		ticket_number: '1',
+		service_date: '12-10-291',
+		service_time: '8989898989',
+		service_description: 'pppp'
 	},
 	{
-		ticketNo: '2',
-		date: '12-10-291',
-		cno: '111222',
-		cname: 'QQQ'
+		_id: '61631e5575e19cd2ddbca4ed',
+		ticket_number: '2',
+		service_date: '12-10-291',
+		service_time: '111222',
+		service_description: 'QQQ'
 	}
 
 	]
@@ -53,10 +57,10 @@ const VendorHome = () => {
 		setActivePincode(value)
 	}
 
-	const GetTicket = (data) => {
-		console.log('data ; -,', data)
-		// dispatch(GetTicketAPI({ ticket_status: activeMenu, shop_pincode: activePincode }))
-	}
+	// const GetTicket = (data) => {
+	// 	console.log('data ; -,', data)
+	// 	// dispatch(GetTicketAPI({ ticket_status: activeMenu, shop_pincode: activePincode }))
+	// }
 
 	return (
 		<>
@@ -97,21 +101,21 @@ const VendorHome = () => {
 						<thead>
 							<tr>
 								<th>Ticket Number</th>
-								<th>Service Datetime</th>
-								<th>Customer Name</th>
-								<th>Customer Contact</th>
+								<th>Service Date</th>
+								<th>Service Time</th>
+								<th>Service Description</th>
 								<th>Action   </th>
 							</tr>
 						</thead>
 						<tbody>
 							{
-								data?.length > 0 && data.map((item, index) => (
+								tickets?.length > 0 && tickets.map((item, index) => (
 									<tr>
-										<td>{item.ticketNo}</td>
-										<td>{item.date}</td>
-										<td>{item.cno}</td>
-										<td>{item.cname}</td>
-										<td onClick={() => GetTicket(item)}><Link to={`/vendor/app/view_ticket/${item.ticketNo}`}><i class="fa fa-eye fa-lg" aria-hidden="true"></i></Link>
+										<td>{item.ticket_number}</td>
+										<td>{item.service_date}</td>
+										<td>{item.service_time}</td>
+										<td>{item.service_description}</td>
+										<td ><Link to={`/vendor/app/view_ticket/${item._id}`}><i class="fa fa-eye fa-lg" aria-hidden="true"></i></Link>
 										</td>
 									</tr>
 								))
