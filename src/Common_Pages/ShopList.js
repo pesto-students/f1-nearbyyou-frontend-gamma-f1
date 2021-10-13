@@ -65,8 +65,8 @@ const ShopList = ({ filter }) => {
         freeText: '',
         pincode: '',
         category: '',
-        catID : '',
-        catName : '',
+        catID: '',
+        catName: '',
     });
 
     //Useeffect
@@ -75,9 +75,9 @@ const ShopList = ({ filter }) => {
             setSearchForm({
                 ...searchForm,
                 category: `${categoryId}||${categoryName}`,
-                pincode : pincode,
-                catID : categoryId,
-                catName : categoryName
+                pincode: pincode,
+                catID: categoryId,
+                catName: categoryName
             })
             dispatch(searchAPI({ freeText: '', pincode: pincode, category: categoryId }))
         } else {
@@ -93,28 +93,50 @@ const ShopList = ({ filter }) => {
         setShopList(searchResult);
     }, [searchResult])
 
+    // useEffect(() => {
+    //     debounceSearch(searchForm);
+    // }, [searchForm])
+
     //Functions
     const searchHandleChange = (e) => {
         const { name, value } = e.target;
 
-        if(name == "category"){
+        let tempSearch = { ...searchForm };
+
+        if (name == "category") {
 
             const cat = value.split('||');
 
-            setSearchForm({
-                ...searchForm,
+            tempSearch = {
+                ...tempSearch,
                 category: value,
-                catID : cat[0],
-                catName : cat[1]
-            })
-        }else{
-            setSearchForm({
-                ...searchForm,
+                catID: cat[0],
+                catName: cat[1]
+            }
+
+
+            // setSearchForm({
+            //     ...searchForm,
+            //     category: value,
+            //     catID: cat[0],
+            //     catName: cat[1]
+            // })
+        } else {
+            tempSearch = {
+                ...tempSearch,
                 [name]: value
-            })
+            }
+            // setSearchForm({
+            //     ...searchForm,
+            //     [name]: value
+            // })
         }
-        
-        debounceSearch(searchForm);
+
+        setSearchForm(tempSearch);
+
+        debounceSearch(tempSearch);
+
+        console.log("searchForm", searchForm);
     }
 
     //Debounce Search

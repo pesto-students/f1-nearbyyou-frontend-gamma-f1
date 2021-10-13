@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 import { viewTicketAPI, viewTicketStatus } from '../Redux/Client/Listing/ListingSlice';
+import { Form } from 'react-bootstrap';
 
 const ViewTickets = () => {
 
@@ -11,21 +12,29 @@ const ViewTickets = () => {
     //get data from store
     const { isViewTicketStatus, viewTicketData } = useSelector(state => state.listing);
 
+    console.log("viewTicketData :- ", viewTicketData);
+
     //State Manage
     const [viewTicket, setViewTicket] = useState([]);
+    const [statusDrop, setStatusDrop] = useState('pending')
 
     //useeffect
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    },[])
+
+    useEffect(() => {
         let userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
         dispatch(viewTicketStatus(false));
         console.log("userData :- ", userData, userData.id);
-        dispatch(viewTicketAPI({ custID: userData.id }))
-    }, [])
+        dispatch(viewTicketAPI({ custID: userData.id, status : statusDrop }))
+    }, [statusDrop])
 
     useEffect(() => {
         setViewTicket(viewTicketData)
     }, [viewTicketData])
+
+    console.log("viewTicket-", viewTicket);
 
     return (
         <>
@@ -46,36 +55,60 @@ const ViewTickets = () => {
                     </div>
                 </div>
             </div>
-            <div class="site-section bg-light">
+            <div class="site-section bg-light" style={{paddingTop : '30px'}}>
                 <div class="container">
+                    <div className="row mb-4 justify-content-end">
+                        <div className="col-md-3">
+                            <select className="form-control" value={statusDrop} onChange={(e) => setStatusDrop(e.target.value)}>
+                                <option value="">All</option>
+                                <option value="pending">Pending</option>
+                                {/* <option value="holding">Holding</option> */}
+                                <option value="in_progress">In Progress</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-lg-12">
-{/* 
+
                             {
                                 viewTicket?.length > 0 && viewTicket.map((item, index) => {
-                                    <div class="d-block d-md-flex listing-horizontal">
-                                        <NavLink to="/details" class="img d-block"
-                                            style={{ backgroundImage: 'url(/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)' }}>
-                                            <span class="category">Restaurants</span>
-                                        </NavLink>
-                                        <div class="lh-content">
-                                            <h3><a href="#">Jones Grill &amp; Restaurants</a></h3>
-                                            <p>Don St, Brooklyn, New York</p>
-                                            <p>
-                                                <span class="icon-star text-warning"></span>
-                                                <span class="icon-star text-warning"></span>
-                                                <span class="icon-star text-warning"></span>
-                                                <span class="icon-star text-warning"></span>
-                                                <span class="icon-star text-secondary"></span>
-                                                <span>(492 Reviews)</span>
-                                            </p>
-                                        </div>
-                                        <div><span class="statusButton">Pending</span></div>
-                                    </div>
-                                })
-                            } */}
 
-                            <div class="d-block d-md-flex listing-horizontal">
+                                    var timeArr = item.service_time.split(":");
+                                    var suffix = parseInt(timeArr[0]) >= 12 ? "PM" : "AM";
+                                    var hours = ((parseInt(timeArr[0]) + 11) % 12 + 1) + ":" + timeArr[1] + " " + suffix
+
+                                    return (
+                                        <div class="d-block d-md-flex listing-horizontal">
+                                            <NavLink to="/details" class="img d-block"
+                                                style={{ backgroundImage: 'url(/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)' }}>
+                                                <span class="category">Restaurants</span>
+                                            </NavLink>
+                                            <div class="lh-content">
+                                                <h3><a href="#">Jones Grill &amp; Restaurants</a></h3>
+                                                <p>Don St, Brooklyn, New York</p>
+                                                <p><b>{item?.service_date?.split('T')[0]}</b>,  <b>{hours}</b></p>
+                                                <div className="row">
+                                                    <div className="col-md-6">
+                                                        <div class="border p-3 rounded mb-2">
+                                                            <a data-toggle="collapse" href={`#collapse-${index}`} role="button" aria-expanded="false"
+                                                                aria-controls={`collapse-${index}`} class="accordion-item h5 d-block mb-0">Your Service Description</a>
+                                                            <div class="collapse" id={`collapse-${index}`}>
+                                                                <div class="pt-2">
+                                                                    <p class="mb-0">{item.service_description}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div><span class="statusButton">Pending</span></div>
+                                        </div>
+                                    )
+                                })
+                            }
+
+                            {/* <div class="d-block d-md-flex listing-horizontal">
                                 <NavLink to="/details" class="img d-block"
                                     style={{ backgroundImage: 'url(/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)' }}>
                                     <span class="category">Restaurants</span>
@@ -83,14 +116,23 @@ const ViewTickets = () => {
                                 <div class="lh-content">
                                     <h3><a href="#">Jones Grill &amp; Restaurants</a></h3>
                                     <p>Don St, Brooklyn, New York</p>
-                                    <p>
-                                        <span class="icon-star text-warning"></span>
-                                        <span class="icon-star text-warning"></span>
-                                        <span class="icon-star text-warning"></span>
-                                        <span class="icon-star text-warning"></span>
-                                        <span class="icon-star text-secondary"></span>
-                                        <span>(492 Reviews)</span>
-                                    </p>
+                                    <p><b>2021-10-18</b>,  <b>10:00 PM</b></p>
+                                    <div className="row">
+                                        <div className="col-md-6">
+                                            <div class="border p-3 rounded mb-2">
+                                                <a data-toggle="collapse" href="#collapse-1" role="button" aria-expanded="false"
+                                                    aria-controls="collapse-1" class="accordion-item h5 d-block mb-0">Your Service Description</a>
+                                                <div class="collapse" id="collapse-1">
+                                                    <div class="pt-2">
+                                                        <p class="mb-0">Far far away, behind the word mountains, far from the countries
+                                                            Vokalia and Consonantia, there live the blind texts. Separated they live in
+                                                            Bookmarksgrove right at the coast of the Semantics, a large language ocean.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div><span class="statusButton">Pending</span></div>
                             </div>
@@ -193,7 +235,7 @@ const ViewTickets = () => {
                                     </p>
                                 </div>
                                 <div><span class="statusButton">Pending</span></div>
-                            </div>
+                            </div> */}
                             <div class="col-12 mt-5 text-center">
                                 <div class="custom-pagination">
                                     <span>1</span>

@@ -95,12 +95,13 @@ export const ticketAPI = createAsyncThunk('Ticket API CALL', async ({ descriptio
     }
 });
 
-export const viewTicketAPI = createAsyncThunk('Ciew Ticket API CALL', async ({ custID }, { dispatch, rejectWithValue }) => {
+export const viewTicketAPI = createAsyncThunk('Ciew Ticket API CALL', async ({ custID, status }, { dispatch, rejectWithValue }) => {
     console.log("userId :-", { custID });
     try {
         const response = await axios.post("customer/viewTicket",
             {
-                custID: custID
+                custID: custID,
+                status: status
             });
         const responseData = response.data;
 

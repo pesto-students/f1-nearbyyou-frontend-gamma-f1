@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import ShopList from '../Common_Pages/ShopList';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
@@ -67,7 +67,7 @@ const Details = () => {
     //Useeffect
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, [])
+    }, [shopID])
 
     useEffect(() => {
         if (categoryId && shopID) {
@@ -117,9 +117,9 @@ const Details = () => {
                         <div class="col-lg-3 ml-auto" style={{ paddingRight: '0' }}>
                             <div class="mb-4">
                                 <h3 class="h5 text-black mb-2" style={{ fontSize: '35px' }}>
-                                    <NavLink to="/"><i class="fa fa-whatsapp cursor-pointer" style={{ marginRight: '50px' }} title='Contact US'></i> </NavLink> 
-                                    {/* <NavLink to={`/app/bookSlot/shop/${shopID}`}><i class="fa fa-ticket cursor-pointer" title="Book Slot"></i></NavLink> */}
-                                    <NavLink to={`/app/bookSlot`}><i class="fa fa-ticket cursor-pointer" title="Book Slot"></i></NavLink>
+                                    <Link to="/"><i class="fa fa-whatsapp cursor-pointer" style={{ marginRight: '50px' }} title='Contact US'></i> </Link> 
+                                    <Link to={`/app/bookSlot/${shopID}`}><i class="fa fa-ticket cursor-pointer" title="Book Slot"></i></Link>
+                                    {/* <Link to={`/app/bookSlot`}><i class="fa fa-ticket cursor-pointer" title="Book Slot"></i></Link> */}
                                 </h3>
                             </div>
 

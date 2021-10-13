@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import ShopList from '../Common_Pages/ShopList';
 import CategoryList from '../Common_Pages/CategoryList';
+import {useParams } from 'react-router-dom';
 
 const Listings = () => {
+
+	//object
+    const {categoryId} = useParams();
 
 	//Useeffect
 	useEffect(() => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
-	}, [])
+	}, [categoryId])
 
 	return (
 		<>

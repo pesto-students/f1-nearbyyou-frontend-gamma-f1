@@ -94,6 +94,7 @@ code {
 }
 
 .justify-content-end{
+  display: flex;
   justify-content: end;
 }
 

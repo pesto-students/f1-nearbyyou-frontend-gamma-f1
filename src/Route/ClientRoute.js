@@ -28,6 +28,10 @@ const ClientRoute = () => {
                 <Route exact path="/category" component={ViewCategory} />
                 <Route exact path="/profile" component={Profile} />
 
+                <ClientPrivateRoute exact path="/app/bookSlot/:shopID" >
+                    <BookSlot />
+                </ClientPrivateRoute>
+
                 <ClientPrivateRoute exact path="/app/:categoryName/:categoryId" >
                     <Listings />
                 </ClientPrivateRoute>
@@ -42,10 +46,6 @@ const ClientRoute = () => {
 
                 <ClientPrivateRoute exact path="/app/viewTickets" >
                     <ViewTickets />
-                </ClientPrivateRoute>
-
-                <ClientPrivateRoute exact path="/app/bookSlot" >
-                    <BookSlot />
                 </ClientPrivateRoute>
 
                 <Redirect to="/" />

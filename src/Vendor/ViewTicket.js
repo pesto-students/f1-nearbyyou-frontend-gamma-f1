@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { UpdateTicketStatusAPI } from '../Redux/vendor/Home/HomeSlice';
+import { UpdateTicketStatusAPI } from '../Redux/Vendor/Home/HomeSlice';
 
 import { useParams } from 'react-router-dom';
 // import { useSelector, useDispatch } from 'react-redux';
-import { GetTicketsAPI, oneticketStatus } from '../Redux/vendor/Home/HomeSlice';
+import { GetTicketsAPI, oneticketStatus } from '../Redux/Vendor/Home/HomeSlice';
 
 const ViewTicket = () => {
 
