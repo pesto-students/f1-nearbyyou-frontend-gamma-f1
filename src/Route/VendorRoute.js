@@ -17,7 +17,7 @@ const VendorRoute = () => {
                     <VendorHome />
                 </VendorPrivateRoute>
 
-                <VendorPrivateRoute path="/vendor/app/view_ticket/:ticketID" >
+                <VendorPrivateRoute path="/vendor/app/view_ticket/:id" >
                     <ViewTicket />
                 </VendorPrivateRoute>
 
