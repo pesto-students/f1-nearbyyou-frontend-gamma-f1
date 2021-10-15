@@ -17,7 +17,7 @@ const Header = () => {
         let userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
         setForm({
             ...form,
-            fname: userData?.name?.split(" ")[0]
+            fname: userData?.user_name?.split(" ")[0]
         })
     }, [])
 
@@ -55,7 +55,7 @@ const Header = () => {
                                     {
                                         auth.isAuthenticated() ? (
                                             <>
-                                                <li class={pathName == "/app/viewTickets" ? "active" : ""}><NavLink to="/app/viewTickets"><span>View Tickets</span></NavLink></li>
+                                                <li class={pathName == "/viewTickets" ? "active" : ""}><NavLink to="/viewTickets"><span>View Tickets</span></NavLink></li>
                                                 <li class="has-children">
                                                     <a href="#"><span className="profile">{form?.fname?.charAt(0)}</span></a>
                                                     <ul class="dropdown arrow-top">

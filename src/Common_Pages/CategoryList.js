@@ -22,7 +22,6 @@ const CategoryList = ({ type, searchDrop }) => {
         dispatch(categoryAPI({ type: type, selectCategory: categoryDrop }));
     }, [categoryDrop])
 
-
     useEffect(() => {
         setCategoryList(categoryResult);
     }, [categoryResult])
@@ -78,7 +77,7 @@ const CategoryList = ({ type, searchDrop }) => {
                                 <div class="col-6 col-sm-6 col-md-4 mb-4 mb-lg-0 col-lg-2" key={index} style={{ marginTop: '25px' }}>
                                     <NavLink
                                         to={{
-                                            pathname: `/app/${item.name}/${item._id}`,
+                                            pathname: `/category/${item.name}`,
                                             categoryProps: {
                                                 categoryId: item._id
                                             }

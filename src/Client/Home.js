@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import CategoryList from '../Common_Pages/CategoryList';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
 
 const Home = () => {
 
 	//Object 
 	let history = useHistory();
+	let dispatch = useDispatch();
 
 	//get data from store
 	const { categoryResult } = useSelector(state => state.listing);
@@ -58,7 +60,14 @@ const Home = () => {
 
 	//Click On Search
 	const searchEvent = async () => {
-		history.push(`/app/${searchForm.categoryName}/${searchForm.categoryId}/pincode/${searchForm.pincode}`)
+		if (searchForm.categoryName == "" && searchForm.pincode == "") {
+			dispatch(ErrorAlert('Please Fill Any Field !!'));
+		} else if (searchForm.categoryName == "" && searchForm.pincode != "") {
+			dispatch(ErrorAlert('Please Select Category !!'));
+		}
+		else {
+			history.push(`/category/${searchForm.categoryName}/${searchForm.pincode}`)
+		}
 	}
 
 	return (

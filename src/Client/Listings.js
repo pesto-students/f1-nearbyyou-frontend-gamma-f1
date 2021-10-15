@@ -6,12 +6,12 @@ import {useParams } from 'react-router-dom';
 const Listings = () => {
 
 	//object
-    const {categoryId} = useParams();
+    const {categoryName} = useParams();
 
 	//Useeffect
 	useEffect(() => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
-	}, [categoryId])
+	}, [categoryName])
 
 	return (
 		<>

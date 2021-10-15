@@ -70,13 +70,11 @@ const Details = () => {
     }, [shopID])
 
     useEffect(() => {
-        if (categoryId && shopID) {
+        if (shopID) {
             console.log("shopID :- ", shopID);
             dispatch(detailAPI({ shopID: shopID }))
-        } else {
-            history.push('/');
         }
-    }, [categoryId, shopID])
+    }, [shopID])
 
     useEffect(() => {
         if (detailResult?.length > 0) {
@@ -118,7 +116,7 @@ const Details = () => {
                             <div class="mb-4">
                                 <h3 class="h5 text-black mb-2" style={{ fontSize: '35px' }}>
                                     <Link to="/"><i class="fa fa-whatsapp cursor-pointer" style={{ marginRight: '50px' }} title='Contact US'></i> </Link> 
-                                    <Link to={`/app/bookSlot/${shopID}`}><i class="fa fa-ticket cursor-pointer" title="Book Slot"></i></Link>
+                                    <Link to={`/bookSlot/${shopID}`}><i class="fa fa-ticket cursor-pointer" title="Book Slot"></i></Link>
                                     {/* <Link to={`/app/bookSlot`}><i class="fa fa-ticket cursor-pointer" title="Book Slot"></i></Link> */}
                                 </h3>
                             </div>

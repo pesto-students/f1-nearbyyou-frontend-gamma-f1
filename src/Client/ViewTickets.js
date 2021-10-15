@@ -21,13 +21,13 @@ const ViewTickets = () => {
     //useeffect
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    },[])
+    }, [])
 
     useEffect(() => {
         let userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
         dispatch(viewTicketStatus(false));
         console.log("userData :- ", userData, userData.id);
-        dispatch(viewTicketAPI({ custID: userData.id, status : statusDrop }))
+        dispatch(viewTicketAPI({ custID: userData._id, status: statusDrop }))
     }, [statusDrop])
 
     useEffect(() => {
@@ -55,7 +55,7 @@ const ViewTickets = () => {
                     </div>
                 </div>
             </div>
-            <div class="site-section bg-light" style={{paddingTop : '30px'}}>
+            <div class="site-section bg-light" style={{ paddingTop: '30px' }}>
                 <div class="container">
                     <div className="row mb-4 justify-content-end">
                         <div className="col-md-3">
@@ -80,16 +80,16 @@ const ViewTickets = () => {
 
                                     return (
                                         <div class="d-block d-md-flex listing-horizontal">
-                                            <NavLink to="/details" class="img d-block"
+                                            <NavLink to={`/category/${item?.categoryDetails[0]?.name}/shop/${item?.shopdeatils[0]?._id}`} class="img d-block"
                                                 style={{ backgroundImage: 'url(/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)' }}>
                                                 <span class="category">Restaurants</span>
                                             </NavLink>
                                             <div class="lh-content">
-                                                <h3><a href="#">Jones Grill &amp; Restaurants</a></h3>
-                                                <p>Don St, Brooklyn, New York</p>
+                                                <h3><a href="#">{item?.shopdeatils[0]?.shop_name}</a></h3>
+                                                <p>{item?.shopdeatils[0]?.shop_area}, {item?.shopdeatils[0]?.shop_street}, {item?.shopdeatils[0]?.shop_city_town}, {item?.shopdeatils[0]?.shop_state}</p>
                                                 <p><b>{item?.service_date?.split('T')[0]}</b>,  <b>{hours}</b></p>
                                                 <div className="row">
-                                                    <div className="col-md-6">
+                                                    <div className="col-md-4">
                                                         <div class="border p-3 rounded mb-2">
                                                             <a data-toggle="collapse" href={`#collapse-${index}`} role="button" aria-expanded="false"
                                                                 aria-controls={`collapse-${index}`} class="accordion-item h5 d-block mb-0">Your Service Description</a>
@@ -100,9 +100,38 @@ const ViewTickets = () => {
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    {
+                                                        item.ticket_status == 'holding' && (
+                                                            <div className="col-md-4">
+                                                                <div class="border p-3 rounded mb-2">
+                                                                    <a data-toggle="collapse" href={`#collapse-hold${index}`} role="button" aria-expanded="false"
+                                                                        aria-controls={`collapse-hold${index}`} class="accordion-item h5 d-block mb-0">Vendor Holding Request</a>
+                                                                    <div class="collapse" id={`collapse-hold${index}`}>
+                                                                        <div class="pt-2">
+                                                                            <p class="mb-0">
+                                                                                {/* {item?.hold_date} {item?.hold_time} */}
+                                                                                <b>18-10-2021 10:00 AM</b>
+                                                                            </p>
+                                                                            <p class="mb-0 bottom-lne text-align-center">
+                                                                                Reason
+                                                                            </p>
+                                                                            <p class="mb-0">
+                                                                                {/* {item?.hold_description} */}
+                                                                                Today it;s not possible we reshedusle your req please accept this request if possible
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="justify-content-evenly">
+                                                                    <button class="accept-btn cursor-pointer" >Accept</button>
+                                                                    <button class="reject-btn cursor-pointer">Reject</button>
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    }
                                                 </div>
                                             </div>
-                                            <div><span class="statusButton">Pending</span></div>
+                                            <div><span class="statusButton">{item.ticket_status}</span></div>
                                         </div>
                                     )
                                 })

@@ -70,7 +70,7 @@ export const detailAPI = createAsyncThunk('Details API CALL', async ({ shopID },
     }
 });
 
-export const ticketAPI = createAsyncThunk('Ticket API CALL', async ({ description, date, time, customerId }, { dispatch, rejectWithValue }) => {
+export const ticketAPI = createAsyncThunk('Ticket API CALL', async ({ description, date, time, customerId, ticket_status, shop_ticket }, { dispatch, rejectWithValue }) => {
     console.log("ticketAPi :-", { description, date, time });
     try {
         const response = await axios.post("customer/ticket",
@@ -78,7 +78,9 @@ export const ticketAPI = createAsyncThunk('Ticket API CALL', async ({ descriptio
                 description: description,
                 date: date,
                 time: time,
-                customerId: customerId
+                customerId: customerId,
+                ticket_status: ticket_status,
+                shop_ticket: shop_ticket
             });
         const responseData = response.data;
 
@@ -169,6 +171,30 @@ export const editProfile = createAsyncThunk('Edit Profile API CALL', async ({ us
     }
 });
 
+export const getCategoryIDAPI = createAsyncThunk('Get Category ID API CALL', async ({ cname }, { dispatch, rejectWithValue }) => {
+    console.log("categoryAPI :-", { cname });
+    try {
+        const response = await axios.post("customer/getCategoryId",
+            {
+                cname: cname,
+            });
+        const responseData = response.data;
+
+        console.log("response ;-", response);
+        console.log("data.payload.data.data[0]._id:-", response.data.payload.data.data);
+
+        if (responseData.status == "success") {
+            // dispatch(SuccessAlert(responseData.msg));
+            return response;
+        } else {
+            dispatch(ErrorAlert(responseData.msg));
+            return rejectWithValue({ message: 'No Data Found' });
+        }
+    }
+    catch (e) {
+        console.log("Error :- ", e)
+    }
+});
 
 export const slice = createSlice({
     name: 'Listing Slice',
@@ -185,6 +211,7 @@ export const slice = createSlice({
         viewTicketData: [],
         customerDetails: [],
         isProfileStatus: false,
+        categoryID: ''
     },
     reducers: {
         searchStatus: (state, action) => {
@@ -258,6 +285,12 @@ export const slice = createSlice({
         },
         [editProfile.rejected]: (state, action) => {
             state.isProfileStatus = false;
+        },
+        [getCategoryIDAPI.fulfilled]: (state, action) => {
+            state.categoryID = action.payload.data.payload.data.data[0]._id;
+        },
+        [getCategoryIDAPI.rejected]: (state, action) => {
+            state.categoryID = '';
         },
     }
 });

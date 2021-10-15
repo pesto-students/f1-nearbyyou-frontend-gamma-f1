@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { ticketAPI, ticketStatus, customerDetailsAPI } from '../Redux/Client/Listing/ListingSlice';
 
 const BookSlot = () => {
@@ -8,6 +8,7 @@ const BookSlot = () => {
     //object
     const dispatch = useDispatch();
     const history = useHistory();
+    const {shopID} = useParams();
 
     //get data from store
     const { isTicketStatus, customerDetails } = useSelector(state => state.listing);
@@ -20,7 +21,12 @@ const BookSlot = () => {
         lname: '',
         email: '',
         contact: '',
-        address: '',
+        door_number: '',
+        street: '',
+        area: '',
+        city_town: '',
+        state: '',
+        pincode: '',
         description: '',
         date: '',
         time: '',
@@ -35,12 +41,17 @@ const BookSlot = () => {
 
         setForm({
             ...form,
-            customerId : userData.id,
-            fname: userData?.name?.split(" ")[0],
-            lname: userData?.name?.split(" ")[1],
+            customerId: userData.id,
+            fname: userData?.user_name?.split(" ")[0],
+            lname: userData?.user_name?.split(" ")[1],
             email: userData?.email,
-            contact: userData?.contact,
-            address: '',
+            contact: userData?.contact_number,
+            door_number: userData?.custDetails[0]?.door_number,
+            street: userData?.custDetails[0]?.street,
+            area: userData?.custDetails[0]?.area,
+            city_town: userData?.custDetails[0]?.city_town,
+            state: userData?.custDetails[0]?.state,
+            pincode: userData?.custDetails[0]?.pincode,
         })
 
         // console.log("userData :- ", userData, userData.id);
@@ -73,12 +84,17 @@ const BookSlot = () => {
                 email: '',
                 time: '',
                 contact: '',
-                address: '',
+                door_number: '',
+                street: '',
+                area: '',
+                city_town: '',
+                state: '',
+                pincode: '',
                 description: '',
                 date: '',
                 time: ''
             })
-            history.push('/app/viewTickets')
+            history.push('/viewTickets')
         }
     }, [isTicketStatus])
 
@@ -100,7 +116,7 @@ const BookSlot = () => {
 
         console.log("form :- ", form);
 
-        dispatch(ticketAPI({ description: form.description, date: form.date, time: form.time, customerId: form.customerId }))
+        dispatch(ticketAPI({ description: form.description, date: form.date, time: form.time, customerId: form.customerId, ticket_status : 'pending', shop_ticket : shopID }))
     }
 
     return (
@@ -124,21 +140,7 @@ const BookSlot = () => {
             <div class="site-section bg-light">
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-5" data-aos="fade" data-aos-delay="100">
-                            <div class="p-4 mb-3 bg-white">
-                                <p class="mb-0 font-weight-bold">Name</p>
-                                <p class="mb-4">{form.fname} {form.lname}</p>
-                                <p class="mb-0 font-weight-bold">Address</p>
-                                <p class="mb-4">203 Fake St. Mountain View, San Francisco, California, USA</p>
-                                <p class="mb-0 font-weight-bold">Phone</p>
-                                <p class="mb-4"><a href="#">{form.contact}</a></p>
-                                <p class="mb-0 font-weight-bold">Email Address</p>
-                                <p class="mb-0"><a href="#"><span class="__cf_email__"
-                                    data-cfemail="41382e3433242c20282d01252e2c20282f6f222e2c">[{form.email}]</span></a>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-md-7 mb-5" data-aos="fade">
+                    <div class="col-md-7 mb-5" data-aos="fade">
                             <form method="post" onSubmit={onSubmit} class="p-5 bg-white" style={{ marginTop: '-150px' }}>
                                 {/* <div class="row form-group">
                                     <div class="col-md-6 mb-3 mb-md-0">
@@ -193,6 +195,21 @@ const BookSlot = () => {
                                 </div>
                             </form>
                         </div>
+                        <div class="col-md-5" data-aos="fade" data-aos-delay="100">
+                            <div class="p-4 mb-3 bg-white">
+                                <p class="mb-0 font-weight-bold">Name</p>
+                                <p class="mb-4">{form.fname} {form.lname}</p>
+                                <p class="mb-0 font-weight-bold">Address</p>
+                                <p class="mb-4">{form.door_number}, {form.street}, {form.area}, {form.city_town}, {form.state}, {form.pincode}</p>
+                                <p class="mb-0 font-weight-bold">Phone</p>
+                                <p class="mb-4"><a href="#">{form.contact}</a></p>
+                                <p class="mb-0 font-weight-bold">Email Address</p>
+                                <p class="mb-0"><a href="#"><span class="__cf_email__"
+                                    data-cfemail="41382e3433242c20282d01252e2c20282f6f222e2c">[{form.email}]</span></a>
+                                </p>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
