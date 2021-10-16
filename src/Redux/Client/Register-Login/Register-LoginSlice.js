@@ -63,7 +63,9 @@ export const LoginAPI = createAsyncThunk('Login API CALL', async ({ username, pa
 
             let authToken = responseData.payload.data.token;
 
-            let userInfo = responseData.payload.data.userInfo;
+            let userInfo = responseData.payload.data.userInfo.data[0];
+
+            console.log("userInfo:- ", userInfo);
 
             localStorage.setItem('Near_By_You_Client', JSON.stringify(userInfo));
 

@@ -1,7 +1,7 @@
 import Rect, { useEffect, useState, useCallback } from 'react';
 import { NavLink, useParams, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { searchAPI, searchStatus } from '../Redux/Client/Listing/ListingSlice';
+import { searchAPI, searchStatus, getCategoryIDAPI } from '../Redux/Client/Listing/ListingSlice';
 import { debounce } from "lodash";
 
 const ShopList = ({ filter }) => {
@@ -9,10 +9,10 @@ const ShopList = ({ filter }) => {
     //object
     const dispatch = useDispatch();
     const history = useHistory();
-    const { categoryName, categoryId, pincode } = useParams();
+    const { categoryName, pincode } = useParams();
 
     //get data from store
-    const { avaliableCategory, searchResult } = useSelector(state => state.listing);
+    const { avaliableCategory, searchResult, categoryID } = useSelector(state => state.listing);
 
     console.log("searchResult: -", searchResult);
 
@@ -65,25 +65,31 @@ const ShopList = ({ filter }) => {
         freeText: '',
         pincode: '',
         category: '',
-        catID : '',
-        catName : '',
+        catID: '',
+        catName: '',
     });
 
     //Useeffect
+
     useEffect(() => {
-        if (categoryId) {
+        dispatch(getCategoryIDAPI({ cname: categoryName }))
+    }, [categoryName])
+
+    useEffect(() => {
+        if (categoryID) {
             setSearchForm({
                 ...searchForm,
-                category: `${categoryId}||${categoryName}`,
-                pincode : pincode,
-                catID : categoryId,
-                catName : categoryName
+                category: `${categoryID}||${categoryName}`,
+                pincode: pincode,
+                catID: categoryID,
+                catName: categoryName
             })
-            dispatch(searchAPI({ freeText: '', pincode: pincode, category: categoryId }))
-        } else {
-            history.push('/')
-        }
-    }, [categoryId])
+            dispatch(searchAPI({ freeText: '', pincode: pincode, category: categoryID }))
+        } 
+        // else {
+        //     history.push('/')
+        // }
+    }, [categoryID])
 
     useEffect(() => {
         setAvaCategory(avaliableCategory);
@@ -93,28 +99,50 @@ const ShopList = ({ filter }) => {
         setShopList(searchResult);
     }, [searchResult])
 
+    useEffect(() => {
+        debounceSearch(searchForm);
+    }, [searchForm])
+
     //Functions
     const searchHandleChange = (e) => {
         const { name, value } = e.target;
 
-        if(name == "category"){
+        // let tempSearch = { ...searchForm };
+
+        if (name == "category") {
 
             const cat = value.split('||');
+
+            // tempSearch = {
+            //     ...tempSearch,
+            //     category: value,
+            //     catID: cat[0],
+            //     catName: cat[1]
+            // }
+
 
             setSearchForm({
                 ...searchForm,
                 category: value,
-                catID : cat[0],
-                catName : cat[1]
+                catID: cat[0],
+                catName: cat[1]
             })
-        }else{
+        } else {
+            // tempSearch = {
+            //     ...tempSearch,
+            //     [name]: value
+            // }
             setSearchForm({
                 ...searchForm,
                 [name]: value
             })
         }
-        
-        debounceSearch(searchForm);
+
+        // setSearchForm(tempSearch);
+
+        // debounceSearch(tempSearch);
+
+        console.log("searchForm", searchForm);
     }
 
     //Debounce Search
@@ -175,7 +203,7 @@ const ShopList = ({ filter }) => {
                 {
                     shopList?.length > 0 && shopList.map((item, index) => (
                         <div class="d-block d-md-flex listing-horizontal">
-                            <NavLink to={`/app/${searchForm.catName}/${searchForm.catID}/${item._id}`} class="img d-block"
+                            <NavLink to={`/category/${searchForm.catName}/shop/${item._id}`} class="img d-block"
                                 style={{ backgroundImage: 'url(/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)' }}>
                                 <span class="category">{searchForm.catName}</span>
                             </NavLink>

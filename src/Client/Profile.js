@@ -1,7 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { NavLink } from 'react-router-dom'
 import { profileStatus, editProfile } from '../Redux/Client/Listing/ListingSlice';
+// import S3FileUpload from 'react-s3';
+import { uploadFile } from 'react-s3';
+
+// const config = {
+//     bucketName: 'myBucket',
+//     dirName: 'media', /* optional */
+//     region: 'eu-west-1',
+//     accessKeyId: 'JAJHAFJFHJDFJSDHFSDHFJKDSF',
+//     secretAccessKey: 'jhsdf99845fd98qwed42ebdyeqwd-3r98f373f=qwrq3rfr3rf',
+// }
+
+// onst config = {
+//     bucketName: 'myBucket',
+//     dirName: 'media', / optional /
+//     region: 'eu-west-1',
+//     accessKeyId: 'JAJHAFJFHJDFJSDHFSDHFJKDSF',
+//     secretAccessKey: 'jhsdf99845fd98qwed42ebdyeqwd-3r98f373f=qwrq3rfr3rf',
+//     s3Url: 'https:/your-custom-s3-url.com/', / optional /
+// }
 
 const Profile = () => {
 
@@ -37,11 +57,16 @@ const Profile = () => {
         setForm({
             ...form,
             customerId: userData.id,
-            fname: userData?.name?.split(" ")[0],
-            lname: userData?.name?.split(" ")[1],
+            fname: userData?.user_name?.split(" ")[0],
+            lname: userData?.user_name?.split(" ")[1],
             email: userData?.email,
-            contact: userData?.contact,
-            address: '',
+            contact: userData?.contact_number,
+            door_number: userData?.custDetails[0]?.door_number,
+            street: userData?.custDetails[0]?.street,
+            area: userData?.custDetails[0]?.area,
+            city: userData?.custDetails[0]?.city_town,
+            state: userData?.custDetails[0]?.state,
+            pincode: userData?.custDetails[0]?.pincode,
         })
     }, [])
 
@@ -83,6 +108,18 @@ const Profile = () => {
         dispatch(editProfile({ user_name: form.fname + " " + form.lname, contact_number: form.contact, door_number: form.door_number, street: form.street, area: form.area, pincode: form.pincode, city: form.city, state: form.state }))
     }
 
+    // //Upload File
+    // const uploadFileButton = (e) => {
+    //     console.log("e :- ", e.target.files[0]);
+    //     uploadFile(e.target.files, config)
+    //         .then((data) => {
+    //             console.log("Success :- ", data);
+    //         })
+    //         .catch((err) => {
+    //             console.log("err :- ", err)
+    //         })
+    // }
+
     return (
         <>
             <div class="site-blocks-cover inner-page-cover overlay"
@@ -106,11 +143,12 @@ const Profile = () => {
                 <div class="container">
                     <div class="row">
                         <div class="col-md-7 mb-5" data-aos="fade">
+                            {/* <input type="file" onChange={uploadFileButton}  /> */}
                             <form method="post" onSubmit={onSubmit} class="p-5 bg-white" style={{ marginTop: '-150px' }}>
                                 <div class="row form-group">
                                     <div class="col-md-6 mb-3 mb-md-0">
                                         <label class="text-black" for="fname">First Name</label>
-                                        <input type="text" id="fname" name="fname"  class="form-control" required onChange={handleChange} value={form.fname} />
+                                        <input type="text" id="fname" name="fname" class="form-control" required onChange={handleChange} value={form.fname} />
                                     </div>
                                     <div class="col-md-6">
                                         <label class="text-black" for="lname">Last Name</label>
@@ -134,7 +172,7 @@ const Profile = () => {
                                     </div>
                                     <div class="col-md-4">
                                         <label class="text-black" for="street">Street</label>
-                                        <input type="text" id="street" name="street" class="form-control" required onChange={handleChange} value={form.strert} />
+                                        <input type="text" id="street" name="street" class="form-control" required onChange={handleChange} value={form.street} />
                                     </div>
                                     <div class="col-md-4">
                                         <label class="text-black" for="area">Area</label>
@@ -172,22 +210,21 @@ const Profile = () => {
                         </div>
                         <div class="col-md-5" data-aos="fade" data-aos-delay="100">
                             <div class="p-4 mb-3 bg-white">
-                                <p class="mb-0 font-weight-bold">Address</p>
-                                <p class="mb-4">203 Fake St. Mountain View, San Francisco, California, USA</p>
-                                <p class="mb-0 font-weight-bold">Phone</p>
-                                <p class="mb-4"><a href="#">+1 232 3235 324</a></p>
+                                <p class="mb-0 font-weight-bold">Your Profile</p>
+                                <NavLink to="/viewTickets"><p class="mb-0 font-weight-bold mt-5">View Your Ticket</p></NavLink>
+                                {/* <p class="mb-4"><a href="#">+1 232 3235 324</a></p>
                                 <p class="mb-0 font-weight-bold">Email Address</p>
                                 <p class="mb-0"><a href="#"><span class="__cf_email__"
                                     data-cfemail="41382e3433242c20282d01252e2c20282f6f222e2c">[email&#160;protected]</span></a>
-                                </p>
+                                </p> */}
                             </div>
-                            <div class="p-4 mb-3 bg-white">
+                            {/* <div class="p-4 mb-3 bg-white">
                                 <h3 class="h5 text-black mb-3">More Info</h3>
                                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa ad iure porro mollitia
                                     architecto hic consequuntur. Distinctio nisi perferendis dolore, ipsa consectetur? Fugiat
                                     quaerat eos qui, libero neque sed nulla.</p>
                                 <p><a href="#" class="btn btn-primary px-4 py-2 text-white">Learn More</a></p>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

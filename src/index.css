@@ -94,7 +94,17 @@ code {
 }
 
 .justify-content-end{
+  display: flex;
   justify-content: end;
+}
+
+.justify-content-evenly{
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.text-align-center{
+  text-align: center;
 }
 
 .profile {
@@ -123,4 +133,31 @@ code {
 }
 .site-navbar .site-navigation .site-menu .has-children .dropdown{
   right: 0 !important;
+}
+
+.accept-btn{
+  background: green;
+  border: 0px;
+  color: white;
+  border-radius: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 2px;
+  padding-top: 0px;
+}
+
+.reject-btn{
+  background: red;
+  border: 0px;
+  color: white;
+  border-radius: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 2px;
+  padding-top: 0px;
+}
+
+.bottom-lne{
+  color: #00918e;
+  border-bottom: 1px solid #00918e;
 }
