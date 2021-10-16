@@ -3,16 +3,17 @@ import { Nav } from 'react-bootstrap';
 import { Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { GetAllTicketsAPI, ticketStatus } from '../Redux/Vendor/Home/HomeSlice';
+import { GetAllTicketsAPI, ticketStatus } from '../Redux/vendor/Home/HomeSlice';
 
 const VendorHome = () => {
 
 	const dispatch = useDispatch();
 
 	const { ticketResults, isticketStatus } = useSelector(state => state.ticket);
-	console.log("search result is---->", ticketResults);
 	const [activeMenu, setActiveMenu] = useState('new');
-	const [activePincode, setActivePincode] = useState('989898');
+	const [activePincode, setActivePincode] = useState('888888');
+	const [results , setResults] = useState('')
+	console.log("results from api-->",ticketResults)
 
 	// const tickets = ticketResults;
 
@@ -29,13 +30,11 @@ const VendorHome = () => {
 		service_date: '12-10-291',
 		service_time: '111222',
 		service_description: 'QQQ'
-	}
-
-	]
+	}]
 
 	useEffect(() => {
 		if (isticketStatus) {
-
+			setResults(ticketResults);
 			dispatch(ticketStatus(false))
 		}
 	}, [isticketStatus])
@@ -109,7 +108,7 @@ const VendorHome = () => {
 						</thead>
 						<tbody>
 							{
-								tickets?.length > 0 && tickets.map((item, index) => (
+								results?.length > 0 && results.map((item, index) => (
 									<tr>
 										<td>{item.ticket_number}</td>
 										<td>{item.service_date}</td>

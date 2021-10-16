@@ -14,8 +14,8 @@ export const GetAllTicketsAPI = createAsyncThunk('Get All Ticket API based on st
             });
 
         const responseData = response.data;
-        console.log("response data-> ", responseData)
-        console.log("Response : ", response);
+        // console.log("response data-> ", responseData)
+        // console.log("Response : ", response);
 
         if (responseData.status === "success") {
             dispatch(SuccessAlert(responseData.message));
@@ -32,14 +32,14 @@ export const GetAllTicketsAPI = createAsyncThunk('Get All Ticket API based on st
 });
 
 
-export const GetTicketsAPI = createAsyncThunk('Get Ticket Deatils Based On ID',async({ticket_id}, {dispatch, rejectWithValue})=>{
-    try{
+export const GetTicketsAPI = createAsyncThunk('Get Ticket Deatils Based On ID', async ({ ticket_id }, { dispatch, rejectWithValue }) => {
+    try {
         const response = await axios.get('/ticket/:id',
-        {
-            params:{
-                id: ticket_id
-            }
-        });
+            {
+                params: {
+                    id: ticket_id
+                }
+            });
         const responseData = response.data;
         if (responseData.status === "success") {
             dispatch(SuccessAlert(responseData.message));
@@ -49,28 +49,29 @@ export const GetTicketsAPI = createAsyncThunk('Get Ticket Deatils Based On ID',a
             return rejectWithValue({ message: 'No Data Found' });
         }
     }
-    catch(error){
+    catch (error) {
         console.log(error);
     }
 })
 
 
 
-export const UpdateTicketStatusAPI = createAsyncThunk('update ticket status based', async ({ ticket_status, ticket_number }, { dispatch, rejectWithValue }) => {
-    console.log('update ticket status --> ', ticket_status, ticket_number)
+export const UpdateTicketStatusAPI = createAsyncThunk('update ticket status based', async ({ ticket_status, ticket_id, hold_date, hold_time, hold_description }, { dispatch, rejectWithValue }) => {
+    console.log('update ticket status in slice --> ', ticket_status, ticket_id, hold_date, hold_time, hold_description)
     try {
-        const response = await axios.put('/ticket/ticketdetails',
-            {
-                params: {
-                    status: ticket_status,
-                    ticket_number: ticket_number
-                }
+        const response = await axios.put('/ticket',
+            {   
+                status: ticket_status,
+                hold_date: hold_date,
+                hold_time: hold_time,
+                hold_description: hold_description,
+                id: ticket_id
             });
 
         const responseData = response.data;
-        console.log("response data-> ", responseData)
+        // console.log("response data-> ", responseData)
 
-        if (response.status === "success") {
+        if (responseData.status === "success") {
             dispatch(SuccessAlert(responseData.message));
             return response;
         } else {
@@ -88,16 +89,21 @@ export const slice = createSlice({
     name: 'vendor home page tickets slice',
     initialState: {
         ticketResults: [],
-        oneticketResults:[],
+        oneticketResults: [],
+        updateTicketResults: [],
         isticketStatus: false,
-        isoneticketStatus:false
+        isoneticketStatus: false,
+        isupdatestatus: false
     },
     reducers: {
         ticketStatus: (state, action) => {
             state.isticketStatus = action.payload;
         },
-        oneticketStatus:(state,action)=>{
+        oneticketStatus: (state, action) => {
             state.isoneticketStatus = action.payload;
+        },
+        updateticketstatus:(state,action)=>{
+            state.isupdatestatus = action.payload;
         }
     },
     extraReducers: {
@@ -117,10 +123,18 @@ export const slice = createSlice({
             state.isoneticketStatus = false;
             state.oneticketResults = [];
         },
+        [UpdateTicketStatusAPI.fulfilled]: (state, action) => {
+            state.isupdatestatus = true;
+            state.updateTicketResults = action.payload.data.payload.data;
+        },
+        [UpdateTicketStatusAPI.rejected]: (state, action) => {
+            state.isupdatestatus = false;
+            state.updateTicketResults = [];
+        },
 
     }
 });
 
-export const { ticketStatus,oneticketStatus } = slice.actions;
+export const { ticketStatus, oneticketStatus,updateticketstatus } = slice.actions;
 
 export default slice.reducer;
