@@ -6,6 +6,7 @@ import VendorHome from '../Vendor/Home'
 import VendorPrivateRoute from './VendorPrivateRoute';
 import ViewTicket from '../Vendor/ViewTicket';
 import VendorProfile from '../Vendor/VendorProfile';
+import ViewShop from '../Vendor/VendorShop';
 
 const VendorRoute = () => {
     return (
@@ -23,6 +24,10 @@ const VendorRoute = () => {
 
                 <VendorPrivateRoute path="/vendor/app/profile" >
                     <VendorProfile />
+                </VendorPrivateRoute>
+
+                <VendorPrivateRoute path="/vendor/app/view_shop/:id" >
+                    <ViewShop />
                 </VendorPrivateRoute>
                 
                 <Redirect to="/login" />

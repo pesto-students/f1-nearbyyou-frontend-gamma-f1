@@ -1,24 +1,96 @@
 import React, { useEffect, useState } from 'react';
 import { Dropdown, Carousel, Table, Modal, Button, Form, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-const VendorProfile = () => {
-	const [show_modal, setModal] = useState(false);
-	const [activedropdown, set_dropdown_value] = useState(1);
+import { useSelector, useDispatch } from 'react-redux';
+import { GetAllShopsAPI, shopStatus, AddShopAPI, newShopStatus } from '../Redux/vendor/Profile/VendorProfileSlice';
+import { useHistory } from 'react-router-dom';
 
-	const dropdown_select = (shop_id) => {
-		set_dropdown_value(shop_id);
-	}
+const VendorProfile = () => {
+
+
+	const dispatch = useDispatch();
+	const history = useHistory();
+
+	const { shopResults, isshopstatus, isnewShopStatus, newShopResults } = useSelector(state => state.shop);
+	const [results, setResults] = useState({
+		shops: '',
+		vendor_details: ''
+	});
+	const [user, setUser] = useState('');
+
+	useEffect(()=>{
+		if(isnewShopStatus){
+			dispatch(newShopStatus(false));;
+			history.push('/vendor/app/profile')
+		}
+	})
+
 	useEffect(() => {
-		console.log(activedropdown);
-	}, [activedropdown]);
+		// if (isshopstatus) {
+		setResults({
+			shops: shopResults.data,
+			vendor_details: shopResults.vendor_details
+		});
+		dispatch(shopStatus(false));
+		// }
+	}, [isshopstatus])
 
 	useEffect(() => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
+		// console.log(localStorage.getItem('Near_By_You'))
+		const userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
+		setUser(userData)
+		console.log("user data after stringyfy->", userData);
+		dispatch(GetAllShopsAPI({ user_id: userData.id }));
+
 	}, [])
-	const showModal = () => {
-		setModal(true);
+
+
+
+
+	console.log("shop results-->", results.shops);;
+	console.log("vendor details -->", results.vendor_details);
+
+	const [form, setForm] = useState({
+		shop_email: '',
+		shop_contact_number: '',
+		shop_door_number: '',
+		shop_street: '',
+		shop_area: '',
+		shop_city_town: '',
+		shop_state: '',
+		shop_pincode: '',
+		shop_category_name: ''
+	})
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setForm({
+			...form,
+			[name]: value
+		})
 	}
-	const handleClose = () => { setModal(false); }
+
+	const addShopClick = (e) => {
+		e.preventDefault();
+		dispatch(AddShopAPI(
+			{
+				shop_email: form.shop_email,
+				shop_contact_number: form.shop_contact_number,
+				shop_door_number: form.shop_door_number,
+				shop_street: form.shop_street,
+				shop_area: form.shop_area,
+				shop_city_town: form.shop_city_town,
+				shop_state: form.shop_state,
+				shop_pincode: form.shop_pincode,
+				shop_category_name: form.shop_category_name,
+			}
+		));
+
+	}
+
+
+	console.log(form)
 
 	return (
 		<>
@@ -37,184 +109,134 @@ const VendorProfile = () => {
 							</div>
 						</div>
 					</div>
-					<button class="mb-2" type="button" > <i class="fa fa-plus p-1" aria-hidden="true"></i> Add branch</button>
-					<Dropdown onSelect={dropdown_select} >
-						<Dropdown.Toggle variant="success" id="dropdown-basic" >
-							Select shop
-						</Dropdown.Toggle>
-
-						<Dropdown.Menu >
-							<Dropdown.Item eventKey="1">Action</Dropdown.Item>
-							<Dropdown.Item eventKey="2">Another action</Dropdown.Item>
-							<Dropdown.Item eventKey="3">Something else</Dropdown.Item>
-						</Dropdown.Menu>
-					</Dropdown>
 				</div>
 			</div>
 			<div class="site-section" style={{ marginTop: "-4.5rem" }}>
 				<div class="container">
+
 					<div class="row form-group">
 						<div class="col-md-6" data-aos="fade">
-							<Carousel variant="dark" >
-								<Carousel.Item interval={1000}>
-									<img fluid style={{ height: "20rem", width: "100%" }}
-										className="d-block w-100"
-										src="/images/ximg_6.jpg.pagespeed.ic.cOZc6e0Yb7.jpg"
-										alt="First slide"
-									/>
-								</Carousel.Item>
-								<Carousel.Item interval={500}>
-									<img fluid style={{ height: "20rem", width: "100%" }}
-										className="d-block w-100"
-										src="/images/ximg_6.jpg.pagespeed.ic.cOZc6e0Yb7.jpg"
-										alt="Second slide"
-									/>
-								</Carousel.Item>
-								<Carousel.Item>
-									<img fluid style={{ height: "20rem", width: "100%" }}
-										className="d-block w-100"
-										src="/images/ximg_6.jpg.pagespeed.ic.cOZc6e0Yb7.jpg"
-										alt="Third slide"
-									/>
-								</Carousel.Item>
-							</Carousel>
-						</div>
-						<div class="col-md-6" data-aos="fade">
 							<form class="p-1" >
-								<div class="row form-group">
-									<div class="col-md-12 mb-3 mb-md-0">
-										<h3 class="text-black mb-3 mb-md-0" for="shop_name">Shop Name</h3>
-										<input type="text" id="ticket_no" class="form-control" disabled />
-									</div>
-									<div class="col-md-12 mb-3 mb-md-0">
-										<h3 class="text-black mb-3 mb-md-0" for="branch_address">Branch Address</h3>
-										<input type="text" id="ticket_no" class="form-control" disabled />
+								<div class="row form-group m-5">
+									<h1 class="text-black mb-5 mb-md-0 ">{results.vendor_details && results.vendor_details[0].shop_name}</h1>
+								</div>
+								<div class="form-group mb-5">
+									<div class="col-md-12  mb-md-0">
+										<h5 class="text-black" for="ticket_no">Contact Number : {user.contact}</h5>
 									</div>
 								</div>
-								<div class="form-group">
-									<div class="col-md-12 mb-3 mb-md-0">
-										<h5 class="text-black" for="ticket_no">Contact Number</h5>
-										<input type="text" id="ticket_no" class="form-control" disabled />
-									</div>
-								</div>
-								<div class="form-group">
+								<div class="form-group mb-3">
 									<div class="col-md-12">
-										<h5 class="text-black" for="ticket_status">Alterative Contact Number</h5>
-										<input type="text" id="ticket_status" class="form-control" disabled />
+										<h5 class="text-black" for="ticket_status">Shop Email : {user.email} </h5>
 									</div>
 								</div>
 							</form>
 						</div>
+						<div class="col-md-6" data-aos="fade">
+							<img fluid style={{ height: "20rem", width: "100%" }}
+								className="d-block w-100"
+								src="/images/ximg_6.jpg.pagespeed.ic.cOZc6e0Yb7.jpg"
+								alt="First slide"
+							/>
+						</div>
+
 					</div>
 				</div>
 			</div>
 
 			<div class="container">
-				<h2>Overview</h2>
-				<p>
-					Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-				</p>
-				<h2>Services</h2>
-				<label class="text-black" for="adding_new_service">Add New service</label>
+
+				<h2>Shop deatils</h2>
+				<label class="text-black" for="adding_new_service">Add new shop branch</label>
 				<button type="addservice" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
 					<i class="fa fa-plus p-1" aria-hidden="true"></i>
 				</button>
 
 
 				<div class="form-group collapse add_service_form p-3" id="collapseExample">
-					<label class="text-black" for="service_name">Add New service</label>
-					<div class="col-md-8 mb-3">
-						<input type="text" id="ticket_no" class="form-control" placeholder="enter the name of new service" />
-					</div>
-					<label class="text-black" for="service_description">Add service description</label>
-					<div class="col-md-8 mb-3">
-						<input type="text" id="ticket_no" class="form-control" placeholder="enter the service description" />
-					</div>
-					<div class="col-md-3">
-						<button type="submit">
-							ADD
-						</button>
-					</div>
-
+					<form onSubmit={addShopClick}>
+						<label class="text-black" for="service_name">Add New service</label>
+						<div class="row form-group">
+							<div class="col-md-6">
+								<label class="text-black" for="service_description">Shop Email </label>
+								<input type="text" name="shop_email" class="form-control" onChange={handleChange} placeholder="enter shop email" required />
+							</div>
+							<div class="col-md-6">
+								<label class="text-black" for="service_description">Shop Contact </label>
+								<input type="text" name="shop_contact_number" class="form-control" onChange={handleChange} placeholder="enter shop contact" required />
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-md-4">
+								<label class="text-black" for="service_description">Shop door number</label>
+								<input type="text" name="shop_door_number" class="form-control" onChange={handleChange} required />
+							</div>
+							<div class="col-md-4">
+								<label class="text-black" for="service_description">Shop street </label>
+								<input type="text" name="shop_street" class="form-control" onChange={handleChange} />
+							</div>
+							<div class="col-md-4">
+								<label class="text-black" for="service_description">Shop area </label>
+								<input type="text" name="shop_area" id="ticket_no" class="form-control" onChange={handleChange} required />
+							</div>
+						</div>
+						<div class="row form-group mb-3">
+							<div class="col-md-5">
+								<label class="text-black" for="service_description">Shop city/town</label>
+								<input type="text" name="shop_city_town" class="form-control" onChange={handleChange} required />
+							</div>
+							<div class="col-md-4">
+								<label class="text-black" for="service_description">Shop state </label>
+								<input type="text" name="shop_state" class="form-control" onChange={handleChange} required />
+							</div>
+							<div class="col-md-3">
+								<label class="text-black" for="service_description">Shop pincode </label>
+								<input type="text" name="shop_pincode" class="form-control" onChange={handleChange} required />
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="text-black" for="shop_category">select shop category</label>
+							<div class="select-wrap col-md-6">
+								<span class="icon"><span class="icon-keyboard_arrow_down"></span></span>
+								<select class="form-control" name="shop_category_name" onChange={handleChange} value={form.shop_category}>
+									<option value="">All Categories</option>
+									<option value="salon">Salon</option>
+									<option value="plumbers">Plumbers</option>
+									<option value="electrician">Electrician</option>
+									<option value="carpenter">Carpenter</option>
+									<option value="pestcontrol">Cleaning Pest and Control</option>
+									<option value="painter">Painters</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<button type="submit">
+								ADD
+							</button>
+						</div>
+					</form>
 				</div>
 				<Table responsive>
 					<thead>
 						<tr>
-							<th>#</th>
-							<th>Name of the service</th>
-							<th>Service Description</th>
-							<th>Action</th>
-							<th></th>
+							<th>Shop Pincode</th>
+							<th>Shop Email</th>
+							<th>Shop Contact</th>
+							<th>View</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>1</td>
-							{Array.from({ length: 2 }).map((_, index) => (
-								<td key={index}>Table cell {index}</td>
-							))}
-							<td variant="primary" onClick={showModal}><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
-							</td>
-							<td><Link to="/vendor/app/service/delete"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></Link>
-							</td>
-							<Modal
-								className="modal_content"
-								show={show_modal}
-								onHide={handleClose}
-								centered>
-								<Modal.Header closeButton>
-									<Modal.Title>Edit Service</Modal.Title>
-								</Modal.Header>
-								<Modal.Body>
-									<Form>
-										<Form.Group className="mb-3" controlId="formBasicEmail">
-											<Form.Label>Name of new service</Form.Label>
-											<Form.Control type="service name" placeholder="Enter service name" />
-											<Form.Label>Service Description</Form.Label>
-											<Form.Control type="service name" placeholder="Enter service descritption" />
-										</Form.Group>
-									</Form>
-								</Modal.Body>
-								<Modal.Footer>
-									<Button variant="secondary" onClick={handleClose}>
-										Close
-									</Button>
-									<Button variant="primary" onClick={handleClose}>
-										Save Changes
-									</Button>
-								</Modal.Footer>
-							</Modal>
-						</tr>
-						<tr>
-							<td>2</td>
-							{Array.from({ length: 2 }).map((_, index) => (
-								<td key={index}>Table cell {index}</td>
-							))}
-							<td><Link to="/vendor/app/service/edit"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></Link>
-							</td>
-							<td><Link to="/vendor/app/service/delete"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></Link>
-							</td>
-						</tr>
-						<tr>
-							<td>3</td>
-							{Array.from({ length: 2 }).map((_, index) => (
-								<td key={index}>Table cell {index}</td>
-							))}
-							<td><Link to="/vendor/app/service/edit"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></Link>
-							</td>
-							<td><Link to="/vendor/app/service/delete"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></Link>
-							</td>
-						</tr>
-						<tr>
-							<td>4</td>
-							{Array.from({ length: 2 }).map((_, index) => (
-								<td key={index}>Table cell {index}</td>
-							))}
-							<td><Link to="/vendor/app/service/edit"><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></Link>
-							</td>
-							<td><Link to="/vendor/app/service/delete"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></Link>
-							</td>
-						</tr>
+						{
+							results.shops?.length > 0 && results.shops.map((item, index) => (
+								<tr>
+									<td>{item.shop_pincode}</td>
+									<td>{item.shop_email}</td>
+									<td>{item.shop_contact_number}</td>
+									<td ><Link to={`/vendor/app/view_shop/${item._id}`}><i class="fa fa-eye fa-lg" aria-hidden="true"></i></Link>
+									</td>
+								</tr>
+							))
+						}
 					</tbody>
 				</Table>
 			</div>
