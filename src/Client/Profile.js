@@ -3,8 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { NavLink } from 'react-router-dom'
 import { profileStatus, editProfile } from '../Redux/Client/Listing/ListingSlice';
+import service from '../Common_Pages/Service';
+import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
+import axios from 'axios';
 // import S3FileUpload from 'react-s3';
-import { uploadFile } from 'react-s3';
+// import { uploadFile } from 'react-s3';
 
 // const config = {
 //     bucketName: 'myBucket',
@@ -23,6 +26,8 @@ import { uploadFile } from 'react-s3';
 //     s3Url: 'https:/your-custom-s3-url.com/', / optional /
 // }
 
+const __DEV__ = document.domain === 'localhost'
+
 const Profile = () => {
 
     //object
@@ -33,6 +38,9 @@ const Profile = () => {
     const { isProfileStatus } = useSelector(state => state.listing);
 
     //State Manage
+    const [binaryImage, setBinaryImage] = useState();
+    const [images, setimages] = useState([{ preview: "/assets/no_image2.png" }]);
+    const [uploadFileName, setUploadFileName] = useState("Choose Company Logo");
     const [form, setForm] = useState({
         customerId: '',
         fname: '',
@@ -109,16 +117,90 @@ const Profile = () => {
     }
 
     // //Upload File
-    // const uploadFileButton = (e) => {
-    //     console.log("e :- ", e.target.files[0]);
-    //     uploadFile(e.target.files, config)
-    //         .then((data) => {
-    //             console.log("Success :- ", data);
-    //         })
-    //         .catch((err) => {
-    //             console.log("err :- ", err)
-    //         })
-    // }
+    const uploadFileButton = async (e) => {
+        console.log("e :- ", e.target.files[0]);
+
+        let file = e.target.files[0];
+        let url = URL.createObjectURL(e.target.files[0]);
+
+        const response = await service.convertBase64(file);
+
+        if (response.status) {
+            setUploadFileName(response.name);
+            setimages([{ preview: url }]);
+            setBinaryImage(response.file);
+            dispatch(SuccessAlert('Image Upload Successfully'));
+
+            var formData = new FormData();
+            formData.append('imageData', response.file);
+
+            const responseData = await axios.post("customer/uploadImage", formData);
+
+        } else {
+            dispatch(ErrorAlert('Erro in upload image !! Please try again'))
+        }
+
+        // uploadFile(e.target.files, config)
+        //     .then((data) => {
+        //         console.log("Success :- ", data);
+        //     })
+        //     .catch((err) => {
+        //         console.log("err :- ", err)
+        //     })
+    }
+
+    //Payment Click
+    function loadScript(src) {
+        return new Promise((resolve) => {
+            const script = document.createElement('script')
+            script.src = src
+            script.onload = () => {
+                resolve(true)
+            }
+            script.onerror = () => {
+                resolve(false)
+            }
+            document.body.appendChild(script)
+        })
+    }
+
+    const displayRazorpay = async() =>{
+		const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
+
+		if (!res) {
+			alert('Razorpay SDK failed to load. Are you online?')
+			return
+		}
+
+		const data = await fetch('http://localhost:8080/api/razorpay', { method: 'POST' }).then((t) =>
+			t.json()
+		)
+
+		console.log(data)
+
+		const options = {
+			key: __DEV__ ? 'rzp_test_LeuHX4bMmraCPA' : 'PRODUCTION_KEY',
+			currency: data.currency,
+			amount: data.amount.toString(),
+			order_id: data.id,
+			name: 'Donation',
+			description: 'Thank you for nothing. Please give us some money',
+			image: '/images/near-by-you.jpg',
+			handler: function (response) {
+				alert(response.razorpay_payment_id)
+				alert(response.razorpay_order_id)
+				alert(response.razorpay_signature)
+			},
+			prefill: {
+				name:'Bhargav Patel',
+				email: 'sdfdsjfh2@ndsfdf.com',
+				phone_number: '9899999999'
+			}
+		}
+		const paymentObject = new window.Razorpay(options)
+		paymentObject.open()
+	}
+    console.log("binaryImage :- ", binaryImage);
 
     return (
         <>
@@ -143,8 +225,17 @@ const Profile = () => {
                 <div class="container">
                     <div class="row">
                         <div class="col-md-7 mb-5" data-aos="fade">
-                            {/* <input type="file" onChange={uploadFileButton}  /> */}
                             <form method="post" onSubmit={onSubmit} class="p-5 bg-white" style={{ marginTop: '-150px' }}>
+                                <div class="row form-group">
+                                    <div class="col-md-6 mb-3 mb-md-0">
+                                        <label class="text-black" for="fname">Upload File</label>
+                                        <input type="file" class="form-control" onChange={uploadFileButton} />
+                                    </div>
+                                    <div class="col-md-6 mb-3 mb-md-0">
+                                        <label class="text-black" for="fname">Payment Demo</label>
+                                        <input onClick={displayRazorpay} type="button" value="Donot 499" class="form-control btn btn-primary btn-md text-white" />
+                                    </div>
+                                </div>
                                 <div class="row form-group">
                                     <div class="col-md-6 mb-3 mb-md-0">
                                         <label class="text-black" for="fname">First Name</label>
