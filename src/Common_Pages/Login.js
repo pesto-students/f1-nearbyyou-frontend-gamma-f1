@@ -290,8 +290,8 @@ const Login = () => {
 													<select class="form-control" onChange={handleChange} name="v_category" value={form.v_category}>
 														<option value="">Please Select</option>
 														<option value="salon">Salon</option>
-														<option value="plumber">Plumbers</option>
-														<option value="elctrician">Electrician</option>
+														<option value="plumbers">Plumbers</option>
+														<option value="electrician">Electrician</option>
 														<option value="carpenter">Carpenter</option>
 														<option value="pestcontrol">Cleaning Pest and Control</option>
 														<option value="painter">Painters</option>
