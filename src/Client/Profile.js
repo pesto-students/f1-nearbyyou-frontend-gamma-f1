@@ -69,12 +69,12 @@ const Profile = () => {
             lname: userData?.user_name?.split(" ")[1],
             email: userData?.email,
             contact: userData?.contact_number,
-            door_number: userData?.custDetails[0]?.door_number,
-            street: userData?.custDetails[0]?.street,
-            area: userData?.custDetails[0]?.area,
-            city: userData?.custDetails[0]?.city_town,
-            state: userData?.custDetails[0]?.state,
-            pincode: userData?.custDetails[0]?.pincode,
+            // door_number: userData?.custDetails[0]?.door_number,
+            // street: userData?.custDetails[0]?.street,
+            // area: userData?.custDetails[0]?.area,
+            // city: userData?.custDetails[0]?.city_town,
+            // state: userData?.custDetails[0]?.state,
+            // pincode: userData?.custDetails[0]?.pincode,
         })
     }, [])
 
