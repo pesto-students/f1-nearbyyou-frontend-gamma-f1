@@ -129,39 +129,41 @@ export const registerAPI = createAsyncThunk('Register API CALL', async ({ user_n
 
 
 export const LoginAPI = createAsyncThunk('Login API CALL', async ({ username, password }, { dispatch, rejectWithValue }) => {
-	console.log("loginAPI :-", { username, password });
-	try {
-		const response = await axios.post("customer/login",
-			{
-				username: username,
-				password: password,
-			});
-		const responseData = response.data;
 
-		if (responseData.status === "success") {
+    console.log("loginAPI :-", { username, password });
+    try {
+        const response = await axios.post("customer/login",
+            {
+                username: username,
+                password: password,
+            });
+        const responseData = response.data;
 
-			let authToken = responseData.payload.data.token;
+        if (responseData.status === "success") {
 
-			let userInfo = responseData.payload.data.userInfo.data[0];
+            let authToken = responseData.payload.data.token;
 
-			console.log("userInfo:- ", userInfo);
+            let userInfo = responseData.payload.data.userInfo.data[0];
 
-			localStorage.setItem('Near_By_You_Client', JSON.stringify(userInfo));
+            console.log("userInfo:- ", userInfo);
 
-			// axios.defaults.headers.common['Authorization'] = 'Bearer ' + authToken;
-			axios.defaults.headers.common['x-auth-token'] = authToken;
-			localStorage.setItem('Near_By_You', authToken)
+            localStorage.setItem('Near_By_You_Client', JSON.stringify(userInfo));
 
-			dispatch(SuccessAlert(responseData.msg));
-			return response;
-		} else {
-			dispatch(ErrorAlert(responseData.message));
-			return rejectWithValue({ message: 'No Data Found' });
-		}
-	}
-	catch (e) {
-		dispatch(ErrorAlert('Something Want Wrong!!'));
-	}
+            // axios.defaults.headers.common['Authorization'] = 'Bearer ' + authToken;
+            axios.defaults.headers.common['x-auth-token'] = authToken;
+            localStorage.setItem('Near_By_You', authToken)
+
+            dispatch(SuccessAlert(responseData.msg));
+            return response;
+        } else {
+            dispatch(ErrorAlert(responseData.msg));
+            return rejectWithValue({ message: 'No Data Found' });
+        }
+    }
+    catch (e) {
+        dispatch(ErrorAlert('Something Want Wrong!!'));
+    }
+
 });
 
 export const slice = createSlice({
