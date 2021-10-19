@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
-import { viewTicketAPI, viewTicketStatus } from '../Redux/Client/Listing/ListingSlice';
+import { viewTicketAPI, viewTicketStatus, holdingRequestStausAPI, holdingReqStatus } from '../Redux/Client/Listing/ListingSlice';
 import { Form } from 'react-bootstrap';
 
 const ViewTickets = () => {
@@ -10,17 +10,19 @@ const ViewTickets = () => {
     const dispatch = useDispatch();
 
     //get data from store
-    const { isViewTicketStatus, viewTicketData } = useSelector(state => state.listing);
+    const { isViewTicketStatus, viewTicketData, isHoldingReqStatus } = useSelector(state => state.listing);
 
     console.log("viewTicketData :- ", viewTicketData);
 
     //State Manage
     const [viewTicket, setViewTicket] = useState([]);
-    const [statusDrop, setStatusDrop] = useState('pending')
+    const [statusDrop, setStatusDrop] = useState('');
+    const [callAPI, setCallAPI] = useState(false);
 
     //useeffect
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        dispatch(holdingReqStatus(false));
     }, [])
 
     useEffect(() => {
@@ -28,11 +30,30 @@ const ViewTickets = () => {
         dispatch(viewTicketStatus(false));
         console.log("userData :- ", userData, userData.id);
         dispatch(viewTicketAPI({ custID: userData._id, status: statusDrop }))
-    }, [statusDrop])
+    }, [statusDrop, callAPI])
 
     useEffect(() => {
         setViewTicket(viewTicketData)
     }, [viewTicketData])
+
+    useEffect(() => {
+        if(isHoldingReqStatus){
+            dispatch(holdingReqStatus(false));
+            setCallAPI(!callAPI);
+        }
+    },[isHoldingReqStatus])
+
+    //Functions
+
+    //Click on Accept Request
+    const onAcceptClick = (id) => {
+        dispatch(holdingRequestStausAPI({id: id, type:'accept'}))
+    }
+
+    //Click on Reject Request
+    const onRejectClick = (id) => {
+        dispatch(holdingRequestStausAPI({id: id, type:'reject'}))
+    }
 
     console.log("viewTicket-", viewTicket);
 
@@ -62,7 +83,7 @@ const ViewTickets = () => {
                             <select className="form-control" value={statusDrop} onChange={(e) => setStatusDrop(e.target.value)}>
                                 <option value="">All</option>
                                 <option value="pending">Pending</option>
-                                {/* <option value="holding">Holding</option> */}
+                                <option value="holding">Holding</option>
                                 <option value="in_progress">In Progress</option>
                                 <option value="closed">Closed</option>
                             </select>
@@ -74,10 +95,14 @@ const ViewTickets = () => {
                             {
                                 viewTicket?.length > 0 && viewTicket.map((item, index) => {
 
-                                    var timeArr = item.service_time.split(":");
-                                    var suffix = parseInt(timeArr[0]) >= 12 ? "PM" : "AM";
-                                    var hours = ((parseInt(timeArr[0]) + 11) % 12 + 1) + ":" + timeArr[1] + " " + suffix
-
+                                    var timeArr = item?.ticket_status == 'pending'? item?.service_time?.split(":") : item?.hold_time?.split(":");
+                                    var suffix = '';
+                                    var hours = '';
+                                    if(timeArr){
+                                        suffix = parseInt(timeArr[0]) >= 12 ? "PM" : "AM";
+                                        hours = ((parseInt(timeArr[0]) + 11) % 12 + 1) + ":" + timeArr[1] + " " + suffix
+                                    }
+                                    
                                     return (
                                         <div class="d-block d-md-flex listing-horizontal">
                                             <NavLink to={`/category/${item?.categoryDetails[0]?.name}/shop/${item?.shopdeatils[0]?._id}`} class="img d-block"
@@ -87,7 +112,7 @@ const ViewTickets = () => {
                                             <div class="lh-content">
                                                 <h3><a href="#">{item?.shopdeatils[0]?.shop_name}</a></h3>
                                                 <p>{item?.shopdeatils[0]?.shop_area}, {item?.shopdeatils[0]?.shop_street}, {item?.shopdeatils[0]?.shop_city_town}, {item?.shopdeatils[0]?.shop_state}</p>
-                                                <p><b>{item?.service_date?.split('T')[0]}</b>,  <b>{hours}</b></p>
+                                                <p><b>{item?.ticket_status == 'pending' ? item?.service_date?.split('T')[0] : item?.hold_date?.split('T')[0]}</b>,  <b>{hours}</b></p>
                                                 <div className="row">
                                                     <div className="col-md-4">
                                                         <div class="border p-3 rounded mb-2">
@@ -101,8 +126,8 @@ const ViewTickets = () => {
                                                         </div>
                                                     </div>
                                                     {
-                                                        item.ticket_status == 'holding' && (
-                                                            <div className="col-md-4">
+                                                        (item?.ticket_status == 'holding') && (
+                                                            <div className="col-md-6">
                                                                 <div class="border p-3 rounded mb-2">
                                                                     <a data-toggle="collapse" href={`#collapse-hold${index}`} role="button" aria-expanded="false"
                                                                         aria-controls={`collapse-hold${index}`} class="accordion-item h5 d-block mb-0">Vendor Holding Request</a>
@@ -123,15 +148,15 @@ const ViewTickets = () => {
                                                                     </div>
                                                                 </div>
                                                                 <div className="justify-content-evenly">
-                                                                    <button class="accept-btn cursor-pointer" >Accept</button>
-                                                                    <button class="reject-btn cursor-pointer">Reject</button>
+                                                                    <button class="accept-btn cursor-pointer" onClick={() => onAcceptClick(item?._id)} >Accept</button>
+                                                                    <button class="reject-btn cursor-pointer" onClick={() => onRejectClick(item?._id)}>Reject</button>
                                                                 </div>
                                                             </div>
                                                         )
                                                     }
                                                 </div>
                                             </div>
-                                            <div><span class="statusButton">{item.ticket_status}</span></div>
+                                            <div><span class="statusButton">{item?.ticket_status == 'in_progress' ? 'In Progress' : item?.ticket_status}</span></div>
                                         </div>
                                     )
                                 })

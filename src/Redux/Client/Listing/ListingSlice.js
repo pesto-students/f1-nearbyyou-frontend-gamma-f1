@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { ErrorAlert, SuccessAlert } from '../../SnackBar/SnackbarSlice';
 import axios from 'axios';
 
+//Search Shop API
 export const searchAPI = createAsyncThunk('Search API CALL', async ({ freeText, pincode, category }, { dispatch, rejectWithValue }) => {
     console.log("searchAPI :-", { freeText, pincode, category });
 
@@ -28,6 +29,7 @@ export const searchAPI = createAsyncThunk('Search API CALL', async ({ freeText, 
     }
 });
 
+//Listing Category API
 export const categoryAPI = createAsyncThunk('Category API CALL', async ({ type, selectCategory }, { dispatch, rejectWithValue }) => {
     console.log("categoryAPI :-", { type });
     try {
@@ -51,6 +53,7 @@ export const categoryAPI = createAsyncThunk('Category API CALL', async ({ type, 
     }
 });
 
+//View Shop Details
 export const detailAPI = createAsyncThunk('Details API CALL', async ({ shopID }, { dispatch, rejectWithValue }) => {
     console.log("DetailAPI :-", { shopID });
     try {
@@ -70,6 +73,7 @@ export const detailAPI = createAsyncThunk('Details API CALL', async ({ shopID },
     }
 });
 
+//Generate Ticket API
 export const ticketAPI = createAsyncThunk('Ticket API CALL', async ({ description, date, time, customerId, ticket_status, shop_ticket }, { dispatch, rejectWithValue }) => {
     console.log("ticketAPi :-", { description, date, time });
     try {
@@ -97,6 +101,7 @@ export const ticketAPI = createAsyncThunk('Ticket API CALL', async ({ descriptio
     }
 });
 
+//View Ticket API
 export const viewTicketAPI = createAsyncThunk('Ciew Ticket API CALL', async ({ custID, status }, { dispatch, rejectWithValue }) => {
     console.log("userId :-", { custID });
     try {
@@ -120,6 +125,7 @@ export const viewTicketAPI = createAsyncThunk('Ciew Ticket API CALL', async ({ c
     }
 });
 
+//Customer Details API
 export const customerDetailsAPI = createAsyncThunk('Customer Details API CALL', async ({ userID }, { dispatch, rejectWithValue }) => {
     console.log("userID :-", { userID });
     try {
@@ -142,6 +148,7 @@ export const customerDetailsAPI = createAsyncThunk('Customer Details API CALL', 
     }
 });
 
+//Edit Profile API
 export const editProfile = createAsyncThunk('Edit Profile API CALL', async ({ user_name, contact_number, door_number, street, area, pincode, city, state }, { dispatch, rejectWithValue }) => {
     console.log("userId :-", { user_name, contact_number, door_number, street, area, pincode, city, state });
     try {
@@ -171,6 +178,7 @@ export const editProfile = createAsyncThunk('Edit Profile API CALL', async ({ us
     }
 });
 
+//Get Category ID API Based on Name
 export const getCategoryIDAPI = createAsyncThunk('Get Category ID API CALL', async ({ cname }, { dispatch, rejectWithValue }) => {
     console.log("categoryAPI :-", { cname });
     try {
@@ -196,6 +204,35 @@ export const getCategoryIDAPI = createAsyncThunk('Get Category ID API CALL', asy
     }
 });
 
+//Accept Reject Holding Request
+export const holdingRequestStausAPI = createAsyncThunk('Accept Reject Holding API CALL', async ({ id, type }, { dispatch, rejectWithValue }) => {
+    console.log("holdingRequestStausAPI :-", { id, type });
+    try {
+        const response = await axios.post("customer/acceptRejectHoldingReq",
+            {
+                id: id,
+                type: type
+            });
+        const responseData = response.data;
+
+        console.log("response ;-", response);
+        console.log("data.payload.data.data[0]._id:-", response.data.payload.data.data);
+
+        if (responseData.status == "success") {
+            // dispatch(SuccessAlert(responseData.msg));
+            return response;
+        } else {
+            dispatch(ErrorAlert(responseData.msg));
+            return rejectWithValue({ message: 'No Data Found' });
+        }
+    }
+    catch (e) {
+        console.log("Error :- ", e)
+    }
+});
+
+
+
 export const slice = createSlice({
     name: 'Listing Slice',
     initialState: {
@@ -211,7 +248,8 @@ export const slice = createSlice({
         viewTicketData: [],
         customerDetails: [],
         isProfileStatus: false,
-        categoryID: ''
+        categoryID: '',
+        isHoldingReqStatus: false
     },
     reducers: {
         searchStatus: (state, action) => {
@@ -231,6 +269,9 @@ export const slice = createSlice({
         },
         profileStatus: (state, action) => {
             state.isProfileStatus = action.payload;
+        },
+        holdingReqStatus: (state, action) => {
+            state.isHoldingReqStatus = action.payload;
         },
     },
     extraReducers: {
@@ -292,9 +333,16 @@ export const slice = createSlice({
         [getCategoryIDAPI.rejected]: (state, action) => {
             state.categoryID = '';
         },
+
+        [holdingRequestStausAPI.fulfilled]: (state, action) => {
+            state.isHoldingReqStatus = true;
+        },
+        [holdingRequestStausAPI.rejected]: (state, action) => {
+            state.isHoldingReqStatus = false;
+        }
     }
 });
 
-export const { searchStatus, categoryStatus, detailStatus, ticketStatus, viewTicketStatus, profileStatus } = slice.actions;
+export const { searchStatus, categoryStatus, detailStatus, ticketStatus, viewTicketStatus, profileStatus, holdingReqStatus } = slice.actions;
 
 export default slice.reducer;
