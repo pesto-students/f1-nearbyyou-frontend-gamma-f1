@@ -18,8 +18,8 @@ const VendorProfile = () => {
 	});
 	const [user, setUser] = useState('');
 
-	useEffect(()=>{
-		if(isnewShopStatus){
+	useEffect(() => {
+		if (isnewShopStatus) {
 			dispatch(newShopStatus(false));;
 			history.push('/vendor/app/profile')
 		}
@@ -113,7 +113,6 @@ const VendorProfile = () => {
 			</div>
 			<div class="site-section" style={{ marginTop: "-4.5rem" }}>
 				<div class="container">
-
 					<div class="row form-group">
 						<div class="col-md-6" data-aos="fade">
 							<form class="p-1" >
@@ -122,7 +121,7 @@ const VendorProfile = () => {
 								</div>
 								<div class="form-group mb-5">
 									<div class="col-md-12  mb-md-0">
-										<h5 class="text-black" for="ticket_no">Contact Number : {user.contact}</h5>
+										<h5 class="text-black" for="ticket_no">Contact Number : {user.contact_number}</h5>
 									</div>
 								</div>
 								<div class="form-group mb-3">
@@ -148,54 +147,55 @@ const VendorProfile = () => {
 
 				<h2>Shop deatils</h2>
 				<label class="text-black" for="adding_new_service">Add new shop branch</label>
-				<button type="addservice" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+				<button class="btn btn-primary btn-xs text-white" type="addservice" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
 					<i class="fa fa-plus p-1" aria-hidden="true"></i>
 				</button>
 
 
 				<div class="form-group collapse add_service_form p-3" id="collapseExample">
 					<form onSubmit={addShopClick}>
-						<label class="text-black" for="service_name">Add New service</label>
+						<label class="text-white" for="service_name">Add New service</label>
 						<div class="row form-group">
 							<div class="col-md-6">
-								<label class="text-black" for="service_description">Shop Email </label>
+								<label class="text-white" for="service_description">Shop Email </label>
 								<input type="text" name="shop_email" class="form-control" onChange={handleChange} placeholder="enter shop email" required />
 							</div>
 							<div class="col-md-6">
-								<label class="text-black" for="service_description">Shop Contact </label>
+								<label class="text-white" for="service_description">Shop Contact </label>
 								<input type="text" name="shop_contact_number" class="form-control" onChange={handleChange} placeholder="enter shop contact" required />
 							</div>
 						</div>
 						<div class="row form-group">
 							<div class="col-md-4">
-								<label class="text-black" for="service_description">Shop door number</label>
+								<label class="text-white" for="service_description">Shop door number</label>
 								<input type="text" name="shop_door_number" class="form-control" onChange={handleChange} required />
 							</div>
 							<div class="col-md-4">
-								<label class="text-black" for="service_description">Shop street </label>
+								<label class="text-white" for="service_description">Shop street </label>
 								<input type="text" name="shop_street" class="form-control" onChange={handleChange} />
 							</div>
 							<div class="col-md-4">
-								<label class="text-black" for="service_description">Shop area </label>
+								<label class="text-white" for="service_description">Shop area </label>
 								<input type="text" name="shop_area" id="ticket_no" class="form-control" onChange={handleChange} required />
 							</div>
 						</div>
 						<div class="row form-group mb-3">
 							<div class="col-md-5">
-								<label class="text-black" for="service_description">Shop city/town</label>
+								<label class="text-white" for="service_description">Shop city/town</label>
 								<input type="text" name="shop_city_town" class="form-control" onChange={handleChange} required />
 							</div>
 							<div class="col-md-4">
-								<label class="text-black" for="service_description">Shop state </label>
+								<label class="text-white" for="service_description">Shop state </label>
 								<input type="text" name="shop_state" class="form-control" onChange={handleChange} required />
 							</div>
 							<div class="col-md-3">
-								<label class="text-black" for="service_description">Shop pincode </label>
+								<label class="text-white" for="service_description">Shop pincode </label>
 								<input type="text" name="shop_pincode" class="form-control" onChange={handleChange} required />
 							</div>
 						</div>
+						<label class="text-white" for="shop_category">select shop category</label>
 						<div class="row form-group">
-							<label class="text-black" for="shop_category">select shop category</label>
+							
 							<div class="select-wrap col-md-6">
 								<span class="icon"><span class="icon-keyboard_arrow_down"></span></span>
 								<select class="form-control" name="shop_category_name" onChange={handleChange} value={form.shop_category}>
@@ -210,7 +210,7 @@ const VendorProfile = () => {
 							</div>
 						</div>
 						<div class="col-md-3">
-							<button type="submit">
+							<button type="submit" class="btn btn-outline-white btn-primary btn-md text-white">
 								ADD
 							</button>
 						</div>

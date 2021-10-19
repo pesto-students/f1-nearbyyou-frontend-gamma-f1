@@ -13,7 +13,7 @@ const Footer = () => {
                                 and Consonantia, there live the blind texts.</p>
                         </div>
                         <div class="col-lg-4">
-                            <p class="mb-0"><Link to="/login" class="btn btn-outline-white text-white btn-md px-5 font-weight-bold btn-md-block">Sign Up</Link></p>
+                            <p class="mb-0"><Link to="/login" class="btn btn-primary btn-outline-white text-white btn-md px-5">Sign Up</Link></p>
                         </div>
                     </div>
                 </div>
