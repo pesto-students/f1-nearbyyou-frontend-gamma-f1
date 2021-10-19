@@ -69,7 +69,7 @@ export const AddShopAPI = createAsyncThunk('Add new shop', async ({
     shop_category,
     shop_category_name
 }, { dispatch, rejectWithValue }) => {
-    console.log('AddShopAPI--> ', shop_email, shop_contact_number, shop_door_number, shop_street, shop_area, shop_city_town, shop_state, shop_pincode, shop_category)
+    console.log('AddShopAPI--> ', shop_email, shop_contact_number, shop_door_number, shop_street, shop_area, shop_city_town, shop_state, shop_pincode, shop_category_name)
     try {
         const response = await axios.post('/vendor/createShop',
             {
@@ -217,6 +217,36 @@ export const DeleteServiceAPI = createAsyncThunk('Get All Service API for a shop
 });
 
 
+export const EditServiceAPI = createAsyncThunk('Edit shop details', async ({
+    service_id,
+    name,
+    service_description,
+}, { dispatch, rejectWithValue }) => {
+    console.log('EditServiceAPI--> ', service_id, name, service_description);
+    try {
+        const response = await axios.put(`vendor/service/${service_id}`,
+            {
+               name,
+               service_description
+            });
+        const responseData = response.data;
+        console.log("response data-> ", responseData)
+
+        if (responseData.status === "success") {
+            dispatch(SuccessAlert(responseData.message));
+            return response;
+        } else {
+            dispatch(ErrorAlert(responseData.message));
+            return rejectWithValue({ message: 'No Data Found' });
+        }
+
+    }
+    catch (error) {
+        console.log(error)
+    }
+});
+
+
 export const slice = createSlice({
     name: 'vendor profile page slice',
     initialState: {
@@ -226,12 +256,14 @@ export const slice = createSlice({
         updateShopResults: [],
         newServiceResults: [],
         allServicesResults: [],
+        editServiceResults:[],
         isshopstatus: false,
         isoneshopstatus: false,
         isnewShopStatus: false,
         iseditshopstatus: false,
         isnewservicestatus: false,
-        isAllServices: false
+        isAllServices: false,
+        isEditService:false
     },
     reducers: {
         shopStatus: (state, action) => {
@@ -251,6 +283,9 @@ export const slice = createSlice({
         },
         allServicesStatus: (state, action) => {
             state.isAllServices = action.payload;
+        },
+        editServicesStatus: (state, action) => {
+            state.isEditService = action.payload;
         },
 
     },
@@ -303,10 +338,18 @@ export const slice = createSlice({
             state.isAllServices = false;
             state.allServicesResults = [];
         },
+        [EditServiceAPI.fulfilled]: (state, action) => {
+            state.isEditService = true;
+            state.editServiceResults = action.payload.data.payload.data;
+        },
+        [EditServiceAPI.rejected]: (state, action) => {
+            state.isEditService = false;
+            state.editServiceResults = [];
+        },
 
     }
 });
 
-export const { shopStatus, oneShopStatus, newShopStatus, editShopStatus, newServiceStatus, allServicesStatus } = slice.actions;
+export const { shopStatus, oneShopStatus, newShopStatus, editShopStatus, newServiceStatus, allServicesStatus,editServicesStatus } = slice.actions;
 
 export default slice.reducer;

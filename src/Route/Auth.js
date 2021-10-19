@@ -7,6 +7,9 @@ class Auth {
     }
 
     getAccessToken = () => {
+        if(window.localStorage.getItem("Near_By_You_google")){console.log("google local storage=>")}
+        if(window.localStorage.getItem('Near_By_You')){console.log("just email local storage=>")}
+        
 		return window.localStorage.getItem('Near_By_You');
 	};
 

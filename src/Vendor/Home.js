@@ -87,7 +87,7 @@ const VendorHome = () => {
 							<Nav.Link className="menuItem" eventKey="new_request" onSelect={() => selectMenu('new')}  >New Request</Nav.Link>
 						</Nav.Item>
 						<Nav.Item>
-							<Nav.Link className="menuItem" eventKey="pending_request" onSelect={() => selectMenu('pending')}  >Pending Request </Nav.Link>
+							<Nav.Link className="menuItem" eventKey="pending_request" onSelect={() => selectMenu('pending')}  >Holding Request </Nav.Link>
 						</Nav.Item>
 						<Nav.Item>
 							<Nav.Link className="menuItem" eventKey="inprogress_request" onSelect={() => selectMenu('inprogress')}  >In-Progress Request </Nav.Link>

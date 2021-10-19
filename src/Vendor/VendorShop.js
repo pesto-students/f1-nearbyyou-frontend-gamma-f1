@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Table } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
+
 
 import { useParams, useHistory } from 'react-router-dom';
 // import { useSelector, useDispatch } from 'react-redux';
@@ -13,7 +15,9 @@ import {
 	newServiceStatus,
 	GetAllServiceAPI,
 	allServicesStatus,
-	DeleteServiceAPI
+	DeleteServiceAPI,
+	EditServiceAPI,
+	editServicesStatus
 } from '../Redux/vendor/Profile/VendorProfileSlice';
 
 const ViewShop = () => {
@@ -46,7 +50,8 @@ const ViewShop = () => {
 		newServiceResults,
 		isnewservicestatus,
 		isAllServices,
-		allServicesResults
+		allServicesResults,
+		isEditService
 	} = useSelector(state => state.shop);
 	const [shopdetails, setShopDetails] = useState('');
 
@@ -90,8 +95,13 @@ const ViewShop = () => {
 			setAllServices(allServicesResults)
 		}
 	}, [isAllServices])
-	console.log("all services in view page-->", allservices)
 
+	useEffect(() => {
+		if (isEditService) {
+			dispatch(GetAllServiceAPI({ shop_id: id }))
+			dispatch(editServicesStatus(false));
+		}
+	}, [isEditService])
 
 	useEffect(() => {
 		if (iseditshopstatus) {
@@ -156,6 +166,11 @@ const ViewShop = () => {
 		));
 
 	}
+	const [editData, setEditData] = useState({
+		service_id: '',
+		data: '',
+		type: ''
+	});
 
 	const [service, setService] = useState({
 		service_name: '',
@@ -171,22 +186,67 @@ const ViewShop = () => {
 
 	const addServiceClick = (e) => {
 		e.preventDefault();
-		dispatch(AddServiceAPI(
-			{
-				shop_id: id,
-				service_name: service.service_name,
+		if (editData.type == "add") {
+			dispatch(AddServiceAPI(
+				{
+					shop_id: id,
+					service_name: service.service_name,
+					service_description: service.service_description
+				}
+			));
+		} else {
+			dispatch(EditServiceAPI({
+				service_id: editData.service_id,
+				name: service.service_name,
 				service_description: service.service_description
-			}
-		));
-
+			}))
+		}
 	}
 
-	const deleteservice = (id) => {
-		dispatch(DeleteServiceAPI({ service_id: id }));
+	const [show, setShow] = useState(false);
+
+
+
+	const clickonEdit = (item) => {
+		setEditData({
+			service_id: item._id,
+			type: "edit",
+			data: { item }
+		})
+		setService({
+			service_name: item.name,
+			service_description: item.service_description
+		})
+	}
+	const addItem = (add) => {
+		setEditData({
+			type: "add",
+			data: ""
+		})
+	}
+	useEffect(() => {
+		console.log("editData-->", editData)
+	}, [editData.type])
+
+
+	const handleShow = () => {
+		setShow(true)
 	}
 
 
-
+	const handleClose = () => {
+		setShow(false)
+		console.log("show in close==>", show)
+	}
+	const clickonDelete = (item) => {
+		editData.service_id = item._id;
+		handleShow();
+		console.log("show for pop ===>", show)
+	}
+	const deleteservice = (service_id) => {
+		console.log("value of modal", show)
+		dispatch(DeleteServiceAPI({ service_id: service_id }));
+	}
 
 	return (
 		<>
@@ -272,27 +332,56 @@ const ViewShop = () => {
 
 						<h2>Services</h2>
 						<label class="text-black" for="adding_new_service">Add New service</label>
-						<button type="addservice" class="btn btn-primary btn-xs text-white" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-							<i class="fa fa-plus " aria-hidden="true"></i>
-						</button>
+						<div onClick={() => addItem("add")}>
+							<button class="btn btn-primary btn-xs text-white" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+								<i class="fa fa-plus " aria-hidden="true"></i>
+							</button>
+						</div>
 
 						<form onSubmit={addServiceClick}>
 							<div class="form-group collapse add_service_form p-3" id="collapseExample">
-								<label class="text-black" >Add New service</label>
+								<label class="text-white" >Service Name</label>
 								<div class="col-md-8 mb-3">
-									<input type="text" id="service_name" name="service_name" onChange={serviceChange} class="form-control" placeholder="enter the name of new service" />
+									{
+										editData.type == "edit" ?
+											<input type="text" defaultValue={editData.data.item.name} id="service_name" name="service_name" onChange={serviceChange} class="form-control" /> :
+											<input type="text" defaultValue={""} id="service_name" name="service_name" onChange={serviceChange} class="form-control" placeholder="enter the name of new service" />
+									}
 								</div>
-								<label class="text-black" for="service_description">Add service description</label>
+								<label class="text-white" for="service_description">service description</label>
 								<div class="col-md-8 mb-3">
-									<input type="text" id="service_description" name="service_description" onChange={serviceChange} class="form-control" placeholder="enter the service description" />
+									{
+										editData.type == "edit" ?
+											<input type="text" defaultValue={editData.data.item.service_description} id="service_description" name="service_description" onChange={serviceChange} class="form-control" /> :
+											<input type="text" defaultValue={""} id="service_description" name="service_description" onChange={serviceChange} class="form-control" />
+									}
 								</div>
 								<div class="col-md-3">
-									<button type="submit">
-										ADD
+									<button type="submit" class="btn btn-outline-white btn-primary btn-md text-white">
+										Save
 									</button>
 								</div>
 							</div>
 						</form>
+						{/* Delete Modal */}
+						{console.log("show value==>", show)}
+						<Modal class="deleteModal" show={show} onHide={handleClose} animation={false} aria-labelledby="contained-modal-title-vcenter"
+							centered>
+							<Modal.Header closeButton>
+								<Modal.Title>Delete Plan</Modal.Title>
+							</Modal.Header>
+							<Modal.Body class="deleteModalBody">Are You Sure Want to Delete ??</Modal.Body>
+							<Modal.Footer class="deleteModalFooter">
+								<input type="button" value="Yes" label="Yes" class="deletebtn" onClick={console.log("yes is clicked")} />
+								<input type="button" value="No" label="No" class="deletebtn" onClick={handleClose} />
+								<Button variant="secondary" onClick={handleClose}>
+									Close
+								</Button>
+								<Button variant="primary" onClick={console.log("save is clicked")}>
+									Save Changes
+								</Button>
+							</Modal.Footer>
+						</Modal>
 
 
 						<Table responsive>
@@ -310,16 +399,17 @@ const ViewShop = () => {
 										<tr>
 											<td>{item.name}</td>
 											<td>{item.service_description}</td>
-											<td><i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></td>
-											<td onClick={() => { deleteservice(item._id) }}><i class="fa fa-trash fa-lg" aria-hidden="true"></i></td>
+											<td onClick={() => clickonEdit(item)}><i data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></td>
+											<td onClick={()=> {if(window.confirm('Are you sure to delete this record?')){deleteservice(item._id)}}}><i class="fa fa-trash fa-lg" aria-hidden="true"></i></td>
+											{/* <td onClick={() => { clickonDelete(item._id) }}><i class="fa fa-trash fa-lg" aria-hidden="true"></i></td> */ }
 										</tr>
-									))
+							))
 								}
-							</tbody>
-						</Table>
-					</div>
+						</tbody>
+					</Table>
 				</div>
 			</div>
+		</div>
 		</>
 	)
 }

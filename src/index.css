@@ -161,3 +161,32 @@ code {
   color: #00918e;
   border-bottom: 1px solid #00918e;
 }
+
+.modal-dialog{
+  background-color: white !important;
+    padding: 20px !important;
+    border-radius: 8px !important;
+}
+
+.deleteModalBody{
+  margin-top: 17px !important;
+}
+
+.deleteModalFooter{
+  margin-top: 31px !important;
+  display: flex !important;
+  justify-content: end !important;
+}
+
+.deletebtn{
+  margin-right: 14px !important;
+    width: 70px !important;
+    height: 35px !important;
+    background-color: #00918e !important;
+    color: white !important;
+    border: 0 !important;
+}
+
+button.close{
+  margin-top: -45px !important;
+}
