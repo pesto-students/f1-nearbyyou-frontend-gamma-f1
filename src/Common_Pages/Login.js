@@ -3,7 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
 import auth from '../Route/Auth';
-import { registerAPI, registerStatus, LoginAPI, loginStatus } from '../Redux/Client/Register-Login/Register-LoginSlice'
+import { registerAPI, registerStatus, LoginAPI, loginStatus,GoogleLoginAPi} from '../Redux/Client/Register-Login/Register-LoginSlice'
+
+
 
 const Login = () => {
 
@@ -130,6 +132,24 @@ const Login = () => {
 		e.preventDefault();
 		dispatch(LoginAPI({ username: form.username, password: form.password }));
 	}
+
+
+
+	const onSignIn = () => {
+		dispatch(GoogleLoginAPi({}));
+		
+	}
+
+	// const signOutg = () => {
+	// 	signOut(auth).then(() => {
+	// 		console.log("user is logged out")
+	// 	}).catch((error) => {
+	// 		// An error happened.
+	// 	});
+	// }
+
+
+
 	return (
 		<>
 			<div class="site-blocks-cover inner-page-cover overlay"
@@ -338,7 +358,11 @@ const Login = () => {
 									</div>
 								</div>
 							</form>
+							<button onClick={onSignIn}>Sign in with google</button>
+							{/* <div class="g-signin2" onclick={onSignIn}></div> */}
+							{/* <a href="#" onclick={signOutg}>Sign out</a> */}
 						</div>
+
 					</div>
 				</div>
 			</div>
