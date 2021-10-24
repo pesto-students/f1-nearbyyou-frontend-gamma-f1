@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
-import { viewTicketAPI, viewTicketStatus, holdingRequestStausAPI, holdingReqStatus } from '../Redux/Client/Listing/ListingSlice';
+import { feedBackSendStatus, sendFeedBackAPI, viewTicketAPI, viewTicketStatus, holdingRequestStausAPI, holdingReqStatus } from '../Redux/Client/Listing/ListingSlice';
 import { Form } from 'react-bootstrap';
 import NoDataFound from '../Common_Pages/NoDataFound';
 import ReactStars from "react-rating-stars-component";
+import { Modal, Button } from 'react-bootstrap';
+import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
 
 const ViewTickets = () => {
 
@@ -12,7 +14,7 @@ const ViewTickets = () => {
     const dispatch = useDispatch();
 
     //get data from store
-    const { isViewTicketStatus, viewTicketData, isHoldingReqStatus } = useSelector(state => state.listing);
+    const { isViewTicketStatus, isFeedBackSendStatus, viewTicketData, isHoldingReqStatus } = useSelector(state => state.listing);
 
     console.log("viewTicketData :- ", viewTicketData);
 
@@ -20,18 +22,23 @@ const ViewTickets = () => {
     const [viewTicket, setViewTicket] = useState([]);
     const [statusDrop, setStatusDrop] = useState('');
     const [callAPI, setCallAPI] = useState(false);
+    const [show, setShow] = useState(false);
+    const [feedBack, setFeedBack] = useState('');
+    const [rating, setRating] = useState('');
+    const [shopId, setShopId] = useState('');
 
     //useeffect
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         dispatch(holdingReqStatus(false));
+        dispatch(feedBackSendStatus(false));
     }, [])
 
     useEffect(() => {
         let userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
         dispatch(viewTicketStatus(false));
         console.log("userData :- ", userData, userData.id);
-        dispatch(viewTicketAPI({ custID: userData._id, status: statusDrop }))
+        dispatch(viewTicketAPI({ custID: userData?._id, status: statusDrop }))
     }, [statusDrop, callAPI])
 
     useEffect(() => {
@@ -44,6 +51,11 @@ const ViewTickets = () => {
             setCallAPI(!callAPI);
         }
     }, [isHoldingReqStatus])
+
+    useEffect(() => {
+        handleClose();
+        dispatch(feedBackSendStatus(false));
+    }, [isFeedBackSendStatus])
 
     //Functions
 
@@ -59,24 +71,97 @@ const ViewTickets = () => {
 
     //Give Rating
     const ratingChanged = (newRating) => {
-        console.log("Rating :- ", newRating);
+        setRating(newRating);
     };
+
+    //Open Modal
+    const handleShow = (shopId) => {
+        setShopId(shopId);
+        setShow(true);
+    };
+
+    //Close Modal
+    const handleClose = () => {
+        setShow(false)
+    };
+
+    //Handle Change Event
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFeedBack(value);
+    }
+
+    //Submit the Feedback
+    const handleSubmit = () => {
+
+        if (feedBack == '' || rating == 0) {
+            if (feedBack == '') {
+                dispatch(ErrorAlert('Please Add FeedBack !!'));
+            } else {
+                dispatch(ErrorAlert('Please Add Star Rating !!'));
+            }
+        } else {
+            let userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
+
+            console.log("rating  =", rating);
+
+            dispatch(sendFeedBackAPI({
+                shopID: shopId,
+                userId: userData?._id,
+                feedBack: feedBack,
+                rating: rating
+            }));
+        }
+
+    }
 
     console.log("viewTicket-", viewTicket);
 
     return (
         <>
+            <Modal centered show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Close Ticket</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    You can close the ticket after geting the service
 
-            <ReactStars
-                count={5}
-                onChange={ratingChanged}
-                size={30}
-                activeColor="#ffd700"
-                isHalf={true}
-                emptyIcon={<i className="far fa-star"></i>}
-                halfIcon={<i className="fa fa-star-half-alt"></i>}
-                fullIcon={<i className="fa fa-star"></i>}
-            />
+                    <div className="feedBackForm">
+                        <div class="row form-group">
+                            <div class="col-md-12">
+                                <label class="text-black" for="email">Enter Feedback</label>
+                                <textarea rows={4} id="feedBack" class="form-control" name="feedBack" required onChange={handleChange}>{feedBack}</textarea>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-12">
+                                <label class="text-black" for="email">Rating</label>
+                                <ReactStars
+                                    value={rating}
+                                    count={5}
+                                    onChange={ratingChanged}
+                                    size={30}
+                                    activeColor="#ffd700"
+                                    isHalf={true}
+                                    emptyIcon={<i className="far fa-star"></i>}
+                                    halfIcon={<i className="fa fa-star-half-alt"></i>}
+                                    fullIcon={<i className="fa fa-star"></i>}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer class="feedBackFooter">
+                    <div className="feedBackButton">
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                    </div>
+                    <Button variant="primary" onClick={handleSubmit}>
+                        Close Ticket
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             <div class="site-blocks-cover inner-page-cover overlay"
                 style={{ backgroundImage: 'url(/images/xhero_1.jpg.pagespeed.ic.7aSeOjD_oW.jpg)' }}
                 data-aos="fade"
@@ -109,6 +194,8 @@ const ViewTickets = () => {
                     </div>
                     <div class="row">
                         <div class="col-lg-12">
+
+                            {console.log("viewTicket?.length: - ", viewTicket?.length)}
 
                             {
                                 viewTicket?.length > 0 ?
@@ -172,6 +259,16 @@ const ViewTickets = () => {
                                                                             <div className="justify-content-evenly">
                                                                                 <button class="accept-btn cursor-pointer" onClick={() => onAcceptClick(item?._id)} >Accept</button>
                                                                                 <button class="reject-btn cursor-pointer" onClick={() => onRejectClick(item?._id)}>Reject</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    )
+                                                                }
+
+                                                                {
+                                                                    (item?.ticket_status == 'in_progress') && (
+                                                                        <div className="col-md-6">
+                                                                            <div className="justify-content-left" style={{ marginTop: '16px' }}>
+                                                                                <button class="reject-btn cursor-pointer" onClick={() => handleShow(item?.shopdeatils[0]?._id)}>Close Ticket</button>
                                                                             </div>
                                                                         </div>
                                                                     )

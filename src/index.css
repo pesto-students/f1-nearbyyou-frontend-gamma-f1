@@ -197,3 +197,26 @@ button.close{
   font-weight: 500;
   color: #00918e;
 }
+
+.modal-dialog{
+  pointer-events: all !important;
+  top: 15% !important;
+}
+
+.feedBackFooter{
+  margin-top: 30px !important;
+  display: flex;
+  justify-content: right;
+}
+
+.feedBackButton{
+  margin-right: 15px;
+}
+
+.feedBackForm{
+  margin-top : 20px
+}
+
+.flex{
+  display: flex;
+}
