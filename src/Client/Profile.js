@@ -2,29 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { NavLink } from 'react-router-dom'
-import { profileStatus, editProfile } from '../Redux/Client/Listing/ListingSlice';
+import { profileStatus, editProfile, customerDetailsAPI } from '../Redux/Client/Listing/ListingSlice';
 import service from '../Common_Pages/Service';
 import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
 import axios from 'axios';
-// import S3FileUpload from 'react-s3';
-// import { uploadFile } from 'react-s3';
-
-// const config = {
-//     bucketName: 'myBucket',
-//     dirName: 'media', /* optional */
-//     region: 'eu-west-1',
-//     accessKeyId: 'JAJHAFJFHJDFJSDHFSDHFJKDSF',
-//     secretAccessKey: 'jhsdf99845fd98qwed42ebdyeqwd-3r98f373f=qwrq3rfr3rf',
-// }
-
-// onst config = {
-//     bucketName: 'myBucket',
-//     dirName: 'media', / optional /
-//     region: 'eu-west-1',
-//     accessKeyId: 'JAJHAFJFHJDFJSDHFSDHFJKDSF',
-//     secretAccessKey: 'jhsdf99845fd98qwed42ebdyeqwd-3r98f373f=qwrq3rfr3rf',
-//     s3Url: 'https:/your-custom-s3-url.com/', / optional /
-// }
 
 const __DEV__ = document.domain === 'localhost'
 
@@ -35,7 +16,7 @@ const Profile = () => {
     const history = useHistory();
 
     //get data from store
-    const { isProfileStatus } = useSelector(state => state.listing);
+    const { isProfileStatus, customerDetails } = useSelector(state => state.listing);
 
     //State Manage
     const [binaryImage, setBinaryImage] = useState();
@@ -59,39 +40,49 @@ const Profile = () => {
     //Useeffect
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        dispatch(profileStatus(false));
         let userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
-
-        setForm({
-            ...form,
-            customerId: userData.id,
-            fname: userData?.user_name?.split(" ")[0],
-            lname: userData?.user_name?.split(" ")[1],
-            email: userData?.email,
-            contact: userData?.contact_number,
-            // door_number: userData?.custDetails[0]?.door_number,
-            // street: userData?.custDetails[0]?.street,
-            // area: userData?.custDetails[0]?.area,
-            // city: userData?.custDetails[0]?.city_town,
-            // state: userData?.custDetails[0]?.state,
-            // pincode: userData?.custDetails[0]?.pincode,
-        })
+        dispatch(profileStatus(false));
+        if (userData) {
+            dispatch(customerDetailsAPI({ userID: userData._id }))
+        } else {
+            history.push('/');
+        }
     }, [])
 
     useEffect(() => {
         if (isProfileStatus) {
+            let userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
             let userInfo = {
-                id: form.customerId,
-                contact: form.contact,
+                _id: form.customerId,
+                contact_number: form.contact,
                 email: form.email,
-                name: form.fname + " " + form.lname,
-                role: 'customer'
+                user_name: form.fname + " " + form.lname,
+                user_role: 'customer'
             }
             localStorage.setItem('Near_By_You_Client', JSON.stringify(userInfo));
             dispatch(profileStatus(false));
             history.push('/');
         }
     }, [isProfileStatus])
+
+    useEffect(() => {
+        if (customerDetails?.length > 0) {
+            setForm({
+                ...form,
+                customerId: customerDetails[0]._id,
+                fname: customerDetails[0]?.user_name?.split(" ")[0],
+                lname: customerDetails[0]?.user_name?.split(" ")[1],
+                email: customerDetails[0]?.email,
+                contact: customerDetails[0]?.contact_number,
+                door_number: customerDetails[0]?.Details[0]?.door_number,
+                street: customerDetails[0]?.Details[0]?.street,
+                area: customerDetails[0]?.Details[0]?.area,
+                city: customerDetails[0]?.Details[0]?.city_town,
+                state: customerDetails[0]?.Details[0]?.state,
+                pincode: customerDetails[0]?.Details[0]?.pincode,
+            })
+        }
+    }, [customerDetails])
 
     //Function
 
@@ -113,7 +104,7 @@ const Profile = () => {
     const onSubmit = (e) => {
         e.preventDefault();
         console.log("form : - ", form);
-        dispatch(editProfile({ user_name: form.fname + " " + form.lname, contact_number: form.contact, door_number: form.door_number, street: form.street, area: form.area, pincode: form.pincode, city: form.city, state: form.state }))
+        dispatch(editProfile({ id: form.customerId, user_name: form.fname + " " + form.lname, contact_number: form.contact, door_number: form.door_number, street: form.street, area: form.area, pincode: form.pincode, city: form.city, state: form.state }))
     }
 
     // //Upload File
@@ -125,6 +116,8 @@ const Profile = () => {
 
         const response = await service.convertBase64(file);
 
+        console.log("response: -", response);
+
         if (response.status) {
             setUploadFileName(response.name);
             setimages([{ preview: url }]);
@@ -133,6 +126,7 @@ const Profile = () => {
 
             var formData = new FormData();
             formData.append('imageData', response.file);
+            formData.append('fileName', response.name);
 
             const responseData = await axios.post("customer/uploadImage", formData);
 
@@ -164,42 +158,46 @@ const Profile = () => {
         })
     }
 
-    const displayRazorpay = async() =>{
-		const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
+    const displayRazorpay = async () => {
+        const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
 
-		if (!res) {
-			alert('Razorpay SDK failed to load. Are you online?')
-			return
-		}
+        if (!res) {
+            alert('Razorpay SDK failed to load. Are you online?')
+            return
+        }
 
-		const data = await fetch('http://localhost:3003/api/razorpay', { method: 'POST' }).then((t) =>
-			t.json()
-		)
+        const data = await fetch('http://localhost:3003/api/razorpay', { method: 'POST' }).then((t) =>
+            t.json()
+        )
 
-		console.log(data)
+        console.log(data)
 
-		const options = {
-			key: __DEV__ ? '' : 'PRODUCTION_KEY',
-			currency: data.currency,
-			amount: data.amount.toString(),
-			order_id: data.id,
-			name: 'Donation',
-			description: 'Thank you for nothing. Please give us some money',
-			image: '/images/near-by-you.jpg',
-			handler: function (response) {
-				alert(response.razorpay_payment_id)
-				alert(response.razorpay_order_id)
-				alert(response.razorpay_signature)
-			},
-			prefill: {
-				name:'Bhargav Patel',
-				email: 'sdfdsjfh2@ndsfdf.com',
-				phone_number: '9899999999'
-			}
-		}
-		const paymentObject = new window.Razorpay(options)
-		paymentObject.open()
-	}
+        const options = {
+            key: __DEV__ ? '' : 'PRODUCTION_KEY',
+            currency: data.currency,
+            amount: data.amount.toString(),
+            order_id: data.id,
+            name: 'Donation',
+            description: 'Thank you for nothing. Please give us some money',
+            image: '/images/near-by-you.jpg',
+            handler: function (response) {
+                alert(response.razorpay_payment_id)
+                alert(response.razorpay_order_id)
+                alert(response.razorpay_signature)
+            },
+            prefill: {
+                name: 'Bhargav Patel',
+                email: 'sdfdsjfh2@ndsfdf.com',
+                phone_number: '9899999999'
+            },
+            notes:{
+                address : 'ABCd DEFGH'
+            }
+        }
+        const paymentObject = new window.Razorpay(options)
+        paymentObject.open()
+    }
+
     console.log("binaryImage :- ", binaryImage);
 
     return (
@@ -294,7 +292,7 @@ const Profile = () => {
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-12">
-                                        <input type="submit" value="Send Message" class="btn btn-primary btn-md text-white" />
+                                        <input type="submit" value="Save" class="btn btn-primary btn-md text-white" />
                                     </div>
                                 </div>
                             </form>

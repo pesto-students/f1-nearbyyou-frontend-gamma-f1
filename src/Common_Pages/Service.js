@@ -25,7 +25,9 @@ class Service {
             size <= 200 && type_arry.includes(type)
         );
 
-        if (size <= 200 && type_arry.includes(type)) {
+
+        // size <= 200 && 
+        if (type_arry.includes(type)) {
             return new Promise((resolve, reject) => {
                 const fileReader = new FileReader();
 
