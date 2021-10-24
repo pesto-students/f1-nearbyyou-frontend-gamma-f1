@@ -4,6 +4,7 @@ import { Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { GetAllTicketsAPI, ticketStatus } from '../Redux/vendor/Home/HomeSlice';
+import { GetAllShopsAPI, shopStatus } from '../Redux/vendor/Profile/VendorProfileSlice';
 
 const VendorHome = () => {
 
@@ -11,26 +12,14 @@ const VendorHome = () => {
 
 	const { ticketResults, isticketStatus } = useSelector(state => state.ticket);
 	const [activeMenu, setActiveMenu] = useState('new');
-	const [activePincode, setActivePincode] = useState('888888');
-	const [results , setResults] = useState('')
-	console.log("results from api-->",ticketResults)
+	
+	const [results, setResults] = useState('')
+	const [shop_results, setShopResults] = useState('')
+	const [user, setUser] = useState('');
+	const { shopResults, isshopstatus } = useSelector(state => state.shop);
+	console.log("results from api-->", ticketResults)
 
 	// const tickets = ticketResults;
-
-	let tickets = [{
-		_id: '61631ca475e19cd2ddbca4ea',
-		ticket_number: '1',
-		service_date: '12-10-291',
-		service_time: '8989898989',
-		service_description: 'pppp'
-	},
-	{
-		_id: '61631e5575e19cd2ddbca4ed',
-		ticket_number: '2',
-		service_date: '12-10-291',
-		service_time: '111222',
-		service_description: 'QQQ'
-	}]
 
 	useEffect(() => {
 		if (isticketStatus) {
@@ -40,8 +29,19 @@ const VendorHome = () => {
 	}, [isticketStatus])
 
 	useEffect(() => {
+		const userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
+		setUser(userData);
 		window.scrollTo({ top: 0, behavior: 'smooth' });
+		dispatch(GetAllShopsAPI({ user_id: user?.id }));
 	}, [])
+
+	useEffect(() => {
+		dispatch(shopStatus(false))
+		setShopResults(shopResults?.data)
+		console.log("shop results-->", shop_results)
+	}, [isshopstatus])
+	
+	const [activePincode, setActivePincode] = useState(shop_results &&  shopResults[0] ? shop_results[0].shop_pincode: "");
 
 	useEffect(() => {
 		dispatch(GetAllTicketsAPI({ ticket_status: activeMenu, shop_pincode: activePincode }))
@@ -75,10 +75,13 @@ const VendorHome = () => {
 						<div class="select-wrap">
 							<span class="icon"><span class="icon-keyboard_arrow_down"></span></span>
 							<select class="form-control" name="shop_pincode" onChange={selectShopPincode}>
-								<option value="">All Categories</option>
-								<option value="989898">989898</option>
-								<option value="111111">111111</option>
-								<option value="888888">888888</option>
+								<option value="">All Shops Pincode</option>
+								{
+									shop_results?.length > 0 && shop_results.map((item) => (
+										<option value={item.shop_pincode}>{item.shop_pincode}</option>
+									))
+
+								}
 							</select>
 						</div>
 					</div>
@@ -87,7 +90,7 @@ const VendorHome = () => {
 							<Nav.Link className="menuItem" eventKey="new_request" onSelect={() => selectMenu('new')}  >New Request</Nav.Link>
 						</Nav.Item>
 						<Nav.Item>
-							<Nav.Link className="menuItem" eventKey="pending_request" onSelect={() => selectMenu('pending')}  >Holding Request </Nav.Link>
+							<Nav.Link className="menuItem" eventKey="pending_request" onSelect={() => selectMenu('holding')}  >Holding Request </Nav.Link>
 						</Nav.Item>
 						<Nav.Item>
 							<Nav.Link className="menuItem" eventKey="inprogress_request" onSelect={() => selectMenu('inprogress')}  >In-Progress Request </Nav.Link>

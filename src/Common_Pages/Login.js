@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
 import auth from '../Route/Auth';
-import { registerAPI, registerStatus, LoginAPI, loginStatus,GoogleLoginAPi} from '../Redux/Client/Register-Login/Register-LoginSlice'
+import { registerAPI, registerStatus, LoginAPI, loginStatus, GoogleLoginAPi } from '../Redux/Client/Register-Login/Register-LoginSlice'
 
 
 
@@ -137,7 +137,7 @@ const Login = () => {
 
 	const onSignIn = () => {
 		dispatch(GoogleLoginAPi({}));
-		
+
 	}
 
 	// const signOutg = () => {
@@ -334,6 +334,7 @@ const Login = () => {
 							</form>
 						</div>
 						<div class="col-md-6 mb-5 mt-5">
+
 							<form method="post" class="p-5 bg-white" style={{ marginTop: '-150px' }} onSubmit={loginClick}>
 								<div class="row justify-content-center mb-3">
 									<div class="col-md-7 text-center border-primary">
@@ -358,9 +359,7 @@ const Login = () => {
 									</div>
 								</div>
 							</form>
-							<button onClick={onSignIn}>Sign in with google</button>
-							{/* <div class="g-signin2" onclick={onSignIn}></div> */}
-							{/* <a href="#" onclick={signOutg}>Sign out</a> */}
+							<button onClick={onSignIn} class="btn btn-outline-primary">Sign in with google</button>
 						</div>
 
 					</div>

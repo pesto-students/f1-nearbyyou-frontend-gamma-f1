@@ -327,63 +327,45 @@ const ViewShop = () => {
 							<button class="btn btn-primary btn-md text-white" onClick={cancelEdit} style={{ display: inputstate.disabled ? "none" : "block" }}>cancel</button>
 						</div>
 					</div>
+					{shopdetails?.shop_status == "active" ?
+						<div class="container">
+							<h2>Services</h2>
+							<label class="text-black" for="adding_new_service">Add New service</label>
+							<div onClick={() => addItem("add")}>
+								<button class="btn btn-primary btn-xs text-white" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+									<i class="fa fa-plus " aria-hidden="true"></i>
+								</button>
+							</div>
+
+							<form onSubmit={addServiceClick}>
+								<div class="form-group collapse add_service_form p-3" id="collapseExample">
+									<label class="text-white" >Service Name</label>
+									<div class="col-md-8 mb-3">
+										{
+											editData.type == "edit" ?
+												<input type="text" defaultValue={editData.data.item.name} id="service_name" name="service_name" onChange={serviceChange} class="form-control" /> :
+												<input type="text" defaultValue={""} id="service_name" name="service_name" onChange={serviceChange} class="form-control" placeholder="enter the name of new service" />
+										}
+									</div>
+									<label class="text-white" for="service_description">service description</label>
+									<div class="col-md-8 mb-3">
+										{
+											editData.type == "edit" ?
+												<input type="text" defaultValue={editData.data.item.service_description} id="service_description" name="service_description" onChange={serviceChange} class="form-control" /> :
+												<input type="text" defaultValue={""} id="service_description" name="service_description" onChange={serviceChange} class="form-control" />
+										}
+									</div>
+									<div class="col-md-3">
+										<button type="submit" class="btn btn-outline-white btn-primary btn-md text-white">
+											Save
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+						: ""}
 
 					<div class="container">
-
-						<h2>Services</h2>
-						<label class="text-black" for="adding_new_service">Add New service</label>
-						<div onClick={() => addItem("add")}>
-							<button class="btn btn-primary btn-xs text-white" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-								<i class="fa fa-plus " aria-hidden="true"></i>
-							</button>
-						</div>
-
-						<form onSubmit={addServiceClick}>
-							<div class="form-group collapse add_service_form p-3" id="collapseExample">
-								<label class="text-white" >Service Name</label>
-								<div class="col-md-8 mb-3">
-									{
-										editData.type == "edit" ?
-											<input type="text" defaultValue={editData.data.item.name} id="service_name" name="service_name" onChange={serviceChange} class="form-control" /> :
-											<input type="text" defaultValue={""} id="service_name" name="service_name" onChange={serviceChange} class="form-control" placeholder="enter the name of new service" />
-									}
-								</div>
-								<label class="text-white" for="service_description">service description</label>
-								<div class="col-md-8 mb-3">
-									{
-										editData.type == "edit" ?
-											<input type="text" defaultValue={editData.data.item.service_description} id="service_description" name="service_description" onChange={serviceChange} class="form-control" /> :
-											<input type="text" defaultValue={""} id="service_description" name="service_description" onChange={serviceChange} class="form-control" />
-									}
-								</div>
-								<div class="col-md-3">
-									<button type="submit" class="btn btn-outline-white btn-primary btn-md text-white">
-										Save
-									</button>
-								</div>
-							</div>
-						</form>
-						{/* Delete Modal */}
-						{console.log("show value==>", show)}
-						<Modal class="deleteModal" show={show} onHide={handleClose} animation={false} aria-labelledby="contained-modal-title-vcenter"
-							centered>
-							<Modal.Header closeButton>
-								<Modal.Title>Delete Plan</Modal.Title>
-							</Modal.Header>
-							<Modal.Body class="deleteModalBody">Are You Sure Want to Delete ??</Modal.Body>
-							<Modal.Footer class="deleteModalFooter">
-								<input type="button" value="Yes" label="Yes" class="deletebtn" onClick={console.log("yes is clicked")} />
-								<input type="button" value="No" label="No" class="deletebtn" onClick={handleClose} />
-								<Button variant="secondary" onClick={handleClose}>
-									Close
-								</Button>
-								<Button variant="primary" onClick={console.log("save is clicked")}>
-									Save Changes
-								</Button>
-							</Modal.Footer>
-						</Modal>
-
-
 						<Table responsive>
 							<thead>
 								<tr>
@@ -399,17 +381,17 @@ const ViewShop = () => {
 										<tr>
 											<td>{item.name}</td>
 											<td>{item.service_description}</td>
-											<td onClick={() => clickonEdit(item)}><i data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></td>
-											<td onClick={()=> {if(window.confirm('Are you sure to delete this record?')){deleteservice(item._id)}}}><i class="fa fa-trash fa-lg" aria-hidden="true"></i></td>
-											{/* <td onClick={() => { clickonDelete(item._id) }}><i class="fa fa-trash fa-lg" aria-hidden="true"></i></td> */ }
+											<td onClick={() => clickonEdit(item)} disabled><i data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></td>
+											<td onClick={() => { if (window.confirm('Are you sure to delete this record?')) { deleteservice(item._id) } }}><i class="fa fa-trash fa-lg" aria-hidden="true"></i></td>
+											{/* <td onClick={() => { clickonDelete(item._id) }}><i class="fa fa-trash fa-lg" aria-hidden="true"></i></td> */}
 										</tr>
-							))
+									))
 								}
-						</tbody>
-					</Table>
+							</tbody>
+						</Table>
+					</div>
 				</div>
 			</div>
-		</div>
 		</>
 	)
 }
