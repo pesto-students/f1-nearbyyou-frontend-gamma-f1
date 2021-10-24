@@ -223,7 +223,6 @@ const BookSlot = () => {
                                 </p>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
