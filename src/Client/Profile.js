@@ -179,7 +179,7 @@ const Profile = () => {
 		console.log(data)
 
 		const options = {
-			key: __DEV__ ? 'rzp_test_LeuHX4bMmraCPA' : 'PRODUCTION_KEY',
+			key: __DEV__ ? '' : 'PRODUCTION_KEY',
 			currency: data.currency,
 			amount: data.amount.toString(),
 			order_id: data.id,
