@@ -19,7 +19,7 @@ export const GoogleLoginAPi = createAsyncThunk('Google Login API CALL', async ({
 				// The signed-in user info.
 				const user = result.user;
 				// console.log("user in slice=>", user.accessToken);
-				// console.log("user deatils-->", user.auth.currentUser)
+				console.log("user deatils-->", user.auth.currentUser)
 				// console.log("user email in slice=>", user.auth.currentUser.email)
 				axios.post("/user/glogin",
 					{
@@ -36,7 +36,7 @@ export const GoogleLoginAPi = createAsyncThunk('Google Login API CALL', async ({
 							localStorage.setItem('Near_By_You_google', authToken);
 							dispatch(SuccessAlert(responseData.msg));
 							return response;
-						}else{
+						} else {
 							dispatch(ErrorAlert(responseData.message));
 							return rejectWithValue({ message: 'No Data Found' });
 						}
@@ -130,39 +130,39 @@ export const registerAPI = createAsyncThunk('Register API CALL', async ({ user_n
 
 export const LoginAPI = createAsyncThunk('Login API CALL', async ({ username, password }, { dispatch, rejectWithValue }) => {
 
-    console.log("loginAPI :-", { username, password });
-    try {
-        const response = await axios.post("customer/login",
-            {
-                username: username,
-                password: password,
-            });
-        const responseData = response.data;
+	console.log("loginAPI :-", { username, password });
+	try {
+		const response = await axios.post("customer/login",
+			{
+				username: username,
+				password: password,
+			});
+		const responseData = response.data;
 
-        if (responseData.status === "success") {
+		if (responseData.status === "success") {
 
-            let authToken = responseData.payload.data.token;
+			let authToken = responseData.payload.data.token;
 
-            let userInfo = responseData.payload.data.userInfo.data[0];
+			let userInfo = responseData.payload.data.userInfo.data[0];
 
-            console.log("userInfo:- ", userInfo);
+			console.log("userInfo:- ", userInfo);
 
-            localStorage.setItem('Near_By_You_Client', JSON.stringify(userInfo));
+			localStorage.setItem('Near_By_You_Client', JSON.stringify(userInfo));
 
-            // axios.defaults.headers.common['Authorization'] = 'Bearer ' + authToken;
-            axios.defaults.headers.common['x-auth-token'] = authToken;
-            localStorage.setItem('Near_By_You', authToken)
+			// axios.defaults.headers.common['Authorization'] = 'Bearer ' + authToken;
+			axios.defaults.headers.common['x-auth-token'] = authToken;
+			localStorage.setItem('Near_By_You', authToken)
 
-            dispatch(SuccessAlert(responseData.msg));
-            return response;
-        } else {
-            dispatch(ErrorAlert(responseData.msg));
-            return rejectWithValue({ message: 'No Data Found' });
-        }
-    }
-    catch (e) {
-        dispatch(ErrorAlert('Something Want Wrong!!'));
-    }
+			dispatch(SuccessAlert(responseData.msg));
+			return response;
+		} else {
+			dispatch(ErrorAlert(responseData.msg));
+			return rejectWithValue({ message: 'No Data Found' });
+		}
+	}
+	catch (e) {
+		dispatch(ErrorAlert('Something Want Wrong!!'));
+	}
 
 });
 

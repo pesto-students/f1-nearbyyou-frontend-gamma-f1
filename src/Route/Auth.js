@@ -1,55 +1,81 @@
 import jwtDecode from 'jwt-decode';
 import axios from 'axios';
+import { getAuth } from "firebase/auth";
 
 class Auth {
-    constructor(){
+    constructor() {
         this.authenticated = false
     }
 
     getAccessToken = () => {
-        if(window.localStorage.getItem("Near_By_You_google")){console.log("google local storage=>")}
-        if(window.localStorage.getItem('Near_By_You')){console.log("just email local storage=>")}
-        
-		return window.localStorage.getItem('Near_By_You');
-	};
+       
+        if (window.localStorage.getItem("Near_By_You_google")) {
+            console.log("google token")
+            return {
+                access_tocken: window.localStorage.getItem("Near_By_You_google"),
+                type: "google"
+            }
+        }
+        else if (window.localStorage.getItem('Near_By_You')) {
+            return {
+                access_tocken: window.localStorage.getItem("Near_By_You"),
+                type: "normal"
+            };
+        }
+
+
+    };
 
     // login(cb){
     //     this.authenticated = true
     //     cb()
     // }
 
-    logout(){
+    logout() {
         localStorage.removeItem('Near_By_You');
+        localStorage.removeItem('Near_By_You_google');
         localStorage.removeItem('Near_By_You_Client');
         delete axios.defaults.headers.common['x-auth-token'];
+        delete axios.defaults.headers.common['g-auth-token'];
     }
 
-    isAuthenticated(){
+    isAuthenticated() {
         const access_token = this.getAccessToken();
+        // console.log("access_tocken===>", access_token.access_token)
 
         if (!access_token) {
             localStorage.removeItem('Near_By_You');
             localStorage.removeItem('Near_By_You_Client');
             delete axios.defaults.headers.common['x-auth-token'];
-			return false;
-		}
+            delete axios.defaults.headers.common['g-auth-token'];
+            return false;
+        }
 
-        const decoded = jwtDecode(access_token);
-        const currentTime = Date.now() / 1000;
+        if (access_token.type == "normal") {
+            const decoded = jwtDecode(access_token.access_tocken);
+            const currentTime = Date.now() / 1000;
 
-        console.log("decoded.exp :- ", decoded.exp);
+            console.log("decoded.exp :- ", decoded.exp);
 
-        console.log("currentTime :- ", currentTime);
-        
-		if (decoded.exp < currentTime) {
-            localStorage.removeItem('Near_By_You');      
-            localStorage.removeItem('Near_By_You_Client');      
-            delete axios.defaults.headers.common['x-auth-token'];
-			return false;
-		}
+            console.log("currentTime :- ", currentTime);
 
-        axios.defaults.headers.common['x-auth-token'] = access_token;
-        return true;
+            if (decoded.exp < currentTime) {
+                localStorage.removeItem('Near_By_You');
+                localStorage.removeItem('Near_By_You_Client');
+                delete axios.defaults.headers.common['g-auth-token'];
+                return false;
+            }
+
+            axios.defaults.headers.common['x-auth-token'] = access_token.access_tocken;
+            return true;
+        }
+        else {
+           
+            axios.defaults.headers.common['g-auth-token'] =access_token.access_tocken;
+            return true;
+        }
+
+
         // return this.authenticated;
     }
 }

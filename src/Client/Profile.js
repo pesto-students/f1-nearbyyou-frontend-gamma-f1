@@ -172,14 +172,14 @@ const Profile = () => {
 			return
 		}
 
-		const data = await fetch('http://localhost:8080/api/razorpay', { method: 'POST' }).then((t) =>
+		const data = await fetch('http://localhost:3003/api/razorpay', { method: 'POST' }).then((t) =>
 			t.json()
 		)
 
 		console.log(data)
 
 		const options = {
-			key: __DEV__ ? 'rzp_test_LeuHX4bMmraCPA' : 'PRODUCTION_KEY',
+			key: __DEV__ ? '' : 'PRODUCTION_KEY',
 			currency: data.currency,
 			amount: data.amount.toString(),
 			order_id: data.id,

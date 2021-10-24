@@ -5,7 +5,6 @@ import { UpdateTicketStatusAPI } from '../Redux/vendor/Home/HomeSlice';
 
 
 import { useParams, useHistory } from 'react-router-dom';
-// import { useSelector, useDispatch } from 'react-redux';
 import { GetTicketsAPI, oneticketStatus } from '../Redux/vendor/Home/HomeSlice';
 
 const ViewTicket = () => {
@@ -16,13 +15,11 @@ const ViewTicket = () => {
     ticket_details: '',
     customer_address: '',
   });
-  const [userdeatils , setUserDetails]=useState('')
+  const [userdeatils, setUserDetails] = useState('')
 
 
 
   const { oneticketResults, isoneticketStatus, updateTicketResults, isupdatestatus } = useSelector(state => state.ticket);
-  // console.log("ticket results ->", oneticketResults)
-  // console.log("updated results ->", updateTicketResults, "update status--->", isupdatestatus)
 
   useEffect(() => {
     setviewdata({
@@ -32,21 +29,21 @@ const ViewTicket = () => {
 
   }, [oneticketResults])
   console.log("View Dtaa :- ", viewdata);
- 
-  
+
+
 
   const { id } = useParams();
   useEffect(() => {
     if (viewdata.customer_address) {
       setUserDetails(
-       viewdata.customer_address?.customeranduser && viewdata.customer_address.customeranduser[0] ? viewdata.customer_address.customeranduser[0] : ''
+        viewdata.customer_address?.customeranduser && viewdata.customer_address.customeranduser[0] ? viewdata.customer_address.customeranduser[0] : ''
       )
     }
 
   }, [viewdata.customer_address])
 
 
-  console.log("user details-> ",userdeatils)
+  console.log("user details-> ", userdeatils)
   console.log('customer_address -->', viewdata.customer_address)
   console.log("ticket details -->", viewdata.ticket_details)
   useEffect(() => {
@@ -163,6 +160,25 @@ const ViewTicket = () => {
                   <input type="text" value={viewdata?.ticket_details?.service_time} id="date" class="form-control" name="date" disabled />
                 </div>
               </div>
+              {
+                viewdata?.ticket_details?.hold_date ?
+                  <div class="row form-group">
+                    <div class="col-md-6">
+                      <label class="text-black" for="service_date">Hold date</label>
+                      <input type="text" value={viewdata.ticket_details?.hold_date} id="service_date" class="form-control" disabled />
+                    </div>
+                    <div class="col-md-6">
+                      <label class="text-black" for="service_time">Hold Time</label>
+                      <input type="text" value={viewdata?.ticket_details?.hold_time} id="date" class="form-control" name="date" disabled />
+                    </div>
+                    <div class="col-md-12">
+                      <label class="text-black" for="service_time">Hold Description</label>
+                      <input type="text" value={viewdata?.ticket_details?.hold_description} id="date" class="form-control" name="date" disabled />
+                    </div>
+                  </div>
+                  :
+                  ""
+              }
               <div class="row form-group">
                 <div class="col-md-8">
                   <label class="text-black" for="customer_name">Customer Name</label>
@@ -195,15 +211,15 @@ const ViewTicket = () => {
                   <div class="row form-group">
                     <div class="col-md-5">
                       <label class="text-black" for="address">City</label>
-                      <input type="text" value={viewdata.customer_address?.city_town}  id="city" class="form-control" disabled />
+                      <input type="text" value={viewdata.customer_address?.city_town} id="city" class="form-control" disabled />
                     </div>
                     <div class="col-md-4">
                       <label class="text-black" for="address">State</label>
-                      <input type="text" value={viewdata.customer_address?.state}  id="state" class="form-control" disabled />
+                      <input type="text" value={viewdata.customer_address?.state} id="state" class="form-control" disabled />
                     </div>
                     <div class="col-md-1">
                       <label class="text-black" for="address">Pincode</label>
-                      <input type="text" value={viewdata.customer_address?.pincode}  id="pincode" class="form-control" disabled />
+                      <input type="text" value={viewdata.customer_address?.pincode} id="pincode" class="form-control" disabled />
                     </div>
                   </div>
                 </div>
@@ -215,46 +231,65 @@ const ViewTicket = () => {
                     disabled></textarea>
                 </div>
               </div>
-              <div class="row form-group">
-                <div class="col-md-4">
-                  <input type="button" value="accept" name="status_of_ticket" onClick={() => selectStatus('inprogress')} class="btn btn-primary btn-md text-white" />
-                </div>
-                <div class="col-md-4">
-                  <input type="button" value="reject" name="status_of_ticket" onClick={() => selectStatus('closed')} class="btn btn-primary btn-md text-white" />
-                </div>
-              </div>
-            </form>
-            <form class="bg-white" >
+              {
+                viewdata?.ticket_details?.ticket_status == "closed" ? "" : 
+                (viewdata?.ticket_details?.ticket_status == "holding") ||(viewdata?.ticket_details?.ticket_status == "new") ? (
+                  <div class="row form-group">
+                    <div class="col-md-4" >
+                      <input type="button" value="accept" name="status_of_ticket" onClick={() => selectStatus('inprogress')} class="btn btn-primary btn-md text-white" />
+                    </div>
 
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" onClick={show_text_area_for_reason} />
-                <h5 class="form-check-label" for="flexCheckDefault">
-                  Request to change service date and time
-                </h5>
-              </div>
-              <div class="row form-group" id="reason_text_area" style={{ display: 'none' }} >
-                <div class="col-md-6">
-                  <label class="text-black" for="date">select the date</label>
-                  <div class='input-group date' id='date'>
-                    <input type="date" id="hold_date" name="hold_date" class="form-control" onChange={handleChange} />
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <label class="text-black" for="date">select the time</label>
-                  <div class='input-group time' id='time'>
-                    <input type="time" id="hold_time" name="hold_time" class="form-control" onChange={handleChange} />
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <label class="text-black" for="message">Reason for holding</label>
-                  <textarea name="message" name="hold_description" id="message" cols="30" rows="7" class="form-control" onChange={handleChange}
-                  ></textarea>
-                </div>
-                <div class="col-md-3 ">
-                  <input type="button" name="status_of_ticket" onClick={() => selectStatus('hold')} value="hold" class="btn btn-primary btn-md text-white" />
-                </div>
-              </div>
+                    <div class="col-md-4">
+                      <input type="button" value="reject" name="status_of_ticket" onClick={() => selectStatus('closed')} class="btn btn-primary btn-md text-white" />
+                    </div>
+                  </div>) :""
+              }
+              {
+                viewdata?.ticket_details?.ticket_status == "inprogress" ?
+                  <div class="row form-group">
+                    <div class="col-md-4" >
+                      <input type="button" value="close" name="status_of_ticket" onClick={() => selectStatus('closed')} class="btn btn-primary btn-md text-white" />
+                    </div>
+                  </div> :""
+              }
+
             </form>
+
+            {
+              (viewdata?.ticket_details?.ticket_status == "new") ?
+                <form class="bg-white" >
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" onClick={show_text_area_for_reason} />
+                    <h5 class="form-check-label" for="flexCheckDefault">
+                      Request to change service date and time
+                    </h5>
+                  </div>
+                  <div class="row form-group" id="reason_text_area" style={{ display: 'none' }} >
+                    <div class="col-md-6">
+                      <label class="text-black" for="date">select the date</label>
+                      <div class='input-group date' id='date'>
+                        <input type="date" id="hold_date" name="hold_date" class="form-control" onChange={handleChange} />
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="text-black" for="date">select the time</label>
+                      <div class='input-group time' id='time'>
+                        <input type="time" id="hold_time" name="hold_time" class="form-control" onChange={handleChange} />
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <label class="text-black" for="message">Reason for holding</label>
+                      <textarea name="message" name="hold_description" id="message" cols="30" rows="7" class="form-control" onChange={handleChange}
+                      ></textarea>
+                    </div>
+                    <div class="col-md-3 ">
+                      <input type="button" name="status_of_ticket" onClick={() => selectStatus('holding')} value="hold" class="btn btn-primary btn-md text-white" />
+                    </div>
+                  </div>
+                </form>
+                : ""
+            }
+
 
           </div>
         </div>

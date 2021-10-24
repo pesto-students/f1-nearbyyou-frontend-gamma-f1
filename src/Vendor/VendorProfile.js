@@ -5,6 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { GetAllShopsAPI, shopStatus, AddShopAPI, newShopStatus } from '../Redux/vendor/Profile/VendorProfileSlice';
 import { useHistory } from 'react-router-dom';
 
+const __DEV__ = document.domain === 'localhost'
+
 const VendorProfile = () => {
 
 
@@ -39,7 +41,7 @@ const VendorProfile = () => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 		// console.log(localStorage.getItem('Near_By_You'))
 		const userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
-		setUser(userData)
+		setUser(userData);
 		console.log("user data after stringyfy->", userData);
 		dispatch(GetAllShopsAPI({ user_id: userData.id }));
 
@@ -88,9 +90,58 @@ const VendorProfile = () => {
 		));
 
 	}
+	function loadScript(src) {
+		return new Promise((resolve) => {
+			const script = document.createElement('script')
+			script.src = src
+			script.onload = () => {
+				resolve(true)
+			}
+			script.onerror = () => {
+				resolve(false)
+			}
+			document.body.appendChild(script)
+		})
+	}
 
 
-	console.log(form)
+	const displayRazorpay = async () => {
+		const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js')
+
+		if (!res) {
+			alert('Razorpay SDK failed to load. Are you online?')
+			return
+		}
+
+		const data = await fetch('http://localhost:3003/api/razorpay', { method: 'POST' }).then((t) =>
+			t.json()
+		)
+
+		console.log(data)
+
+		const options = {
+			key: __DEV__ ? 'rzp_test_LeuHX4bMmraCPA' : 'PRODUCTION_KEY',
+			currency: data.currency,
+			amount: data.amount.toString(),
+			order_id: data.id,
+			name: 'Donation',
+			description: 'Thank you for nothing. Please give us some money',
+			image: '/images/near-by-you.jpg',
+			handler: function (response) {
+				alert(response.razorpay_payment_id)
+				alert(response.razorpay_order_id)
+				alert(response.razorpay_signature)
+			},
+			prefill: {
+				name: 'Bhargav Patel',
+				email: 'sdfdsjfh2@ndsfdf.com',
+				phone_number: '9899999999'
+			}
+		}
+		const paymentObject = new window.Razorpay(options)
+		paymentObject.open()
+	}
+
 
 	return (
 		<>
@@ -195,7 +246,7 @@ const VendorProfile = () => {
 						</div>
 						<label class="text-white" for="shop_category">select shop category</label>
 						<div class="row form-group">
-							
+
 							<div class="select-wrap col-md-6">
 								<span class="icon"><span class="icon-keyboard_arrow_down"></span></span>
 								<select class="form-control" name="shop_category_name" onChange={handleChange} value={form.shop_category}>
@@ -222,6 +273,7 @@ const VendorProfile = () => {
 							<th>Shop Pincode</th>
 							<th>Shop Email</th>
 							<th>Shop Contact</th>
+							<th>Shop Status</th>
 							<th>View</th>
 						</tr>
 					</thead>
@@ -232,8 +284,13 @@ const VendorProfile = () => {
 									<td>{item.shop_pincode}</td>
 									<td>{item.shop_email}</td>
 									<td>{item.shop_contact_number}</td>
-									<td ><Link to={`/vendor/app/view_shop/${item._id}`}><i class="fa fa-eye fa-lg" aria-hidden="true"></i></Link>
-									</td>
+									<td>{item.shop_status}</td>
+									{(item.shop_status == "active" || item.shop_status == "reject" || item.shop_status == "pending") ?
+										<td ><Link to={`/vendor/app/view_shop/${item._id}`}><i class="fa fa-eye fa-lg" aria-hidden="true"></i></Link></td> : ""}
+									{(item.shop_status == "payment pending") ?
+										<td><input onClick={displayRazorpay} type="button" value="Donot 499" class="form-control btn btn-primary btn-md text-white" /></td> : ""
+									}
+
 								</tr>
 							))
 						}
