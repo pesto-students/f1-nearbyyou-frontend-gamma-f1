@@ -41,6 +41,7 @@ class Auth {
 
     isAuthenticated() {
         const access_token = this.getAccessToken();
+       
         // console.log("access_tocken===>", access_token.access_token)
 
         if (!access_token) {
