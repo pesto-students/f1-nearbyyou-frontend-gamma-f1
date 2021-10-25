@@ -12,12 +12,20 @@ const VendorHome = () => {
 
 	const { ticketResults, isticketStatus } = useSelector(state => state.ticket);
 	const [activeMenu, setActiveMenu] = useState('new');
+
 	
 	const [results, setResults] = useState('')
 	const [shop_results, setShopResults] = useState('')
 	const [user, setUser] = useState('');
 	const { shopResults, isshopstatus } = useSelector(state => state.shop);
 	console.log("results from api-->", ticketResults)
+
+
+	const [results, setResults] = useState('')
+	const [shop_results, setShopResults] = useState('')
+	const [user, setUser] = useState('');
+	const { shopResults, isshopstatus } = useSelector(state => state.shop);
+
 
 	// const tickets = ticketResults;
 
@@ -40,26 +48,31 @@ const VendorHome = () => {
 		setShopResults(shopResults?.data)
 		console.log("shop results-->", shop_results)
 	}, [isshopstatus])
-	
-	const [activePincode, setActivePincode] = useState(shop_results &&  shopResults[0] ? shop_results[0].shop_pincode: "");
+
+	const [activeShop, setactiveShop] = useState({
+		shop_id: shop_results && shopResults[0] ? shop_results[0]._id : "",
+		shop_status: ""
+	});
 
 	useEffect(() => {
-		dispatch(GetAllTicketsAPI({ ticket_status: activeMenu, shop_pincode: activePincode }))
-	}, [activeMenu, activePincode])
+		dispatch(GetAllTicketsAPI({ ticket_status: activeMenu, shop_id: activeShop.shop_id }))
+	}, [activeMenu, activeShop])
+
 
 	const selectMenu = (type) => {
 		setActiveMenu(type);
 	}
 
-	const selectShopPincode = (e) => {
-		const { name, value } = e.target
-		setActivePincode(value)
+	const selectShop = (e) => {
+		//const { name, value } = e.target
+		const selected_shop = e.target.value.split(",")
+		setactiveShop({
+			shop_id: selected_shop[0],
+			shop_status: selected_shop[1]
+		});
+		console.log(activeShop)
 	}
 
-	// const GetTicket = (data) => {
-	// 	console.log('data ; -,', data)
-	// 	// dispatch(GetTicketAPI({ ticket_status: activeMenu, shop_pincode: activePincode }))
-	// }
 
 	return (
 		<>
@@ -74,11 +87,13 @@ const VendorHome = () => {
 					<div class="form-group">
 						<div class="select-wrap">
 							<span class="icon"><span class="icon-keyboard_arrow_down"></span></span>
-							<select class="form-control" name="shop_pincode" onChange={selectShopPincode}>
+
+							<select class="form-control" name="shop_id" onChange={selectShop}>
 								<option value="">All Shops Pincode</option>
 								{
 									shop_results?.length > 0 && shop_results.map((item) => (
-										<option value={item.shop_pincode}>{item.shop_pincode}</option>
+										<option value={item._id + "," + item.shop_status}>{item.shop_area + "," + item.shop_city_town + "," + item.shop_pincode}</option>
+
 									))
 
 								}
@@ -106,7 +121,9 @@ const VendorHome = () => {
 								<th>Service Date</th>
 								<th>Service Time</th>
 								<th>Service Description</th>
-								<th>Action   </th>
+								{activeShop?.shop_status == "active" ?
+									<th>Action   </th> : ""}
+
 							</tr>
 						</thead>
 						<tbody>
@@ -117,8 +134,11 @@ const VendorHome = () => {
 										<td>{item.service_date}</td>
 										<td>{item.service_time}</td>
 										<td>{item.service_description}</td>
-										<td ><Link to={`/vendor/app/view_ticket/${item._id}`}><i class="fa fa-eye fa-lg" aria-hidden="true"></i></Link>
-										</td>
+										{activeShop?.shop_status == "active" ?
+											<><td ><Link to={`/vendor/app/view_ticket/${item._id}`}><i class="fa fa-eye fa-lg" aria-hidden="true"></i></Link>
+											</td></>
+											: ""}
+
 									</tr>
 								))
 							}
