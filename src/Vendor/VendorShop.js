@@ -327,7 +327,9 @@ const ViewShop = () => {
 							<button class="btn btn-primary btn-md text-white" onClick={cancelEdit} style={{ display: inputstate.disabled ? "none" : "block" }}>cancel</button>
 						</div>
 					</div>
-					{shopdetails?.shop_status == "active" ?
+
+					{(shopdetails?.shop_status == "active") ?
+
 						<div class="container">
 							<h2>Services</h2>
 							<label class="text-black" for="adding_new_service">Add New service</label>
@@ -365,31 +367,46 @@ const ViewShop = () => {
 						</div>
 						: ""}
 
-					<div class="container">
-						<Table responsive>
-							<thead>
-								<tr>
-									<th>Service Name</th>
-									<th>Service Description</th>
-									<th>edit</th>
-									<th>delete</th>
-								</tr>
-							</thead>
-							<tbody>
-								{
-									allservices?.length > 0 && allservices.map((item, index) => (
+					{(shopdetails?.shop_status == "pending" || shopdetails?.shop_status == "reject" || shopdetails?.shop_status == "payment pending") ? "" : (
+						<>
+							<div class="container">
+								<Table responsive>
+									<thead>
 										<tr>
-											<td>{item.name}</td>
-											<td>{item.service_description}</td>
-											<td onClick={() => clickonEdit(item)} disabled><i data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></td>
-											<td onClick={() => { if (window.confirm('Are you sure to delete this record?')) { deleteservice(item._id) } }}><i class="fa fa-trash fa-lg" aria-hidden="true"></i></td>
-											{/* <td onClick={() => { clickonDelete(item._id) }}><i class="fa fa-trash fa-lg" aria-hidden="true"></i></td> */}
+											<th>Service Name</th>
+											<th>Service Description</th>
+											{shopdetails?.shop_status == "active" ? (
+												<>
+													<th>edit</th>
+													<th>delete</th>
+												</>
+											) :""
+											}
+
 										</tr>
-									))
-								}
-							</tbody>
-						</Table>
-					</div>
+									</thead>
+									<tbody>
+										{
+											allservices?.length > 0 && allservices.map((item, index) => (
+												<tr>
+													<td>{item.name}</td>
+													<td>{item.service_description}</td>
+													{shopdetails?.shop_status == "active" ? (
+														<>
+															<td onClick={() => clickonEdit(item)}><i data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i></td>
+															<td onClick={() => { if (window.confirm('Are you sure to delete this record?')) { deleteservice(item._id) } }}><i class="fa fa-trash fa-lg" aria-hidden="true"></i></td>
+														</>)
+														: ""}
+												</tr>
+											))
+										}
+									</tbody>
+								</Table>
+							</div>
+						</>
+					)}
+
+
 				</div>
 			</div>
 		</>

@@ -2,14 +2,14 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { ErrorAlert, SuccessAlert } from '../../../Redux/SnackBar/SnackbarSlice';
 import axios from 'axios';
 
-export const GetAllTicketsAPI = createAsyncThunk('Get All Ticket API based on status', async ({ ticket_status, shop_pincode }, { dispatch, rejectWithValue }) => {
-    console.log('GetAllTicketsAPI--> ', ticket_status, shop_pincode)
+export const GetAllTicketsAPI = createAsyncThunk('Get All Ticket API based on status', async ({ ticket_status, shop_id }, { dispatch, rejectWithValue }) => {
+    console.log('GetAllTicketsAPI--> ', ticket_status, shop_id)
     try {
         const response = await axios.get('/ticket',
             {
                 params: {
                     status: ticket_status,
-                    shop_pincode: shop_pincode
+                    shop_id: shop_id
                 }
             });
 
