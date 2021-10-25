@@ -56,7 +56,7 @@ const Header = () => {
                                         auth.isAuthenticated() ? (
                                             <>
                                                 <li class={pathName == "/viewTickets" ? "active" : ""}><NavLink to="/viewTickets"><span>View Tickets</span></NavLink></li>
-                                                <li class="has-children">
+                                                <li class="has-children" style={{marginLeft : '10px'}}>
                                                     <a href="#"><span className="profile">{form?.fname?.charAt(0)}</span></a>
                                                     <ul class="dropdown arrow-top">
                                                         <li><NavLink to="/profile">My Profile</NavLink></li>

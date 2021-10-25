@@ -116,6 +116,7 @@ const VendorProfile = () => {
 		));
 
 	}
+
 	const [plan_choosen, setPlanChoosen] = useState({
 		plan_id: '',
 		plan_amount: '',
@@ -206,6 +207,8 @@ const VendorProfile = () => {
 		));
 
 	}
+
+
 
 	return (
 		<>
@@ -387,6 +390,7 @@ const VendorProfile = () => {
 									<td>{item.shop_email}</td>
 									<td>{item.shop_contact_number}</td>
 									<td>{item.shop_status}</td>
+
 									<td ><Link to={`/vendor/app/view_shop/${item._id}`}><i class="fa fa-eye fa-lg" aria-hidden="true"></i></Link></td>
 									{(item.shop_status == "payment pending") ?
 										<td><input onClick={handleShow} type="button" value="Make the payment" class="btn btn-primary btn-xs text-white" /></td> : ""
@@ -396,6 +400,7 @@ const VendorProfile = () => {
 									}
 									{(item.shop_status == "reject") ?
 										<td><input onClick={() => sendrequest(item._id)} value="send request again" type="button" class="btn btn-primary btn-xs text-white" /></td> : ""
+
 									}
 
 								</tr>

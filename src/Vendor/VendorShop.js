@@ -327,7 +327,9 @@ const ViewShop = () => {
 							<button class="btn btn-primary btn-md text-white" onClick={cancelEdit} style={{ display: inputstate.disabled ? "none" : "block" }}>cancel</button>
 						</div>
 					</div>
+
 					{(shopdetails?.shop_status == "active") ?
+
 						<div class="container">
 							<h2>Services</h2>
 							<label class="text-black" for="adding_new_service">Add New service</label>
@@ -364,6 +366,7 @@ const ViewShop = () => {
 							</form>
 						</div>
 						: ""}
+
 					{(shopdetails?.shop_status == "pending" || shopdetails?.shop_status == "reject" || shopdetails?.shop_status == "payment pending") ? "" : (
 						<>
 							<div class="container">
@@ -402,6 +405,7 @@ const ViewShop = () => {
 							</div>
 						</>
 					)}
+
 
 				</div>
 			</div>

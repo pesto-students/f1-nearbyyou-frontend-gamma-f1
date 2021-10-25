@@ -135,8 +135,10 @@ const Login = () => {
 
 
 
+
 	const onSignIn = (user_role) => {
 		dispatch(GoogleLoginAPi({user_role: user_role}));
+
 
 	}
 
@@ -364,7 +366,9 @@ const Login = () => {
 									</div>
 								</div>
 							</form>
+
 							<button onClick={()=>onSignIn()} class="btn btn-outline-primary">Sign in with google</button>
+
 						</div>
 
 					</div>

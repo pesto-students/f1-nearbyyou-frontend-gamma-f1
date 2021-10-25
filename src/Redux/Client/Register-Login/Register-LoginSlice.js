@@ -19,6 +19,7 @@ export const GoogleLoginAPi = createAsyncThunk('Google Login API CALL', async ({
 				// The signed-in user info.
 				const user = result.user;
 				// console.log("user in slice=>", user.accessToken);
+
 				const user_details = {
 					user_name: user.auth.currentUser.displayName,
 					email: user.auth.currentUser.email,
@@ -26,6 +27,7 @@ export const GoogleLoginAPi = createAsyncThunk('Google Login API CALL', async ({
 					user_role: user_role
 				}
 				console.log("user deatils-->", user_details)
+
 				// console.log("user email in slice=>", user.auth.currentUser.email)
 				axios.post("/user/glogin",
 					{

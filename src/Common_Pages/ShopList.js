@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { searchAPI, searchStatus, getCategoryIDAPI } from '../Redux/Client/Listing/ListingSlice';
 import { debounce } from "lodash";
 import NoDataFound from './NoDataFound';
+import ReactStars from "react-rating-stars-component";
 
 const ShopList = ({ filter }) => {
 
@@ -215,13 +216,18 @@ const ShopList = ({ filter }) => {
                                             <a href="#" class="bookmark"><span class="icon-heart"></span></a>
                                             <h3><a href="#">{item.shop_name}</a></h3>
                                             <p>{item.shop_city_town} {item.shop_state}</p>
-                                            <p>
-                                                <span class="icon-star text-warning"></span>
-                                                <span class="icon-star text-warning"></span>
-                                                <span class="icon-star text-warning"></span>
-                                                <span class="icon-star text-warning"></span>
-                                                <span class="icon-star text-secondary"></span>
-                                                <span>(10 Reviews)</span>
+                                            <p className="flex">
+                                                <ReactStars
+                                                    value={3}
+                                                    count={5}
+                                                    size={30}
+                                                    activeColor="#ffd700"
+                                                    isHalf={true}
+                                                    emptyIcon={<i className="far fa-star"></i>}
+                                                    halfIcon={<i className="fa fa-star-half-alt"></i>}
+                                                    fullIcon={<i className="fa fa-star"></i>}
+                                                />
+                                                <span style={{marginTop : '15px', marginLeft : '10px'}}>(10 Reviews)</span>
                                             </p>
                                         </div>
                                     </div>

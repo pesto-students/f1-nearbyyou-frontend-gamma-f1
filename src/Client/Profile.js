@@ -197,6 +197,7 @@ const Profile = () => {
         const paymentObject = new window.Razorpay(options)
         paymentObject.open()
     }
+
     console.log("binaryImage :- ", binaryImage);
 
     return (

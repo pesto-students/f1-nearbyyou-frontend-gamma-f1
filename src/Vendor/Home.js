@@ -13,10 +13,19 @@ const VendorHome = () => {
 	const { ticketResults, isticketStatus } = useSelector(state => state.ticket);
 	const [activeMenu, setActiveMenu] = useState('new');
 
+	
 	const [results, setResults] = useState('')
 	const [shop_results, setShopResults] = useState('')
 	const [user, setUser] = useState('');
 	const { shopResults, isshopstatus } = useSelector(state => state.shop);
+	console.log("results from api-->", ticketResults)
+
+
+	const [results, setResults] = useState('')
+	const [shop_results, setShopResults] = useState('')
+	const [user, setUser] = useState('');
+	const { shopResults, isshopstatus } = useSelector(state => state.shop);
+
 
 	// const tickets = ticketResults;
 
@@ -49,6 +58,7 @@ const VendorHome = () => {
 		dispatch(GetAllTicketsAPI({ ticket_status: activeMenu, shop_id: activeShop.shop_id }))
 	}, [activeMenu, activeShop])
 
+
 	const selectMenu = (type) => {
 		setActiveMenu(type);
 	}
@@ -77,11 +87,13 @@ const VendorHome = () => {
 					<div class="form-group">
 						<div class="select-wrap">
 							<span class="icon"><span class="icon-keyboard_arrow_down"></span></span>
+
 							<select class="form-control" name="shop_id" onChange={selectShop}>
 								<option value="">All Shops Pincode</option>
 								{
 									shop_results?.length > 0 && shop_results.map((item) => (
 										<option value={item._id + "," + item.shop_status}>{item.shop_area + "," + item.shop_city_town + "," + item.shop_pincode}</option>
+
 									))
 
 								}

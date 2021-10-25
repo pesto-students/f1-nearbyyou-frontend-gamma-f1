@@ -232,6 +232,34 @@ export const holdingRequestStausAPI = createAsyncThunk('Accept Reject Holding AP
     }
 });
 
+//Send Feed Back
+export const sendFeedBackAPI = createAsyncThunk('Send FeedBack API', async ({ shopID, userId, feedBack, rating }, { dispatch, rejectWithValue }) => {
+    console.log("Rating ,", rating);
+    try {
+        const response = await axios.post("customer/sendDeedback",
+            {
+                shopID: shopID,
+                userId: userId,
+                feedBack: feedBack,
+                rating: rating
+            });
+        const responseData = response.data;
+
+        console.log("response ;-", response);
+        console.log("data.payload.data.data[0]._id:-", response.data.payload.data.data);
+
+        if (responseData.status == "success") {
+            // dispatch(SuccessAlert(responseData.msg));
+            return response;
+        } else {
+            dispatch(ErrorAlert(responseData.msg));
+            return rejectWithValue({ message: 'No Data Found' });
+        }
+    }
+    catch (e) {
+        console.log("Error :- ", e)
+    }
+});
 
 
 export const slice = createSlice({
@@ -250,7 +278,8 @@ export const slice = createSlice({
         customerDetails: [],
         isProfileStatus: false,
         categoryID: '',
-        isHoldingReqStatus: false
+        isHoldingReqStatus: false,
+        isFeedBackSendStatus: false
     },
     reducers: {
         searchStatus: (state, action) => {
@@ -273,6 +302,9 @@ export const slice = createSlice({
         },
         holdingReqStatus: (state, action) => {
             state.isHoldingReqStatus = action.payload;
+        },
+        feedBackSendStatus: (state, action) => {
+            state.isFeedBackSendStatus = action.payload;
         },
     },
     extraReducers: {
@@ -340,10 +372,18 @@ export const slice = createSlice({
         },
         [holdingRequestStausAPI.rejected]: (state, action) => {
             state.isHoldingReqStatus = false;
-        }
+        },
+
+
+        [sendFeedBackAPI.fulfilled]: (state, action) => {
+            state.isFeedBackSendStatus = true;
+        },
+        [sendFeedBackAPI.rejected]: (state, action) => {
+            state.isFeedBackSendStatus = false;
+        },
     }
 });
 
-export const { searchStatus, categoryStatus, detailStatus, ticketStatus, viewTicketStatus, profileStatus, holdingReqStatus } = slice.actions;
+export const { feedBackSendStatus, searchStatus, categoryStatus, detailStatus, ticketStatus, viewTicketStatus, profileStatus, holdingReqStatus } = slice.actions;
 
 export default slice.reducer;
