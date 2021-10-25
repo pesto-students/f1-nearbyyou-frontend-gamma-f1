@@ -118,14 +118,15 @@ const Profile = () => {
 
         console.log("response: -", response);
 
-        if (response.status) {
+        if (response.status) { 
+
             setUploadFileName(response.name);
             setimages([{ preview: url }]);
             setBinaryImage(response.file);
             dispatch(SuccessAlert('Image Upload Successfully'));
 
             var formData = new FormData();
-            formData.append('imageData', response.file);
+            formData.append('imageData', file);
             formData.append('fileName', response.name);
 
             const responseData = await axios.post("customer/uploadImage", formData);

@@ -121,7 +121,7 @@ const ViewTickets = () => {
         <>
             <Modal centered show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Close Ticket</Modal.Title>
+                    <Modal.Title><span style={{color: '#00918e'}}>Close Ticket</span></Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     You can close the ticket after geting the service

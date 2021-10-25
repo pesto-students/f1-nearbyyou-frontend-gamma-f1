@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 import { detailAPI, detailStatus } from '../Redux/Client/Listing/ListingSlice';
 import NoDataFound from '../Common_Pages/NoDataFound';
+import ReactStars from "react-rating-stars-component";
 
 const Details = () => {
 
@@ -245,94 +246,69 @@ const Details = () => {
 
                                             </div>
                                         </div>
-                                        {/* <div class="border p-3 rounded mb-2">
-                                        <a data-toggle="collapse" href="#collapse-1" role="button" aria-expanded="false"
-                                            aria-controls="collapse-1" class="accordion-item h5 d-block mb-0">How to list my
-                                            item?</a>
-                                        <div class="collapse" id="collapse-1">
-                                            <div class="pt-2">
-                                                <p class="mb-0 pt-2">
-                                                    <ul class="ul-check list-unstyled success">
-                                                        <li>Adipisci dolore reprehenderit</li>
-                                                        <li>Accusamus dicta laborum</li>
-                                                        <li>Delectus sed labore</li>
-                                                        <li>Adipisci dolore reprehenderit</li>
-                                                        <li>Accusamus dicta laborum</li>
-                                                        <li>Delectus sed labore</li>
-                                                        <li>Adipisci dolore reprehenderit</li>
-                                                        <li>Accusamus dicta laborum</li>
-                                                        <li>Delectus sed labore</li>
-                                                    </ul>
-                                                </p>
+                                    </p>
+                                </div>
+                                <div class="col-lg-3">
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div class="col-lg-8 border-bottom mb-5 pb-5">
+                                    <p>
+                                        <h2 class="mb-5 text-primary">Reviews</h2>
+                                        <div className="row">
+                                            <div className="col-md-12">
+                                                <div class="d-block d-md-flex listing-horizontal">
+                                                    <div class="lh-content reviewView">
+                                                        <div className="row">
+                                                            <div className="col-md-8">
+                                                                <p>Good Services</p>
+                                                            </div>
+                                                            <div className="col-md-4 justify-content-end">
+                                                                <p className="font-12">- Bhargav Patel</p>
+                                                            </div>
+                                                        </div>
+                                                        <p className="flex">
+                                                            <ReactStars
+                                                                value={3}
+                                                                count={5}
+                                                                size={30}
+                                                                activeColor="#ffd700"
+                                                                isHalf={true}
+                                                                emptyIcon={<i className="far fa-star"></i>}
+                                                                halfIcon={<i className="fa fa-star-half-alt"></i>}
+                                                                fullIcon={<i className="fa fa-star"></i>}
+                                                            />
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-12">
+                                                <div class="d-block d-md-flex listing-horizontal">
+                                                    <div class="lh-content reviewView">
+                                                        <div className="row">
+                                                            <div className="col-md-8">
+                                                                <p>Good Services</p>
+                                                            </div>
+                                                            <div className="col-md-4 justify-content-end">
+                                                                <p className="font-12">- Bhargav Patel</p>
+                                                            </div>
+                                                        </div>
+                                                        <p className="flex">
+                                                            <ReactStars
+                                                                value={3}
+                                                                count={5}
+                                                                size={30}
+                                                                activeColor="#ffd700"
+                                                                isHalf={true}
+                                                                emptyIcon={<i className="far fa-star"></i>}
+                                                                halfIcon={<i className="fa fa-star-half-alt"></i>}
+                                                                fullIcon={<i className="fa fa-star"></i>}
+                                                            />
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="border p-3 rounded mb-2">
-                                        <a data-toggle="collapse" href="#collapse-4" role="button" aria-expanded="false"
-                                            aria-controls="collapse-4" class="accordion-item h5 d-block mb-0">Is this available
-                                            in my country?</a>
-                                        <div class="collapse" id="collapse-4">
-                                            <div class="pt-2">
-                                                <p class="mb-0 pt-2">
-                                                    <ul class="ul-check list-unstyled success">
-                                                        <li>Adipisci dolore reprehenderit</li>
-                                                        <li>Accusamus dicta laborum</li>
-                                                        <li>Delectus sed labore</li>
-                                                        <li>Adipisci dolore reprehenderit</li>
-                                                        <li>Accusamus dicta laborum</li>
-                                                        <li>Delectus sed labore</li>
-                                                        <li>Adipisci dolore reprehenderit</li>
-                                                        <li>Accusamus dicta laborum</li>
-                                                        <li>Delectus sed labore</li>
-                                                    </ul>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="border p-3 rounded mb-2">
-                                        <a data-toggle="collapse" href="#collapse-2" role="button" aria-expanded="false"
-                                            aria-controls="collapse-2" class="accordion-item h5 d-block mb-0">Is it free?</a>
-                                        <div class="collapse" id="collapse-2">
-                                            <div class="pt-2">
-                                                <p class="mb-0 pt-2">
-                                                    <ul class="ul-check list-unstyled success">
-                                                        <li>Adipisci dolore reprehenderit</li>
-                                                        <li>Accusamus dicta laborum</li>
-                                                        <li>Delectus sed labore</li>
-                                                        <li>Adipisci dolore reprehenderit</li>
-                                                        <li>Accusamus dicta laborum</li>
-                                                        <li>Delectus sed labore</li>
-                                                        <li>Adipisci dolore reprehenderit</li>
-                                                        <li>Accusamus dicta laborum</li>
-                                                        <li>Delectus sed labore</li>
-                                                    </ul>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="border p-3 rounded mb-2">
-                                        <a data-toggle="collapse" href="#collapse-3" role="button" aria-expanded="false"
-                                            aria-controls="collapse-3" class="accordion-item h5 d-block mb-0">How the system
-                                            works?</a>
-                                        <div class="collapse" id="collapse-3">
-                                            <div class="pt-2">
-                                                <p class="mb-0 pt-2">
-                                                    <ul class="ul-check list-unstyled success">
-                                                        <li>Adipisci dolore reprehenderit</li>
-                                                        <li>Accusamus dicta laborum</li>
-                                                        <li>Delectus sed labore</li>
-                                                        <li>Adipisci dolore reprehenderit</li>
-                                                        <li>Accusamus dicta laborum</li>
-                                                        <li>Delectus sed labore</li>
-                                                        <li>Adipisci dolore reprehenderit</li>
-                                                        <li>Accusamus dicta laborum</li>
-                                                        <li>Delectus sed labore</li>
-                                                    </ul>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                               */}
                                     </p>
                                 </div>
                                 <div class="col-lg-3">
