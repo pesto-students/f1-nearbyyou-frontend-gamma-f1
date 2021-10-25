@@ -9,7 +9,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "firebase/
 const gauth = getAuth();
 const provider = new GoogleAuthProvider();
 // const user = {};
-export const GoogleLoginAPi = createAsyncThunk('Google Login API CALL', async ({ }, { dispatch, rejectWithValue }) => {
+export const GoogleLoginAPi = createAsyncThunk('Google Login API CALL', async ({ user_role }, { dispatch, rejectWithValue }) => {
 	try {
 		signInWithPopup(gauth, provider)
 			.then((result) => {
@@ -19,17 +19,27 @@ export const GoogleLoginAPi = createAsyncThunk('Google Login API CALL', async ({
 				// The signed-in user info.
 				const user = result.user;
 				// console.log("user in slice=>", user.accessToken);
-				console.log("user deatils-->", user.auth.currentUser)
+				const user_details = {
+					user_name: user.auth.currentUser.displayName,
+					email: user.auth.currentUser.email,
+					contact_number: user.auth.currentUser.phoneNumber,
+					user_role: user_role
+				}
+				console.log("user deatils-->", user_details)
 				// console.log("user email in slice=>", user.auth.currentUser.email)
 				axios.post("/user/glogin",
 					{
-						username: user.auth.currentUser.email,
+						user_name: user.auth.currentUser.displayName,
+						user_email: user.auth.currentUser.email,
+						contact_number: user.auth.currentUser.phoneNumber,
+						user_role: user_role
 					})
 					.then((response) => {
 						const responseData = response.data
 						// console.log("responseData of glogin ==>", responseData);
 						if (responseData.status === "success") {
 							let authToken = user.accessToken;
+							console.log(responseData.payload.data)
 							let userInfo = responseData.payload.data.userInfo.data[0];
 							localStorage.setItem('Near_By_You_Client', JSON.stringify(userInfo));
 							axios.defaults.headers.common['g-auth-token'] = authToken;

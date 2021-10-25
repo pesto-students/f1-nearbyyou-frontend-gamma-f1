@@ -3,6 +3,8 @@ import { NavLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux';
 import { viewTicketAPI, viewTicketStatus, holdingRequestStausAPI, holdingReqStatus } from '../Redux/Client/Listing/ListingSlice';
 import { Form } from 'react-bootstrap';
+import NoDataFound from '../Common_Pages/NoDataFound';
+import ReactStars from "react-rating-stars-component";
 
 const ViewTickets = () => {
 
@@ -37,28 +39,44 @@ const ViewTickets = () => {
     }, [viewTicketData])
 
     useEffect(() => {
-        if(isHoldingReqStatus){
+        if (isHoldingReqStatus) {
             dispatch(holdingReqStatus(false));
             setCallAPI(!callAPI);
         }
-    },[isHoldingReqStatus])
+    }, [isHoldingReqStatus])
 
     //Functions
 
     //Click on Accept Request
     const onAcceptClick = (id) => {
-        dispatch(holdingRequestStausAPI({id: id, type:'accept'}))
+        dispatch(holdingRequestStausAPI({ id: id, type: 'accept' }))
     }
 
     //Click on Reject Request
     const onRejectClick = (id) => {
-        dispatch(holdingRequestStausAPI({id: id, type:'reject'}))
+        dispatch(holdingRequestStausAPI({ id: id, type: 'reject' }))
     }
+
+    //Give Rating
+    const ratingChanged = (newRating) => {
+        console.log("Rating :- ", newRating);
+    };
 
     console.log("viewTicket-", viewTicket);
 
     return (
         <>
+
+            <ReactStars
+                count={5}
+                onChange={ratingChanged}
+                size={30}
+                activeColor="#ffd700"
+                isHalf={true}
+                emptyIcon={<i className="far fa-star"></i>}
+                halfIcon={<i className="fa fa-star-half-alt"></i>}
+                fullIcon={<i className="fa fa-star"></i>}
+            />
             <div class="site-blocks-cover inner-page-cover overlay"
                 style={{ backgroundImage: 'url(/images/xhero_1.jpg.pagespeed.ic.7aSeOjD_oW.jpg)' }}
                 data-aos="fade"
@@ -93,73 +111,90 @@ const ViewTickets = () => {
                         <div class="col-lg-12">
 
                             {
-                                viewTicket?.length > 0 && viewTicket.map((item, index) => {
+                                viewTicket?.length > 0 ?
+                                    // 1 == 0 ?
+                                    <>
+                                        {viewTicket?.length > 0 && viewTicket.map((item, index) => {
 
-                                    var timeArr = item?.ticket_status == 'pending'? item?.service_time?.split(":") : item?.hold_time?.split(":");
-                                    var suffix = '';
-                                    var hours = '';
-                                    if(timeArr){
-                                        suffix = parseInt(timeArr[0]) >= 12 ? "PM" : "AM";
-                                        hours = ((parseInt(timeArr[0]) + 11) % 12 + 1) + ":" + timeArr[1] + " " + suffix
-                                    }
-                                    
-                                    return (
-                                        <div class="d-block d-md-flex listing-horizontal">
-                                            <NavLink to={`/category/${item?.categoryDetails[0]?.name}/shop/${item?.shopdeatils[0]?._id}`} class="img d-block"
-                                                style={{ backgroundImage: 'url(/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)' }}>
-                                                <span class="category">Restaurants</span>
-                                            </NavLink>
-                                            <div class="lh-content">
-                                                <h3><a href="#">{item?.shopdeatils[0]?.shop_name}</a></h3>
-                                                <p>{item?.shopdeatils[0]?.shop_area}, {item?.shopdeatils[0]?.shop_street}, {item?.shopdeatils[0]?.shop_city_town}, {item?.shopdeatils[0]?.shop_state}</p>
-                                                <p><b>{item?.ticket_status == 'pending' ? item?.service_date?.split('T')[0] : item?.hold_date?.split('T')[0]}</b>,  <b>{hours}</b></p>
-                                                <div className="row">
-                                                    <div className="col-md-4">
-                                                        <div class="border p-3 rounded mb-2">
-                                                            <a data-toggle="collapse" href={`#collapse-${index}`} role="button" aria-expanded="false"
-                                                                aria-controls={`collapse-${index}`} class="accordion-item h5 d-block mb-0">Your Service Description</a>
-                                                            <div class="collapse" id={`collapse-${index}`}>
-                                                                <div class="pt-2">
-                                                                    <p class="mb-0">{item.service_description}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    {
-                                                        (item?.ticket_status == 'holding') && (
-                                                            <div className="col-md-6">
-                                                                <div class="border p-3 rounded mb-2">
-                                                                    <a data-toggle="collapse" href={`#collapse-hold${index}`} role="button" aria-expanded="false"
-                                                                        aria-controls={`collapse-hold${index}`} class="accordion-item h5 d-block mb-0">Vendor Holding Request</a>
-                                                                    <div class="collapse" id={`collapse-hold${index}`}>
-                                                                        <div class="pt-2">
-                                                                            <p class="mb-0">
-                                                                                {/* {item?.hold_date} {item?.hold_time} */}
-                                                                                <b>18-10-2021 10:00 AM</b>
-                                                                            </p>
-                                                                            <p class="mb-0 bottom-lne text-align-center">
-                                                                                Reason
-                                                                            </p>
-                                                                            <p class="mb-0">
-                                                                                {/* {item?.hold_description} */}
-                                                                                Today it;s not possible we reshedusle your req please accept this request if possible
-                                                                            </p>
+                                            var timeArr = item?.ticket_status == 'pending' ? item?.service_time?.split(":") : item?.hold_time?.split(":");
+                                            var suffix = '';
+                                            var hours = '';
+                                            if (timeArr) {
+                                                suffix = parseInt(timeArr[0]) >= 12 ? "PM" : "AM";
+                                                hours = ((parseInt(timeArr[0]) + 11) % 12 + 1) + ":" + timeArr[1] + " " + suffix
+                                            }
+
+                                            return (
+                                                <>
+                                                    <div class="d-block d-md-flex listing-horizontal">
+                                                        <NavLink to={`/category/${item?.categoryDetails[0]?.name}/shop/${item?.shopdeatils[0]?._id}`} class="img d-block"
+                                                            style={{ backgroundImage: 'url(/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)' }}>
+                                                            <span class="category">{item?.categoryDetails[0]?.name}</span>
+                                                        </NavLink>
+                                                        <div class="lh-content">
+                                                            <h3><a href="#">{item?.shopdeatils[0]?.shop_name}</a></h3>
+                                                            <p>{item?.shopdeatils[0]?.shop_area}, {item?.shopdeatils[0]?.shop_street}, {item?.shopdeatils[0]?.shop_city_town}, {item?.shopdeatils[0]?.shop_state}</p>
+                                                            <p><b>{item?.ticket_status == 'pending' ? item?.service_date?.split('T')[0] : item?.hold_date?.split('T')[0]}</b>,  <b>{hours}</b></p>
+                                                            <div className="row">
+                                                                <div className="col-md-4">
+                                                                    <div class="border p-3 rounded mb-2">
+                                                                        <a data-toggle="collapse" href={`#collapse-${index}`} role="button" aria-expanded="false"
+                                                                            aria-controls={`collapse-${index}`} class="accordion-item h5 d-block mb-0">Your Service Description</a>
+                                                                        <div class="collapse" id={`collapse-${index}`}>
+                                                                            <div class="pt-2">
+                                                                                <p class="mb-0">{item.service_description}</p>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div className="justify-content-evenly">
-                                                                    <button class="accept-btn cursor-pointer" onClick={() => onAcceptClick(item?._id)} >Accept</button>
-                                                                    <button class="reject-btn cursor-pointer" onClick={() => onRejectClick(item?._id)}>Reject</button>
-                                                                </div>
+                                                                {
+                                                                    (item?.ticket_status == 'holding') && (
+                                                                        <div className="col-md-6">
+                                                                            <div class="border p-3 rounded mb-2">
+                                                                                <a data-toggle="collapse" href={`#collapse-hold${index}`} role="button" aria-expanded="false"
+                                                                                    aria-controls={`collapse-hold${index}`} class="accordion-item h5 d-block mb-0">Vendor Holding Request</a>
+                                                                                <div class="collapse" id={`collapse-hold${index}`}>
+                                                                                    <div class="pt-2">
+                                                                                        <p class="mb-0">
+                                                                                            {/* {item?.hold_date} {item?.hold_time} */}
+                                                                                            <b>18-10-2021 10:00 AM</b>
+                                                                                        </p>
+                                                                                        <p class="mb-0 bottom-lne text-align-center">
+                                                                                            Reason
+                                                                                        </p>
+                                                                                        <p class="mb-0">
+                                                                                            {/* {item?.hold_description} */}
+                                                                                            Today it;s not possible we reshedusle your req please accept this request if possible
+                                                                                        </p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className="justify-content-evenly">
+                                                                                <button class="accept-btn cursor-pointer" onClick={() => onAcceptClick(item?._id)} >Accept</button>
+                                                                                <button class="reject-btn cursor-pointer" onClick={() => onRejectClick(item?._id)}>Reject</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    )
+                                                                }
                                                             </div>
-                                                        )
-                                                    }
-                                                </div>
+                                                        </div>
+                                                        <div><span class="statusButton">{item?.ticket_status == 'in_progress' ? 'In Progress' : item?.ticket_status}</span></div>
+                                                    </div>
+                                                </>
+                                            )
+                                        })}
+                                        <div class="col-12 mt-5 text-center">
+                                            <div class="custom-pagination">
+                                                <span>1</span>
+                                                <a href="#">2</a>
+                                                <a href="#">3</a>
+                                                <span class="more-page">...</span>
+                                                <a href="#">10</a>
                                             </div>
-                                            <div><span class="statusButton">{item?.ticket_status == 'in_progress' ? 'In Progress' : item?.ticket_status}</span></div>
                                         </div>
-                                    )
-                                })
+                                    </>
+                                    :
+                                    <NoDataFound msg={"No Ticket Found Yet !!"} />
                             }
 
                             {/* <div class="d-block d-md-flex listing-horizontal">
@@ -290,15 +325,6 @@ const ViewTickets = () => {
                                 </div>
                                 <div><span class="statusButton">Pending</span></div>
                             </div> */}
-                            <div class="col-12 mt-5 text-center">
-                                <div class="custom-pagination">
-                                    <span>1</span>
-                                    <a href="#">2</a>
-                                    <a href="#">3</a>
-                                    <span class="more-page">...</span>
-                                    <a href="#">10</a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

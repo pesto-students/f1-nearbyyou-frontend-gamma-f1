@@ -135,8 +135,8 @@ const Login = () => {
 
 
 
-	const onSignIn = () => {
-		dispatch(GoogleLoginAPi({}));
+	const onSignIn = (user_role) => {
+		dispatch(GoogleLoginAPi({user_role: user_role}));
 
 	}
 
@@ -265,7 +265,10 @@ const Login = () => {
 													<input type="submit" value="Sign Up" class="btn btn-primary btn-md text-white" />
 												</div>
 											</div>
+											<h3> OR </h3>
+											<button onClick={()=>onSignIn("customer")} class="btn btn-outline-primary">Sign in with google</button>
 										</>)
+
 								}
 								{
 									form.register_type == "vendor" && (
@@ -329,6 +332,8 @@ const Login = () => {
 													<input type="submit" value="Sign Up" class="btn btn-primary btn-md text-white" />
 												</div>
 											</div>
+											<h3> OR </h3>
+											<button onClick={()=>onSignIn("vendor")} class="btn btn-outline-primary">Sign in with google</button>
 										</>)
 								}
 							</form>
@@ -359,7 +364,7 @@ const Login = () => {
 									</div>
 								</div>
 							</form>
-							<button onClick={onSignIn} class="btn btn-outline-primary">Sign in with google</button>
+							<button onClick={()=>onSignIn()} class="btn btn-outline-primary">Sign in with google</button>
 						</div>
 
 					</div>

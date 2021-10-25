@@ -8,7 +8,7 @@ const BookSlot = () => {
     //object
     const dispatch = useDispatch();
     const history = useHistory();
-    const {shopID} = useParams();
+    const { shopID } = useParams();
 
     //get data from store
     const { isTicketStatus, customerDetails } = useSelector(state => state.listing);
@@ -39,20 +39,26 @@ const BookSlot = () => {
         dispatch(ticketStatus(false));
         let userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
 
-        setForm({
-            ...form,
-            customerId: userData.id,
-            fname: userData?.user_name?.split(" ")[0],
-            lname: userData?.user_name?.split(" ")[1],
-            email: userData?.email,
-            contact: userData?.contact_number,
-            door_number: userData?.custDetails[0]?.door_number,
-            street: userData?.custDetails[0]?.street,
-            area: userData?.custDetails[0]?.area,
-            city_town: userData?.custDetails[0]?.city_town,
-            state: userData?.custDetails[0]?.state,
-            pincode: userData?.custDetails[0]?.pincode,
-        })
+        if (userData) {
+            dispatch(customerDetailsAPI({ userID: userData.id }))
+        } else {
+            history.push('/');
+        }
+
+        // setForm({
+        //     ...form,
+        //     customerId: userData.id,
+        //     fname: userData?.user_name?.split(" ")[0],
+        //     lname: userData?.user_name?.split(" ")[1],
+        //     email: userData?.email,
+        //     contact: userData?.contact_number,
+        //     door_number: userData?.custDetails[0]?.door_number,
+        //     street: userData?.custDetails[0]?.street,
+        //     area: userData?.custDetails[0]?.area,
+        //     city_town: userData?.custDetails[0]?.city_town,
+        //     state: userData?.custDetails[0]?.state,
+        //     pincode: userData?.custDetails[0]?.pincode,
+        // })
 
         // console.log("userData :- ", userData, userData.id);
         // if (userData) {
@@ -62,19 +68,27 @@ const BookSlot = () => {
         // }
     }, [])
 
-    // useEffect(() => {
-    //     if (customerDetails) {
-    //         let data = customerDetails[0];
-    //         setForm({
-    //             ...form,
-    //             fname: data?.user_name.split(" ")[0],
-    //             lname: data?.user_name.split(" ")[1],
-    //             email: data?.email,
-    //             contact: data?.contact_number,
-    //             address: '',
-    //         })
-    //     }
-    // }, [customerDetails])
+    useEffect(() => {
+        if (customerDetails) {
+            if (customerDetails?.length > 0) {
+                let data = customerDetails[0];
+                setForm({
+                    ...form,
+                    customerId: data.id,
+                    fname: data?.user_name?.split(" ")[0],
+                    lname: data?.user_name?.split(" ")[1],
+                    email: data?.email,
+                    contact: data?.contact_number,
+                    door_number: data?.Details[0]?.door_number,
+                    street: data?.Details[0]?.street,
+                    area: data?.Details[0]?.area,
+                    city_town: data?.Details[0]?.city_town,
+                    state: data?.Details[0]?.state,
+                    pincode: data?.Details[0]?.pincode,
+                })
+            }
+        }
+    }, [customerDetails])
 
     useEffect(() => {
         if (isTicketStatus) {
@@ -116,7 +130,7 @@ const BookSlot = () => {
 
         console.log("form :- ", form);
 
-        dispatch(ticketAPI({ description: form.description, date: form.date, time: form.time, customerId: form.customerId, ticket_status : 'pending', shop_ticket : shopID }))
+        dispatch(ticketAPI({ description: form.description, date: form.date, time: form.time, customerId: form.customerId, ticket_status: 'pending', shop_ticket: shopID }))
     }
 
     return (
@@ -140,7 +154,7 @@ const BookSlot = () => {
             <div class="site-section bg-light">
                 <div class="container">
                     <div class="row">
-                    <div class="col-md-7 mb-5" data-aos="fade">
+                        <div class="col-md-7 mb-5" data-aos="fade">
                             <form method="post" onSubmit={onSubmit} class="p-5 bg-white" style={{ marginTop: '-150px' }}>
                                 {/* <div class="row form-group">
                                     <div class="col-md-6 mb-3 mb-md-0">
@@ -209,7 +223,6 @@ const BookSlot = () => {
                                 </p>
                             </div>
                         </div>
-                        
                     </div>
                 </div>
             </div>

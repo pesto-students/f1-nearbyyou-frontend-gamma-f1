@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Dropdown, Carousel, Table, Modal, Button, Form, Row, Col } from 'react-bootstrap';
+import { Dropdown, ButtonGroup, Table, Modal, Button, Form, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { GetAllShopsAPI, shopStatus, AddShopAPI, newShopStatus } from '../Redux/vendor/Profile/VendorProfileSlice';
+import { GetAllShopsAPI, shopStatus, AddShopAPI, newShopStatus, GetAllPlans, allPlansStatus, EditShopAPI, editShopStatus } from '../Redux/vendor/Profile/VendorProfileSlice';
 import { useHistory } from 'react-router-dom';
 
 const __DEV__ = document.domain === 'localhost'
@@ -13,7 +13,13 @@ const VendorProfile = () => {
 	const dispatch = useDispatch();
 	const history = useHistory();
 
-	const { shopResults, isshopstatus, isnewShopStatus, newShopResults } = useSelector(state => state.shop);
+	const { shopResults, isshopstatus, isnewShopStatus, allPlansResults, isAllPlans, iseditshopstatus } = useSelector(state => state.shop);
+
+
+
+
+
+
 	const [results, setResults] = useState({
 		shops: '',
 		vendor_details: ''
@@ -26,6 +32,17 @@ const VendorProfile = () => {
 			history.push('/vendor/app/profile')
 		}
 	})
+
+
+	const [plans, setPlans] = useState('');
+	useEffect(() => {
+		if (isAllPlans) {
+			setPlans(allPlansResults)
+			dispatch(allPlansStatus(false))
+		}
+	}, [isAllPlans])
+
+
 
 	useEffect(() => {
 		// if (isshopstatus) {
@@ -44,8 +61,17 @@ const VendorProfile = () => {
 		setUser(userData);
 		console.log("user data after stringyfy->", userData);
 		dispatch(GetAllShopsAPI({ user_id: userData.id }));
+		dispatch(GetAllPlans({}));
 
 	}, [])
+
+	useEffect(() => {
+		if (iseditshopstatus) {
+			dispatch(editShopStatus(false));
+			const userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
+			dispatch(GetAllShopsAPI({ user_id: userData.id }));
+		}
+	}, [iseditshopstatus])
 
 
 
@@ -90,6 +116,34 @@ const VendorProfile = () => {
 		));
 
 	}
+	const [plan_choosen, setPlanChoosen] = useState({
+		plan_id: '',
+		plan_amount: '',
+		plan_name: '',
+		isselected: false
+	});
+	const planselected = (plan) => {
+		setPlanChoosen({
+			plan_id: plan._id,
+			plan_name: plan.name,
+			plan_amount: plan.plan_price,
+			isselected: true
+		})
+	}
+
+	const [show, setShow] = useState(false);
+
+	//Open Modal
+	const handleShow = () => setShow(true);
+
+	//Close Modal
+	const handleClose = () => {
+		setShow(false);
+		setPlanChoosen({
+			isselected: false
+		})
+	}
+
 	function loadScript(src) {
 		return new Promise((resolve) => {
 			const script = document.createElement('script')
@@ -113,19 +167,17 @@ const VendorProfile = () => {
 			return
 		}
 
-		const data = await fetch('http://localhost:3003/api/razorpay', { method: 'POST' }).then((t) =>
+		const data = await fetch(`http://localhost:3003/api/razorpay?plan_id=${plan_choosen?.plan_id}`, { method: 'GET' }).then((t) =>
 			t.json()
 		)
 
-		console.log(data)
-
 		const options = {
 			key: __DEV__ ? 'rzp_test_LeuHX4bMmraCPA' : 'PRODUCTION_KEY',
-			currency: data.currency,
+			currency: 'INR',
 			amount: data.amount.toString(),
 			order_id: data.id,
-			name: 'Donation',
-			description: 'Thank you for nothing. Please give us some money',
+			name: 'Near By You',
+			description: 'Thanks for selecting a plan',
 			image: '/images/near-by-you.jpg',
 			handler: function (response) {
 				alert(response.razorpay_payment_id)
@@ -136,12 +188,24 @@ const VendorProfile = () => {
 				name: 'Bhargav Patel',
 				email: 'sdfdsjfh2@ndsfdf.com',
 				phone_number: '9899999999'
+			},
+			notes: {
+				plan_id: plan_choosen?.plan_id
 			}
 		}
 		const paymentObject = new window.Razorpay(options)
 		paymentObject.open()
 	}
 
+	const sendrequest = (id) => {
+		dispatch(EditShopAPI(
+			{
+				shop_status: "pending",
+				shop_id: id
+			}
+		));
+
+	}
 
 	return (
 		<>
@@ -267,6 +331,43 @@ const VendorProfile = () => {
 						</div>
 					</form>
 				</div>
+
+				<Modal centered show={show} onHide={handleClose}>
+					<Modal.Header closeButton>
+						<Modal.Title>Payment</Modal.Title>
+					</Modal.Header>
+					<Modal.Body>
+						Select a plan
+						{console.log("plans===", plans)}
+						{plans?.length > 0 && plans.map((type) => (
+							<div key={`inline-radio`} className="mb-2">
+								<Form.Check
+									inline
+									label={type?.name + " - " + type?.plan_type + "- " + type?.plan_price}
+									name="plans"
+									type={"radio"}
+									value={type?._id}
+									id={`inline-radio-1`}
+									onChange={() => planselected(type)}
+								/>
+							</div>
+						))}
+
+
+					</Modal.Body>
+					<Modal.Footer class="feedBackFooter">
+						<div className="feedBackButton">
+							<Button variant="secondary" onClick={handleClose}>
+								Close
+							</Button>
+						</div>
+						<Button variant="primary" disabled={plan_choosen.isselected == false} onClick={displayRazorpay}>
+							Payemnt
+						</Button>
+					</Modal.Footer>
+				</Modal>
+
+
 				<Table responsive>
 					<thead>
 						<tr>
@@ -275,6 +376,7 @@ const VendorProfile = () => {
 							<th>Shop Contact</th>
 							<th>Shop Status</th>
 							<th>View</th>
+							<th>Action</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -285,10 +387,15 @@ const VendorProfile = () => {
 									<td>{item.shop_email}</td>
 									<td>{item.shop_contact_number}</td>
 									<td>{item.shop_status}</td>
-									{(item.shop_status == "active" || item.shop_status == "reject" || item.shop_status == "pending") ?
-										<td ><Link to={`/vendor/app/view_shop/${item._id}`}><i class="fa fa-eye fa-lg" aria-hidden="true"></i></Link></td> : ""}
+									<td ><Link to={`/vendor/app/view_shop/${item._id}`}><i class="fa fa-eye fa-lg" aria-hidden="true"></i></Link></td>
 									{(item.shop_status == "payment pending") ?
-										<td><input onClick={displayRazorpay} type="button" value="Donot 499" class="form-control btn btn-primary btn-md text-white" /></td> : ""
+										<td><input onClick={handleShow} type="button" value="Make the payment" class="btn btn-primary btn-xs text-white" /></td> : ""
+									}
+									{(item.shop_status == "inactive") ?
+										<td><input onClick={handleShow} type="button" value="Renew" class="btn btn-primary btn-xs text-white" /></td> : ""
+									}
+									{(item.shop_status == "reject") ?
+										<td><input onClick={() => sendrequest(item._id)} value="send request again" type="button" class="btn btn-primary btn-xs text-white" /></td> : ""
 									}
 
 								</tr>

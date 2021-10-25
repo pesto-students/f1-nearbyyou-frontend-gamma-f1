@@ -149,11 +149,12 @@ export const customerDetailsAPI = createAsyncThunk('Customer Details API CALL', 
 });
 
 //Edit Profile API
-export const editProfile = createAsyncThunk('Edit Profile API CALL', async ({ user_name, contact_number, door_number, street, area, pincode, city, state }, { dispatch, rejectWithValue }) => {
+export const editProfile = createAsyncThunk('Edit Profile API CALL', async ({ id, user_name, contact_number, door_number, street, area, pincode, city, state }, { dispatch, rejectWithValue }) => {
     console.log("userId :-", { user_name, contact_number, door_number, street, area, pincode, city, state });
     try {
         const response = await axios.post("customer/profileEdit",
             {
+                id: id,
                 user_name: user_name,
                 contact_number: contact_number,
                 door_number: door_number,

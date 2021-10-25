@@ -190,3 +190,24 @@ code {
 button.close{
   margin-top: -45px !important;
 }
+
+
+.noDataFound{
+  text-align: center;
+  font-weight: 500;
+  color: #00918e;
+}
+
+.modal-dialog{
+  pointer-events: all !important;
+  top: 30% !important;
+}
+.feedBackFooter{
+  margin-top: 60px !important;
+  display: flex;
+  justify-content: right;
+}
+
+.feedBackButton{
+  margin-right: 15px;
+}
