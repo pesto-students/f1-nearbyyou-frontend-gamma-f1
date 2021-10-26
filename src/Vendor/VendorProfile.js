@@ -132,16 +132,20 @@ const VendorProfile = () => {
 	}
 
 	const [show, setShow] = useState(false);
+	const [paymentShopID, setPaymentShopID] = useState('')
 
 	//Open Modal
-	const handleShow = () => setShow(true);
-
+	const handleShow = (id) => {
+		setShow(true);
+		setPaymentShopID(id)
+	}
 	//Close Modal
 	const handleClose = () => {
 		setShow(false);
 		setPlanChoosen({
 			isselected: false
 		})
+		setPaymentShopID('');
 	}
 
 	function loadScript(src) {
@@ -180,9 +184,17 @@ const VendorProfile = () => {
 			description: 'Thanks for selecting a plan',
 			image: '/images/near-by-you.jpg',
 			handler: function (response) {
-				alert(response.razorpay_payment_id)
-				alert(response.razorpay_order_id)
-				alert(response.razorpay_signature)
+				setShow(false);
+				setPlanChoosen({
+					isselected: false
+				})
+				setPaymentShopID('');
+				alert("payment susscessfully done");
+				const userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
+				dispatch(GetAllShopsAPI({ user_id: userData.id }));
+				// alert(response.razorpay_payment_id)
+				// alert(response.razorpay_order_id)
+				// alert(response.razorpay_signature)
 			},
 			prefill: {
 				name: 'Bhargav Patel',
@@ -190,7 +202,8 @@ const VendorProfile = () => {
 				phone_number: '9899999999'
 			},
 			notes: {
-				plan_id: plan_choosen?.plan_id
+				plan_id: plan_choosen?.plan_id,
+				shop_id: paymentShopID
 			}
 		}
 		const paymentObject = new window.Razorpay(options)
@@ -338,7 +351,6 @@ const VendorProfile = () => {
 					</Modal.Header>
 					<Modal.Body>
 						Select a plan
-						{console.log("plans===", plans)}
 						{plans?.length > 0 && plans.map((type) => (
 							<div key={`inline-radio`} className="mb-2">
 								<Form.Check
@@ -389,10 +401,10 @@ const VendorProfile = () => {
 									<td>{item.shop_status}</td>
 									<td ><Link to={`/vendor/app/view_shop/${item._id}`}><i class="fa fa-eye fa-lg" aria-hidden="true"></i></Link></td>
 									{(item.shop_status == "payment pending") ?
-										<td><input onClick={handleShow} type="button" value="Make the payment" class="btn btn-primary btn-xs text-white" /></td> : ""
+										<td><input onClick={() => handleShow(item._id)} type="button" value="Make the payment" class="btn btn-primary btn-xs text-white" /></td> : ""
 									}
 									{(item.shop_status == "inactive") ?
-										<td><input onClick={handleShow} type="button" value="Renew" class="btn btn-primary btn-xs text-white" /></td> : ""
+										<td><input onClick={() => handleShow(item._id)} type="button" value="Renew" class="btn btn-primary btn-xs text-white" /></td> : ""
 									}
 									{(item.shop_status == "reject") ?
 										<td><input onClick={() => sendrequest(item._id)} value="send request again" type="button" class="btn btn-primary btn-xs text-white" /></td> : ""
