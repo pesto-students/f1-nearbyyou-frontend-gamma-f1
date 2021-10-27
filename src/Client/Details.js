@@ -6,6 +6,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import { detailAPI, detailStatus } from '../Redux/Client/Listing/ListingSlice';
 import NoDataFound from '../Common_Pages/NoDataFound';
 import ReactStars from "react-rating-stars-component";
+import Pegination from '../Common_Pages/Pegination';
 
 const Details = () => {
 
@@ -22,6 +23,8 @@ const Details = () => {
     console.log("detailResult: - ", detailResult);
 
     //State Manage
+    const [activePage, setActivePage] = useState(1);
+    const [avgRating, setAvgRating] = useState(0);
     const [details, setDetails] = useState('');
     const [shopList, setShopList] = useState([
         {
@@ -86,6 +89,15 @@ const Details = () => {
 
     console.log("details: - ", details);
 
+    //Functions
+
+    //Pegination Changr Function
+    const handlePageChange = (data) => {
+        console.log("Data :- ", data);
+        // getDestinationData(data);
+        setActivePage(data);
+    }
+
     return (
         <>
             <div class="site-blocks-cover inner-page-cover overlay"
@@ -121,7 +133,11 @@ const Details = () => {
                                 <div class="col-lg-3 ml-auto" style={{ paddingRight: '0' }}>
                                     <div class="mb-4">
                                         <h3 class="h5 text-black mb-2" style={{ fontSize: '35px' }}>
-                                            <Link to="/"><i class="fa fa-whatsapp cursor-pointer" style={{ marginRight: '50px' }} title='Contact US'></i> </Link>
+                                            {
+                                                details?.shop_contact_number && (
+                                                    <a href={`https://wa.me/+91${details?.shop_contact_number}/?text=`} target="_blank"><i class="fa fa-whatsapp cursor-pointer" style={{ marginRight: '50px' }} title='Contact US'></i> </a>
+                                                )
+                                            }
                                             <Link to={`/bookSlot/${shopID}`}><i class="fa fa-ticket cursor-pointer" title="Book Slot"></i></Link>
                                             {/* <Link to={`/app/bookSlot`}><i class="fa fa-ticket cursor-pointer" title="Book Slot"></i></Link> */}
                                         </h3>
@@ -256,59 +272,42 @@ const Details = () => {
                                     <p>
                                         <h2 class="mb-5 text-primary">Reviews</h2>
                                         <div className="row">
-                                            <div className="col-md-12">
-                                                <div class="d-block d-md-flex listing-horizontal">
-                                                    <div class="lh-content reviewView">
-                                                        <div className="row">
-                                                            <div className="col-md-8">
-                                                                <p>Good Services</p>
-                                                            </div>
-                                                            <div className="col-md-4 justify-content-end">
-                                                                <p className="font-12">- Bhargav Patel</p>
-                                                            </div>
-                                                        </div>
-                                                        <p className="flex">
-                                                            <ReactStars
-                                                                value={3}
-                                                                count={5}
-                                                                size={30}
-                                                                activeColor="#ffd700"
-                                                                isHalf={true}
-                                                                emptyIcon={<i className="far fa-star"></i>}
-                                                                halfIcon={<i className="fa fa-star-half-alt"></i>}
-                                                                fullIcon={<i className="fa fa-star"></i>}
-                                                            />
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="col-md-12">
-                                                <div class="d-block d-md-flex listing-horizontal">
-                                                    <div class="lh-content reviewView">
-                                                        <div className="row">
-                                                            <div className="col-md-8">
-                                                                <p>Good Services</p>
-                                                            </div>
-                                                            <div className="col-md-4 justify-content-end">
-                                                                <p className="font-12">- Bhargav Patel</p>
+                                            {
+                                                details?.feedBacks?.map((i, k) => {
+                                                    return (
+                                                        <div className="col-md-12">
+                                                            <div class="d-block d-md-flex listing-horizontal">
+                                                                <div class="lh-content reviewView">
+                                                                    <div className="row">
+                                                                        <div className="col-md-8">
+                                                                            <p>{i?.feedBack}</p>
+                                                                        </div>
+                                                                        <div className="col-md-4 justify-content-end">
+                                                                            <p className="font-12">- {details?.userInfo[k]?.user_name}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <p className="flex">
+                                                                        <ReactStars
+                                                                            value={i?.rating}
+                                                                            count={5}
+                                                                            size={30}
+                                                                            activeColor="#ffd700"
+                                                                            isHalf={true}
+                                                                            emptyIcon={<i className="far fa-star"></i>}
+                                                                            halfIcon={<i className="fa fa-star-half-alt"></i>}
+                                                                            fullIcon={<i className="fa fa-star"></i>}
+                                                                            classNames='pointerEventNone'
+                                                                        // style={{PointerEvent:'none'}}
+                                                                        />
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <p className="flex">
-                                                            <ReactStars
-                                                                value={3}
-                                                                count={5}
-                                                                size={30}
-                                                                activeColor="#ffd700"
-                                                                isHalf={true}
-                                                                emptyIcon={<i className="far fa-star"></i>}
-                                                                halfIcon={<i className="fa fa-star-half-alt"></i>}
-                                                                fullIcon={<i className="fa fa-star"></i>}
-                                                            />
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                    )
+                                                })
+                                            }
                                         </div>
+                                        <Pegination onChange={handlePageChange} totalItemsCount={details?.feedBacks?.length} activePage={activePage} />
                                     </p>
                                 </div>
                                 <div class="col-lg-3">

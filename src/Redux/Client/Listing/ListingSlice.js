@@ -249,7 +249,7 @@ export const sendFeedBackAPI = createAsyncThunk('Send FeedBack API', async ({ sh
         console.log("data.payload.data.data[0]._id:-", response.data.payload.data.data);
 
         if (responseData.status == "success") {
-            // dispatch(SuccessAlert(responseData.msg));
+            dispatch(SuccessAlert(responseData.msg));
             return response;
         } else {
             dispatch(ErrorAlert(responseData.msg));

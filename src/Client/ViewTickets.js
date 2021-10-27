@@ -7,6 +7,7 @@ import NoDataFound from '../Common_Pages/NoDataFound';
 import ReactStars from "react-rating-stars-component";
 import { Modal, Button } from 'react-bootstrap';
 import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
+import Pegination from '../Common_Pages/Pegination';
 
 const ViewTickets = () => {
 
@@ -19,6 +20,8 @@ const ViewTickets = () => {
     console.log("viewTicketData :- ", viewTicketData);
 
     //State Manage
+    const [activePage, setActivePage] = useState(1);
+    const [APIData, setAPIData] = useState([]);
     const [viewTicket, setViewTicket] = useState([]);
     const [statusDrop, setStatusDrop] = useState('');
     const [callAPI, setCallAPI] = useState(false);
@@ -26,6 +29,7 @@ const ViewTickets = () => {
     const [feedBack, setFeedBack] = useState('');
     const [rating, setRating] = useState('');
     const [shopId, setShopId] = useState('');
+    const [ticketId, setTicketId] = useState('');
 
     //useeffect
     useEffect(() => {
@@ -42,7 +46,7 @@ const ViewTickets = () => {
     }, [statusDrop, callAPI])
 
     useEffect(() => {
-        setViewTicket(viewTicketData)
+        setAPIData(viewTicketData)
     }, [viewTicketData])
 
     useEffect(() => {
@@ -53,9 +57,31 @@ const ViewTickets = () => {
     }, [isHoldingReqStatus])
 
     useEffect(() => {
-        handleClose();
-        dispatch(feedBackSendStatus(false));
+        if (isFeedBackSendStatus) {
+            handleClose();
+            dispatch(feedBackSendStatus(false));
+            dispatch(holdingRequestStausAPI({ id: ticketId, type: 'reject' }))
+        }
     }, [isFeedBackSendStatus])
+
+    useEffect(() => {
+        let data = APIData;
+        let endLength = 0;
+        let startLength = (activePage - 1) * 10;
+        if (activePage * 10 > data.length) {
+            endLength = data.length;
+        } else {
+            endLength = activePage * 10;
+        }
+
+        let viewArray = [];
+        for (let i = startLength; i < endLength; i++) {
+            viewArray.push(data[i]);
+        }
+
+        console.log("viewArray ;- ", viewArray);
+        setViewTicket(viewArray);
+    }, [activePage, APIData])
 
     //Functions
 
@@ -75,8 +101,9 @@ const ViewTickets = () => {
     };
 
     //Open Modal
-    const handleShow = (shopId) => {
+    const handleShow = (shopId, ticketId) => {
         setShopId(shopId);
+        setTicketId(ticketId);
         setShow(true);
     };
 
@@ -115,13 +142,21 @@ const ViewTickets = () => {
 
     }
 
+    //Pegination Changr Function
+    const handlePageChange = (data) => {
+        console.log("Data :- ", data);
+        // getDestinationData(data);
+        setActivePage(data);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     console.log("viewTicket-", viewTicket);
 
     return (
         <>
             <Modal centered show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title><span style={{color: '#00918e'}}>Close Ticket</span></Modal.Title>
+                    <Modal.Title><span style={{ color: '#00918e' }}>Close Ticket</span></Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     You can close the ticket after geting the service
@@ -268,7 +303,7 @@ const ViewTickets = () => {
                                                                     (item?.ticket_status == 'in_progress') && (
                                                                         <div className="col-md-6">
                                                                             <div className="justify-content-left" style={{ marginTop: '16px' }}>
-                                                                                <button class="reject-btn cursor-pointer" onClick={() => handleShow(item?.shopdeatils[0]?._id)}>Close Ticket</button>
+                                                                                <button class="reject-btn cursor-pointer" onClick={() => handleShow(item?.shopdeatils[0]?._id, item?._id)}>Close Ticket</button>
                                                                             </div>
                                                                         </div>
                                                                     )
@@ -280,15 +315,7 @@ const ViewTickets = () => {
                                                 </>
                                             )
                                         })}
-                                        <div class="col-12 mt-5 text-center">
-                                            <div class="custom-pagination">
-                                                <span>1</span>
-                                                <a href="#">2</a>
-                                                <a href="#">3</a>
-                                                <span class="more-page">...</span>
-                                                <a href="#">10</a>
-                                            </div>
-                                        </div>
+                                        <Pegination onChange={handlePageChange} totalItemsCount={APIData.length} activePage={activePage} />
                                     </>
                                     :
                                     <NoDataFound msg={"No Ticket Found Yet !!"} />

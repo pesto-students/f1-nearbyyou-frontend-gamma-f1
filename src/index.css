@@ -231,3 +231,38 @@ button.close{
 .font-12{
   font-size: 12px;
 }
+
+.pagination{
+  display: flex !important;
+  list-style: none !important;
+  justify-content: center !important;
+}
+
+.pagination li.active a{ 
+  text-align: center;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 50%;
+  display: inline-block;
+  background: #00918e;
+  color: white;  
+}
+
+.pagination li a{ 
+  text-align: center;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 50%;
+  display: inline-block;
+  background-color: transparent;
+  color: #00918e;
+  border: 1px solid #00918e;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.pointerEventNone{
+  pointer-events: none;
+}

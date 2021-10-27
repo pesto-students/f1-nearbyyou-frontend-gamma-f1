@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { categoryAPI, categoryStatus } from '../Redux/Client/Listing/ListingSlice';
 import NoDataFound from './NoDataFound';
+import Pegination from '../Common_Pages/Pegination';
 
 const CategoryList = ({ type, searchDrop }) => {
 
@@ -14,9 +15,11 @@ const CategoryList = ({ type, searchDrop }) => {
     const { avaliableCategory, categoryResult } = useSelector(state => state.listing);
 
     //State Manage
+    const [activePage, setActivePage] = useState(1);
     const [avaCategory, setAvaCategory] = useState([]);
     const [categoryList, setCategoryList] = useState([]);
     const [categoryDrop, setCategoryDrop] = useState('');
+    const [APIData, setAPIData] = useState([]);
 
     //Useeffects
     useEffect(() => {
@@ -24,12 +27,31 @@ const CategoryList = ({ type, searchDrop }) => {
     }, [categoryDrop])
 
     useEffect(() => {
-        setCategoryList(categoryResult);
+        setAPIData(categoryResult);
     }, [categoryResult])
 
     useEffect(() => {
         setAvaCategory(avaliableCategory);
     }, [avaliableCategory])
+
+    useEffect(() => {
+        let data = APIData;
+        let endLength = 0;
+        let startLength = (activePage - 1) * 10;
+        if (activePage * 10 > data.length) {
+            endLength = data.length;
+        } else {
+            endLength = activePage * 10;
+        }
+
+        let viewArray = [];
+        for (let i = startLength; i < endLength; i++) {
+            viewArray.push(data[i]);
+        }
+
+        console.log("viewArray ;- ", viewArray);
+        setCategoryList(viewArray);
+    }, [activePage, APIData])
 
     //Functions
     const onCategorySearch = (e) => {
@@ -38,6 +60,12 @@ const CategoryList = ({ type, searchDrop }) => {
         setCategoryDrop(value);
     }
 
+    //Pegination Changr Function
+    const handlePageChange = (data) => {
+        console.log("Data :- ", data);
+        // getDestinationData(data);
+        setActivePage(data);
+    }
     return (
         <>
             {
@@ -104,6 +132,13 @@ const CategoryList = ({ type, searchDrop }) => {
                                         </div>
                                     )
                                 }
+
+                                {
+                                    type != 'popular' && (
+                                        <Pegination onChange={handlePageChange} totalItemsCount={APIData.length} activePage={activePage} />
+                                    )
+                                }
+
                             </>
                             :
                             <NoDataFound msg="No Category Found !!" />

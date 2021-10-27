@@ -8,6 +8,7 @@ const Header = () => {
     const location = useLocation();
     const history = useHistory();
     const pathName = location.pathname;
+    
 
     //State Manage
     const [form, setForm] = useState({ fname: '' });
@@ -19,7 +20,7 @@ const Header = () => {
             ...form,
             fname: userData?.user_name?.split(" ")[0]
         })
-    }, [])
+    }, [auth.isAuthenticated()])
 
     //Function
     const logout = () => {

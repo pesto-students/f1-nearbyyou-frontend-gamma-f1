@@ -5,6 +5,7 @@ import { searchAPI, searchStatus, getCategoryIDAPI } from '../Redux/Client/Listi
 import { debounce } from "lodash";
 import NoDataFound from './NoDataFound';
 import ReactStars from "react-rating-stars-component";
+import Pegination from '../Common_Pages/Pegination';
 
 const ShopList = ({ filter }) => {
 
@@ -19,8 +20,10 @@ const ShopList = ({ filter }) => {
     console.log("searchResult: -", searchResult);
 
     //State Manage
+    const [activePage, setActivePage] = useState(1);
     const [tempState, setTempState] = useState(false);
     const [avaCategory, setAvaCategory] = useState([]);
+    const [APIData, setAPIData] = useState([]);
     const [shopList, setShopList] = useState([
         {
             image: 'url(/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)',
@@ -98,12 +101,31 @@ const ShopList = ({ filter }) => {
     }, [avaliableCategory])
 
     useEffect(() => {
-        setShopList(searchResult);
+        setAPIData(searchResult);
     }, [searchResult])
 
     useEffect(() => {
         debounceSearch(searchForm);
     }, [searchForm])
+
+    useEffect(() => {
+        let data = APIData;
+        let endLength = 0;
+        let startLength = (activePage - 1) * 10;
+        if (activePage * 10 > data.length) {
+            endLength = data.length;
+        } else {
+            endLength = activePage * 10;
+        }
+
+        let viewArray = [];
+        for (let i = startLength; i < endLength; i++) {
+            viewArray.push(data[i]);
+        }
+
+        console.log("viewArray ;- ", viewArray);
+        setShopList(viewArray);
+    }, [activePage, APIData])
 
     //Functions
     const searchHandleChange = (e) => {
@@ -153,6 +175,13 @@ const ShopList = ({ filter }) => {
             dispatch(searchAPI({ freeText: searchData?.freeText, pincode: searchData?.pincode, category: searchData?.catID }));
         }, 500), []
     );
+
+    //Pegination Changr Function
+    const handlePageChange = (data) => {
+        console.log("Data :- ", data);
+        // getDestinationData(data);
+        setActivePage(data);
+    }
 
     console.log("searchForm :- ", searchForm);
 
@@ -226,22 +255,15 @@ const ShopList = ({ filter }) => {
                                                     emptyIcon={<i className="far fa-star"></i>}
                                                     halfIcon={<i className="fa fa-star-half-alt"></i>}
                                                     fullIcon={<i className="fa fa-star"></i>}
+                                                    classNames='pointerEventNone'
                                                 />
-                                                <span style={{marginTop : '15px', marginLeft : '10px'}}>(10 Reviews)</span>
+                                                <span style={{ marginTop: '15px', marginLeft: '10px' }}>(10 Reviews)</span>
                                             </p>
                                         </div>
                                     </div>
                                 </>
                             ))}
-                            <div class="col-12 mt-5 text-center">
-                                <div class="custom-pagination">
-                                    <span>1</span>
-                                    <a href="#">2</a>
-                                    <a href="#">3</a>
-                                    <span class="more-page">...</span>
-                                    <a href="#">10</a>
-                                </div>
-                            </div>
+                            <Pegination onChange={handlePageChange} totalItemsCount={APIData.length} activePage={activePage} />
                         </>
                         :
                         <NoDataFound msg="No Shop Found !!" />

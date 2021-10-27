@@ -2,22 +2,29 @@ import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
 
 const Footer = () => {
+
+    let userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
+
     return (
         <>
-            <div class="py-5 bg-primary">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-7 mr-auto mb-4 mb-lg-0">
-                            <h2 class="mb-3 mt-0 text-white">Let's get started. Create your account</h2>
-                            <p class="mb-0 text-white">Far far away, behind the word mountains, far from the countries Vokalia
-                                and Consonantia, there live the blind texts.</p>
-                        </div>
-                        <div class="col-lg-4">
-                            <p class="mb-0"><Link to="/login" class="btn btn-primary btn-outline-white text-white btn-md px-5">Sign Up</Link></p>
+            {
+                !userData?.user_name && (
+                    <div class="py-5 bg-primary">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-7 mr-auto mb-4 mb-lg-0">
+                                    <h2 class="mb-3 mt-0 text-white">Let's get started. Create your account</h2>
+                                    <p class="mb-0 text-white">Far far away, behind the word mountains, far from the countries Vokalia
+                                        and Consonantia, there live the blind texts.</p>
+                                </div>
+                                <div class="col-lg-4">
+                                    <p class="mb-0"><Link to="/login" class="btn btn-primary btn-outline-white text-white btn-md px-5">Sign Up</Link></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                )
+            }
             <footer class="site-footer">
                 <div class="container">
                     <div class="row">
