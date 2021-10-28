@@ -137,7 +137,7 @@ const Login = () => {
 
 
 	const onSignIn = (user_role) => {
-		dispatch(GoogleLoginAPi({user_role: user_role}));
+		dispatch(GoogleLoginAPi({ user_role: user_role }));
 
 
 	}
@@ -263,12 +263,15 @@ const Login = () => {
 												</div>
 											</div>
 											<div class="row form-group">
-												<div class="col-md-12">
+												<div class="col-md-12 text-center">
 													<input type="submit" value="Sign Up" class="btn btn-primary btn-md text-white" />
 												</div>
 											</div>
-											<h3> OR </h3>
-											<button onClick={()=>onSignIn("customer")} class="btn btn-outline-primary">Sign in with google</button>
+											<div class="p-2 bg-white text-center" onClick={() => onSignIn()}>
+												<h3 class="p-3"> OR </h3>
+												<img width="40px" style={{ marginBottom: "3px", marginRight: "5px" }} alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+												<button class="btn btn-md btn-outline-primary" style={{ textTransform: 'none' }}>Sign up with google</button>
+											</div>
 										</>)
 
 								}
@@ -330,17 +333,20 @@ const Login = () => {
 												</div>
 											</div>
 											<div class="row form-group">
-												<div class="col-md-12">
-													<input type="submit" value="Sign Up" class="btn btn-primary btn-md text-white" />
+												<div class="col-md-12 text-center">
+													<input type="submit" value="Sign Up" class="btn btn-primary btn-md text-white " />
 												</div>
 											</div>
-											<h3> OR </h3>
-											<button onClick={()=>onSignIn("vendor")} class="btn btn-outline-primary">Sign in with google</button>
+											<div class="p-2 bg-white text-center" onClick={() => onSignIn("vendor")}>
+												<h3> OR </h3>
+												<img width="40px" style={{ marginBottom: "3px", marginRight: "5px" }} alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+												<button class="btn btn-md btn-outline-primary" style={{ textTransform: 'none' }}>Sign up with google</button>
+											</div>
 										</>)
 								}
 							</form>
 						</div>
-						<div class="col-md-6 mb-5 mt-5">
+						<div class="col-md-6 mb-5 mt-2">
 
 							<form method="post" class="p-5 bg-white" style={{ marginTop: '-150px' }} onSubmit={loginClick}>
 								<div class="row justify-content-center mb-3">
@@ -361,14 +367,17 @@ const Login = () => {
 									</div>
 								</div>
 								<div class="row form-group">
-									<div class="col-md-12">
+									<div class="col-md-12 text-center">
 										<input type="submit" value="Log In" class="btn btn-primary btn-md text-white" />
 									</div>
 								</div>
 							</form>
 
-							<button onClick={()=>onSignIn()} class="btn btn-outline-primary">Sign in with google</button>
-
+							<div class="p-2 bg-white text-center" onClick={() => onSignIn()}>
+								<h3 class="p-3"> OR </h3>
+								<img width="40px" style={{ marginBottom: "3px", marginRight: "5px" }} alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+								<button class="btn btn-md btn-outline-primary" style={{ textTransform: 'none' }}>Sign in with google</button>
+							</div>
 						</div>
 
 					</div>

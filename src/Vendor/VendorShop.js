@@ -331,12 +331,19 @@ const ViewShop = () => {
 					{(shopdetails?.shop_status == "active") ?
 
 						<div class="container">
-							<h2>Services</h2>
-							<label class="text-black" for="adding_new_service">Add New service</label>
-							<div onClick={() => addItem("add")}>
-								<button class="btn btn-primary btn-xs text-white" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-									<i class="fa fa-plus " aria-hidden="true"></i>
-								</button>
+
+							<h2 class="text-black">Services</h2>
+							<div class="row form-group">
+								<div class="col-md-10">
+									<h3 class="text-black" for="adding_new_service" >Add New service</h3>
+								</div>
+								<div class="col-md-2">
+									<div onClick={() => addItem("add")}>
+										<button class="btn btn-primary btn-xs text-white" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+											<i class="fa fa-plus " aria-hidden="true"></i>
+										</button>
+									</div>
+								</div>
 							</div>
 
 							<form onSubmit={addServiceClick}>
@@ -354,7 +361,7 @@ const ViewShop = () => {
 										{
 											editData.type == "edit" ?
 												<input type="text" defaultValue={editData.data.item.service_description} id="service_description" name="service_description" onChange={serviceChange} class="form-control" /> :
-												<input type="text" defaultValue={""} id="service_description" name="service_description" onChange={serviceChange} class="form-control" />
+												<input type="text" defaultValue={""} id="service_description" name="service_description" onChange={serviceChange} class="form-control" placeholder="enter the description of new service" />
 										}
 									</div>
 									<div class="col-md-3">
@@ -380,7 +387,7 @@ const ViewShop = () => {
 													<th>edit</th>
 													<th>delete</th>
 												</>
-											) :""
+											) : ""
 											}
 
 										</tr>
