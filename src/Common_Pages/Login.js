@@ -3,7 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
 import auth from '../Route/Auth';
-import { registerAPI, registerStatus, LoginAPI, loginStatus, GoogleLoginAPi } from '../Redux/Client/Register-Login/Register-LoginSlice'
+import { registerAPI, registerStatus, LoginAPI, loginStatus, GoogleLoginAPi, googleLoginStatus } from '../Redux/Client/Register-Login/Register-LoginSlice';
+import { findDOMNode } from 'react-dom';
+import { GetAllCategories, allCategoriesStatus } from '../Redux/vendor/Profile/VendorProfileSlice';
 
 
 
@@ -14,8 +16,10 @@ const Login = () => {
 	const history = useHistory();
 
 	//get data from store
-	const { value, isUpdatedSuccessfully, isLoginStatus } = useSelector(state => state.register);
+	const { loginResults, isUpdatedSuccessfully, isLoginStatus, isGoogleLoginStatus } = useSelector(state => state.register);
+	const { allCategoriesResult, isallCategory } = useSelector(state => state.shop);
 
+	const [userLogintype, setUserType] = useState('');
 
 	//Manage State
 	const [form, setForm] = useState({
@@ -43,7 +47,11 @@ const Login = () => {
 	useEffect(() => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 		if (auth.isAuthenticated()) {
-			history.push('/')
+			if (loginResults == "vendor") {
+				history.push('/vendor/app/home');
+			} else {
+				history.push('/');
+			}
 		}
 	}, [])
 
@@ -51,7 +59,20 @@ const Login = () => {
 	useEffect(() => {
 		dispatch(registerStatus(false));
 		dispatch(loginStatus(false));
+		dispatch(googleLoginStatus(false));
+		dispatch(GetAllCategories({}));
 	}, [])
+
+	const [categories, setCategories] = useState('')
+
+	useEffect(() => {
+		if (isallCategory) {
+			setCategories(allCategoriesResult)
+			dispatch(allCategoriesStatus(false))
+		}
+	}, [isallCategory])
+	console.log("all categories===>", categories)
+
 
 
 	useEffect(() => {
@@ -85,10 +106,22 @@ const Login = () => {
 				username: '',
 				password: ''
 			});
+			setUserType(loginResults)
 			dispatch(loginStatus(false));
-			history.push('/');
+			if (loginResults == "vendor") {
+				history.push('/vendor/app/home');
+			} else {
+				history.push('/');
+			}
 		}
 	}, [isLoginStatus])
+
+	console.log("user type after login is ===>")
+	useEffect(() => {
+		if (isGoogleLoginStatus) {
+			dispatch(googleLoginStatus(false))
+		}
+	}, [isGoogleLoginStatus])
 
 	//Functions
 
@@ -100,7 +133,7 @@ const Login = () => {
 			[name]: value
 		})
 	}
-
+	console.log("form details",form)
 	//Register Click
 	const registerClick = (e) => {
 		e.preventDefault();
@@ -317,12 +350,13 @@ const Login = () => {
 													<label class="text-black" for="fname">Select Category</label>
 													<select class="form-control" onChange={handleChange} name="v_category" value={form.v_category}>
 														<option value="">Please Select</option>
-														<option value="salon">Salon</option>
-														<option value="plumbers">Plumbers</option>
-														<option value="electrician">Electrician</option>
-														<option value="carpenter">Carpenter</option>
-														<option value="pestcontrol">Cleaning Pest and Control</option>
-														<option value="painter">Painters</option>
+														{
+															categories?.length > 0 && categories.map((item) => (
+																<>
+																	<option value={item._id}>{item.name}</option>
+																</>
+															))
+														}
 													</select>
 												</div>
 											</div>
@@ -373,7 +407,7 @@ const Login = () => {
 								</div>
 							</form>
 
-							<div class="p-2 bg-white text-center" onClick={() => onSignIn()}>
+							<div class="p-2 bg-white text-center" onClick={() => onSignIn()} >
 								<h3 class="p-3"> OR </h3>
 								<img width="40px" style={{ marginBottom: "3px", marginRight: "5px" }} alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
 								<button class="btn btn-md btn-outline-primary" style={{ textTransform: 'none' }}>Sign in with google</button>
