@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Dropdown, ButtonGroup, Table, Modal, Button, Form, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { GetAllShopsAPI, shopStatus, AddShopAPI, newShopStatus, GetAllPlans, allPlansStatus, EditShopAPI, editShopStatus } from '../Redux/vendor/Profile/VendorProfileSlice';
+import { GetAllShopsAPI, shopStatus, AddShopAPI, newShopStatus, GetAllPlans, allPlansStatus, EditShopAPI, editShopStatus, EditVendorProfileAPI, vendorProfileUpdateStatus, GetAllCategories, allCategoriesStatus } from '../Redux/vendor/Profile/VendorProfileSlice';
 import { useHistory } from 'react-router-dom';
 import service from '../Common_Pages/Service';
 import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
@@ -12,17 +12,26 @@ import axios from 'axios';
 const __DEV__ = document.domain === 'localhost'
 
 const VendorProfile = () => {
-
-
 	const dispatch = useDispatch();
 	const history = useHistory();
 
-	const { shopResults, isshopstatus, isnewShopStatus, allPlansResults, isAllPlans, iseditshopstatus } = useSelector(state => state.shop);
+	const { shopResults, isshopstatus, isnewShopStatus, allPlansResults, isAllPlans, iseditshopstatus, isVendorProfileUpdate, allCategoriesResult, isallCategory } = useSelector(state => state.shop);
 
+	const [editProfileform, setEditProfileform] = useState({
+		vendor_email: '',
+		shop_name: '',
+		vendor_contact_number: '',
+		vendor_id: ''
+	})
 
+	const [categories, setCategories] = useState('')
 
-
-
+	useEffect(() => {
+		if (isallCategory) {
+			setCategories(allCategoriesResult)
+			dispatch(allCategoriesStatus(false))
+		}
+	}, [isallCategory])
 
 	const [results, setResults] = useState({
 		shops: '',
@@ -32,10 +41,12 @@ const VendorProfile = () => {
 
 	useEffect(() => {
 		if (isnewShopStatus) {
-			dispatch(newShopStatus(false));;
+			dispatch(newShopStatus(false));
+			const userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
+			dispatch(GetAllShopsAPI({ user_id: userData.id }))
 			history.push('/vendor/app/profile')
 		}
-	})
+	}, [isnewShopStatus])
 
 
 	const [plans, setPlans] = useState('');
@@ -46,27 +57,41 @@ const VendorProfile = () => {
 		}
 	}, [isAllPlans])
 
+	useEffect(() => {
+		if (isVendorProfileUpdate) {
+			dispatch(vendorProfileUpdateStatus(false))
+			setInputState({ disabled: true })
+		}
+	}, [isVendorProfileUpdate])
 
 
 	useEffect(() => {
-		// if (isshopstatus) {
 		setResults({
 			shops: shopResults.data,
 			vendor_details: shopResults.vendor_details
 		});
 		dispatch(shopStatus(false));
-		// }
+		setEditProfileform({
+			...editProfileform,
+			shop_name: results.vendor_details && results.vendor_details[0].shop_name,
+			vendor_id: results.vendor_details && results.vendor_details[0]._id
+		})
 	}, [isshopstatus])
 
 	useEffect(() => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
-		// console.log(localStorage.getItem('Near_By_You'))
 		const userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
 		setUser(userData);
 		console.log("user data after stringyfy->", userData);
 		dispatch(GetAllShopsAPI({ user_id: userData.id }));
 		dispatch(GetAllPlans({}));
-
+		dispatch(GetAllCategories({}));
+		setEditProfileform({
+			...editProfileform,
+			shop_name: '',
+			vendor_email: userData.email,
+			vendor_contact_number: userData.contact_number
+		})
 	}, [])
 
 	useEffect(() => {
@@ -77,12 +102,6 @@ const VendorProfile = () => {
 		}
 	}, [iseditshopstatus])
 
-
-
-
-	console.log("shop results-->", results.shops);;
-	console.log("vendor details -->", results.vendor_details);
-
 	const [form, setForm] = useState({
 		shop_email: '',
 		shop_contact_number: '',
@@ -92,7 +111,11 @@ const VendorProfile = () => {
 		shop_city_town: '',
 		shop_state: '',
 		shop_pincode: '',
-		shop_category_name: ''
+		shop_start_time: '',
+		shop_end_time: '',
+		shop_category: '',
+		shop_owner: '',
+		shop_description: ''
 	})
 
 	const handleChange = (e) => {
@@ -102,7 +125,6 @@ const VendorProfile = () => {
 			[name]: value
 		})
 	}
-
 	const addShopClick = (e) => {
 		e.preventDefault();
 		dispatch(AddShopAPI(
@@ -115,8 +137,10 @@ const VendorProfile = () => {
 				shop_city_town: form.shop_city_town,
 				shop_state: form.shop_state,
 				shop_pincode: form.shop_pincode,
-				// shop_category_id: 
-				//shop_category_name: form.shop_category_name,
+				shop_description: form.shop_description,
+				shop_timings: form.shop_start_time + " to " + form.shop_end_time,
+				shop_category: results.vendor_details && results.vendor_details[0].vendor_category,
+				shop_owner: results.vendor_details && results.vendor_details[0]._id
 			}
 		));
 
@@ -198,9 +222,6 @@ const VendorProfile = () => {
 				alert("payment susscessfully done");
 				const userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
 				dispatch(GetAllShopsAPI({ user_id: userData.id }));
-				// alert(response.razorpay_payment_id)
-				// alert(response.razorpay_order_id)
-				// alert(response.razorpay_signature)
 			},
 			prefill: {
 				name: 'Bhargav Patel',
@@ -260,6 +281,38 @@ const VendorProfile = () => {
 		}
 	}
 
+	//editing profile
+
+	const [inputstate, setInputState] = useState({
+		disabled: true
+	})
+	const changeEdit = (e) => {
+		setInputState({ disabled: false })
+	}
+
+	const cancelEdit = (e) => {
+		setInputState({ disabled: true })
+	}
+	const editVendorProfileCLick = (e) => {
+		e.preventDefault();
+		console.log("edit profie is clicked", editProfileform)
+		dispatch(EditVendorProfileAPI(
+			{
+				shop_name: editProfileform.shop_name,
+				email: editProfileform.vendor_email,
+				contact_number: editProfileform.vendor_contact_number,
+				vendor_id: editProfileform.vendor_id
+			}
+		))
+	}
+
+	const handleChangeForEdit = (e) => {
+		const { name, value } = e.target;
+		setEditProfileform({
+			...editProfileform,
+			[name]: value
+		})
+	}
 
 
 	return (
@@ -285,21 +338,35 @@ const VendorProfile = () => {
 				<div class="container">
 					<div class="row form-group">
 						<div class="col-md-6" data-aos="fade">
-							<form class="p-1" >
-								<div class="row form-group m-5">
-									<h1 class="text-black mb-5 mb-md-0 ">{results.vendor_details && results.vendor_details[0].shop_name}</h1>
-								</div>
-								<div class="form-group mb-5">
-									<div class="col-md-12  mb-md-0">
-										<h5 class="text-black" for="ticket_no">Contact Number : {user.contact_number}</h5>
+							<form class="p-1" onSubmit={editVendorProfileCLick}  >
+								<div class="row form-group mt-4">
+									<div class="col-md-12">
+										<h3 class="text-black mb-5 mb-md-0 ">Shop Name: </h3>
+										<input class="text-black mb-5 mb-md-0 form-control" name="shop_name" disabled={inputstate.disabled} defaultValue={results.vendor_details && results.vendor_details[0].shop_name} onChange={handleChangeForEdit} />
 									</div>
 								</div>
-								<div class="form-group mb-3">
+								<div class="form-group mt-4">
 									<div class="col-md-12">
-										<h5 class="text-black" for="ticket_status">Shop Email : {user.email} </h5>
+										<h3 class="text-black mb-5 mb-md-0 ">Contact Number : </h3>
+										<input class="text-black form-control" name="vendor_contact_number" defaultValue={user.contact_number} disabled={inputstate.disabled} onChange={handleChangeForEdit} />
+									</div>
+								</div>
+								<div class="form-group mt-4">
+									<div class="col-md-12">
+										<h3 class="text-black mb-5 mb-md-0 ">Shop Email  </h3>
+										<input class="text-black form-control" name="vendor_email" defaultValue={user.email} disabled={inputstate.disabled} onChange={handleChangeForEdit} />
+									</div>
+								</div>
+								<div class="row form-group">
+									<div class="col-md-4">
+										<input type="submit" value="save" name="status_of_ticket" class="btn btn-primary btn-md text-white" style={{ display: inputstate.disabled ? "none" : "block" }} />
 									</div>
 								</div>
 							</form>
+							<div class="row form-group float-right">
+								<button class="btn btn-primary btn-md text-white" onClick={changeEdit} style={{ display: inputstate.disabled ? "block" : "none" }}>Edit</button>
+								<button class="btn btn-primary btn-md text-white" onClick={cancelEdit} style={{ display: inputstate.disabled ? "none" : "block" }}>cancel</button>
+							</div>
 						</div>
 						<div class="col-md-6" data-aos="fade">
 							<img fluid style={{ height: "20rem", width: "100%" }}
@@ -368,20 +435,26 @@ const VendorProfile = () => {
 								<input type="text" name="shop_pincode" class="form-control" onChange={handleChange} required />
 							</div>
 						</div>
-						<label class="text-white" for="shop_category">select shop category</label>
-						<div class="row form-group">
 
-							<div class="select-wrap col-md-6">
-								<span class="icon"><span class="icon-keyboard_arrow_down"></span></span>
-								<select class="form-control" name="shop_category_name" onChange={handleChange} value={form.shop_category}>
-									<option value="">All Categories</option>
-									<option value="salon">Salon</option>
-									<option value="plumbers">Plumbers</option>
-									<option value="electrician">Electrician</option>
-									<option value="carpenter">Carpenter</option>
-									<option value="pestcontrol">Cleaning Pest and Control</option>
-									<option value="painter">Painters</option>
-								</select>
+						<div class="row form-group">
+							<div class="col-md-6 mb-3 mb-md-0">
+								<label class="text-white" for="date">select Shop Start time</label>
+								<div class='input-group time' id='time'>
+									<input type="time" id="shop_start_time" name="shop_start_time" class="form-control" onChange={handleChange} />
+								</div>
+							</div>
+							<div class="col-md-6 mb-3 mb-md-0">
+								<label class="text-white" for="time">select Shop End time</label>
+								<div class='input-group time' id='time'>
+									<input type="time" id="shop_end_time" name="shop_end_time" class="form-control" onChange={handleChange} />
+								</div>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-md-12 mb-3 mb-md-0">
+								<label class="text-white" for="shop_description">Shop Description</label>
+								<textarea name="shop_description" id="shop_description" cols="30" rows="7" class="form-control" onChange={handleChange}
+								></textarea>
 							</div>
 						</div>
 
@@ -404,14 +477,15 @@ const VendorProfile = () => {
 						<Modal.Title>Payment</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
-						Select a plan
+						<b className="mb-5">Select a plan</b>
 						{plans?.length > 0 && plans.map((type) => (
 							<div key={`inline-radio`} className="mb-2">
 								<Form.Check
 									inline
-									label={type?.name + " - " + type?.plan_type + "- " + type?.plan_price}
+									label={"   " + type?.name + " - " + type?.plan_type + "- Rs-" + type?.plan_price}
 									name="plans"
 									type={"radio"}
+									class="radioButton"
 									value={type?._id}
 									id={`inline-radio-1`}
 									onChange={() => planselected(type)}
@@ -428,7 +502,7 @@ const VendorProfile = () => {
 							</Button>
 						</div>
 						<Button variant="primary" disabled={plan_choosen.isselected == false} onClick={displayRazorpay}>
-							Payemnt
+							Payment
 						</Button>
 					</Modal.Footer>
 				</Modal>

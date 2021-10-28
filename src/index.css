@@ -266,3 +266,6 @@ button.close{
 .pointerEventNone{
   pointer-events: none;
 }
+#inline-radio-1{
+  margin-right: 10px !important;
+}
