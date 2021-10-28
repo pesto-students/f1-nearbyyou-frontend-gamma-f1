@@ -4,6 +4,10 @@ import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { GetAllShopsAPI, shopStatus, AddShopAPI, newShopStatus, GetAllPlans, allPlansStatus, EditShopAPI, editShopStatus } from '../Redux/vendor/Profile/VendorProfileSlice';
 import { useHistory } from 'react-router-dom';
+import service from '../Common_Pages/Service';
+import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
+import axios from 'axios';
+
 
 const __DEV__ = document.domain === 'localhost'
 
@@ -111,7 +115,8 @@ const VendorProfile = () => {
 				shop_city_town: form.shop_city_town,
 				shop_state: form.shop_state,
 				shop_pincode: form.shop_pincode,
-				shop_category_name: form.shop_category_name,
+				// shop_category_id: 
+				//shop_category_name: form.shop_category_name,
 			}
 		));
 
@@ -221,6 +226,40 @@ const VendorProfile = () => {
 
 	}
 
+	// //Upload File
+	const [uploadFileName, setUploadFileName] = useState("Choose Company Logo");
+	const [images, setimages] = useState([{ preview: "/assets/no_image2.png" }]);
+	const [binaryImage, setBinaryImage] = useState();
+
+
+	const uploadFileButton = async (e) => {
+		console.log("e :- ", e.target.files[0]);
+
+		let file = e.target.files[0];
+		let url = URL.createObjectURL(e.target.files[0]);
+
+		const response = await service.convertBase64(file);
+
+		console.log("response: -", response);
+
+		if (response.status) {
+
+			setUploadFileName(response.name);
+			setimages([{ preview: url }]);
+			setBinaryImage(response.file);
+			dispatch(SuccessAlert('Image Upload Successfully'));
+
+			var formData = new FormData();
+			formData.append('imageData', file);
+			formData.append('fileName', response.name);
+
+			const responseData = await axios.post("vendor/shop/uploadImage", formData);
+
+		} else {
+			dispatch(ErrorAlert('Erro in upload image !! Please try again'))
+		}
+	}
+
 
 
 	return (
@@ -276,12 +315,17 @@ const VendorProfile = () => {
 
 			<div class="container">
 
-				<h2>Shop deatils</h2>
-				<label class="text-black" for="adding_new_service">Add new shop branch</label>
-				<button class="btn btn-primary btn-xs text-white" type="addservice" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-					<i class="fa fa-plus p-1" aria-hidden="true"></i>
-				</button>
-
+				<h2 class="text-black">Shop deatils</h2>
+				<div class="row form-group">
+					<div class="col-md-10">
+						<h3 class="text-black" for="adding_new_service" >Add new shop branch</h3>
+					</div>
+					<div class="col-md-2">
+						<button class="btn btn-primary btn-xs text-white " style={{ float: 'right', marginLeft: "60px" }} type="addservice" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+							<i class="fa fa-plus p-1" aria-hidden="true"></i>
+						</button>
+					</div>
+				</div>
 
 				<div class="form-group collapse add_service_form p-3" id="collapseExample">
 					<form onSubmit={addShopClick}>
@@ -338,6 +382,13 @@ const VendorProfile = () => {
 									<option value="pestcontrol">Cleaning Pest and Control</option>
 									<option value="painter">Painters</option>
 								</select>
+							</div>
+						</div>
+
+						<div class="row form-group">
+							<div class="col-md-6 mb-3 mb-md-0">
+								<label class="text-black" for="fname">Upload File</label>
+								<input type="file" class="form-control" onChange={uploadFileButton} />
 							</div>
 						</div>
 						<div class="col-md-3">

@@ -21,10 +21,10 @@ const VendorHome = () => {
 	console.log("results from api-->", ticketResults)
 
 
-	const [results, setResults] = useState('')
-	const [shop_results, setShopResults] = useState('')
-	const [user, setUser] = useState('');
-	const { shopResults, isshopstatus } = useSelector(state => state.shop);
+	// const [results, setResults] = useState('')
+	// const [shop_results, setShopResults] = useState('')
+	// const [user, setUser] = useState('');
+    // const { shopResults, isshopstatus } = useSelector(state => state.shop);
 
 
 	// const tickets = ticketResults;
