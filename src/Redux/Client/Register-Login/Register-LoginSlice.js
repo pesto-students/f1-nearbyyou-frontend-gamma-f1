@@ -4,56 +4,41 @@ import axios from 'axios';
 
 
 //google login 
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, signInWithRedirect, getRedirectResult } from "firebase/auth";
 
 const gauth = getAuth();
 const provider = new GoogleAuthProvider();
 // const user = {};
-export const GoogleLoginAPi = createAsyncThunk('Google Login API CALL', async ({ user_role }, { dispatch, rejectWithValue }) => {
+export const GoogleLoginAPi = createAsyncThunk('Google Login API CALL', async ({token, user_name, email, contact_number, user_role }, { dispatch, rejectWithValue }) => {
 	try {
-		signInWithPopup(gauth, provider)
-			.then((result) => {
-				const credential = GoogleAuthProvider.credentialFromResult(result);
-				const token = credential.accessToken;
-				const user = result.user;
-				const user_details = {
-					user_name: user.auth.currentUser.displayName,
-					email: user.auth.currentUser.email,
-					contact_number: user.auth.currentUser.phoneNumber,
-					user_role: user_role
-				}
-				axios.post("/user/glogin",
-					{
-						user_name: user.auth.currentUser.displayName,
-						user_email: user.auth.currentUser.email,
-						contact_number: user.auth.currentUser.phoneNumber,
-						user_role: user_role
-					})
-					.then((response) => {
-						const responseData = response.data
-						// console.log("responseData of glogin ==>", responseData);
-						if (responseData.status === "success") {
-							let authToken = user.accessToken;
-							console.log(responseData.payload.data)
-							let userInfo = responseData.payload.data.userInfo.data[0];
-							localStorage.setItem('Near_By_You_Client', JSON.stringify(userInfo));
-							axios.defaults.headers.common['g-auth-token'] = authToken;
-							localStorage.setItem('Near_By_You_google', authToken);
-							dispatch(SuccessAlert(responseData.msg));
-							return  {user_type: userInfo.user_role};;
-						} else {
-							dispatch(ErrorAlert(responseData.message));
-							return rejectWithValue({ message: 'No Data Found' });
-						}
-
-					})
-
-			}).catch((error) => {
-				const errorCode = error.code;
-				const errorMessage = error.message;
-				const email = error.email;
-				const credential = GoogleAuthProvider.credentialFromError(error);
+		const response = await axios.post("/user/glogin",
+			{
+				user_name: user_name,
+				user_email: email,
+				contact_number: contact_number,
+				user_role: user_role,
+				token: token
 			});
+		const responseData = response.data;
+		console.log("after backend callinf==>", responseData)
+		if (responseData.status === "success") {
+			let authToken = responseData.payload.data.userInfo.token;
+
+			let userInfo = responseData.payload.data.userInfo.data[0];
+
+			// console.log("userInfo:- ", userInfo);
+
+			localStorage.setItem('Near_By_You_Client', JSON.stringify(userInfo));
+
+			// axios.defaults.headers.common['Authorization'] = 'Bearer ' + authToken;
+			axios.defaults.headers.common['g-auth-token'] = authToken;
+			localStorage.setItem('Near_By_You', authToken)
+			dispatch(SuccessAlert(responseData.msg));
+			return responseData;
+		} else {
+			dispatch(ErrorAlert(responseData.message));
+			return rejectWithValue({ message: 'No Data Found' });
+		}
 	}
 	catch (e) {
 		dispatch(ErrorAlert('Something Want Wrong!!'));
@@ -134,7 +119,7 @@ export const LoginAPI = createAsyncThunk('Login API CALL', async ({ username, pa
 			localStorage.setItem('Near_By_You', authToken)
 
 			dispatch(SuccessAlert(responseData.msg));
-			const userType = {user_type: userInfo.user_role}
+			const userType = { user_type: userInfo.user_role }
 			return userType;
 		} else {
 			dispatch(ErrorAlert(responseData.msg));
@@ -154,7 +139,8 @@ export const slice = createSlice({
 		isUpdatedSuccessfully: false,
 		isLoginStatus: false,
 		isGoogleLoginStatus: false,
-		loginResults:''
+		loginResults: '',
+		googleloginResults: ""
 	},
 	reducers: {
 		registerStatus: (state, action) => {
@@ -183,7 +169,7 @@ export const slice = createSlice({
 		},
 		[GoogleLoginAPi.fulfilled]: (state, action) => {
 			state.isGoogleLoginStatus = true;
-			state.loginResults = action.payload.user_type;
+			state.googleloginResults = action.payload.payload.data.userInfo.data[0].user_role;
 		},
 		[GoogleLoginAPi.rejected]: (state, action) => {
 			state.isGoogleLoginStatus = false;
@@ -191,6 +177,6 @@ export const slice = createSlice({
 	}
 });
 
-export const { registerStatus, loginStatus,googleLoginStatus } = slice.actions;
+export const { registerStatus, loginStatus, googleLoginStatus } = slice.actions;
 
 export default slice.reducer;

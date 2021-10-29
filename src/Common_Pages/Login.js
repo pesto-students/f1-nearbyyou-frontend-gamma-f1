@@ -7,6 +7,10 @@ import { registerAPI, registerStatus, LoginAPI, loginStatus, GoogleLoginAPi, goo
 import { findDOMNode } from 'react-dom';
 import { GetAllCategories, allCategoriesStatus } from '../Redux/vendor/Profile/VendorProfileSlice';
 
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, signInWithRedirect, getRedirectResult } from "firebase/auth";
+const gauth = getAuth();
+const provider = new GoogleAuthProvider();
+
 
 
 const Login = () => {
@@ -16,7 +20,7 @@ const Login = () => {
 	const history = useHistory();
 
 	//get data from store
-	const { loginResults, isUpdatedSuccessfully, isLoginStatus, isGoogleLoginStatus } = useSelector(state => state.register);
+	const { loginResults, isUpdatedSuccessfully, isLoginStatus, isGoogleLoginStatus, googleloginResults } = useSelector(state => state.register);
 	const { allCategoriesResult, isallCategory } = useSelector(state => state.shop);
 
 	const [userLogintype, setUserType] = useState('');
@@ -71,7 +75,6 @@ const Login = () => {
 			dispatch(allCategoriesStatus(false))
 		}
 	}, [isallCategory])
-	console.log("all categories===>", categories)
 
 
 
@@ -116,10 +119,15 @@ const Login = () => {
 		}
 	}, [isLoginStatus])
 
-	console.log("user type after login is ===>")
 	useEffect(() => {
 		if (isGoogleLoginStatus) {
+			setUserType(loginResults)
 			dispatch(googleLoginStatus(false))
+			if (googleloginResults == "vendor") {
+				history.push('/vendor/app/home');
+			} else {
+				history.push('/');
+			}
 		}
 	}, [isGoogleLoginStatus])
 
@@ -133,7 +141,6 @@ const Login = () => {
 			[name]: value
 		})
 	}
-	console.log("form details",form)
 	//Register Click
 	const registerClick = (e) => {
 		e.preventDefault();
@@ -168,22 +175,32 @@ const Login = () => {
 
 
 
-
+	const [userRole , setUserRole] =useState('');
 	const onSignIn = (user_role) => {
-		dispatch(GoogleLoginAPi({ user_role: user_role }));
-
-
+		setUserRole(user_role);
+		signInWithRedirect(gauth, provider);
 	}
-
-	// const signOutg = () => {
-	// 	signOut(auth).then(() => {
-	// 		console.log("user is logged out")
-	// 	}).catch((error) => {
-	// 		// An error happened.
-	// 	});
-	// }
-
-
+	getRedirectResult(gauth)
+		.then((result) => {
+			console.log("atleast getting inside this ")
+			const credential = GoogleAuthProvider.credentialFromResult(result);
+			const token = credential.accessToken;
+			const user = result.user;
+			dispatch(GoogleLoginAPi(
+				{
+					user_name: user.auth.currentUser.displayName,
+					email: user.auth.currentUser.email,
+					contact_number: user.auth.currentUser.phoneNumber,
+					token: user.accessToken,
+					user_role: userRole
+				}
+			));
+		}).catch((error) => {
+			const errorCode = error.code;
+			const errorMessage = error.message;
+			const email = error.email;
+			const credential = GoogleAuthProvider.credentialFromError(error);
+		});
 
 	return (
 		<>
