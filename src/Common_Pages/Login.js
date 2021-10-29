@@ -3,7 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ErrorAlert, SuccessAlert } from '../Redux/SnackBar/SnackbarSlice';
 import auth from '../Route/Auth';
-import { registerAPI, registerStatus, LoginAPI, loginStatus, GoogleLoginAPi } from '../Redux/Client/Register-Login/Register-LoginSlice'
+import { registerAPI, registerStatus, LoginAPI, loginStatus, GoogleLoginAPi, googleLoginStatus } from '../Redux/Client/Register-Login/Register-LoginSlice';
+import { findDOMNode } from 'react-dom';
+import { GetAllCategories, allCategoriesStatus } from '../Redux/vendor/Profile/VendorProfileSlice';
+
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, signInWithRedirect, getRedirectResult } from "firebase/auth";
+const gauth = getAuth();
+const provider = new GoogleAuthProvider();
 
 
 
@@ -14,8 +20,10 @@ const Login = () => {
 	const history = useHistory();
 
 	//get data from store
-	const { value, isUpdatedSuccessfully, isLoginStatus } = useSelector(state => state.register);
+	const { loginResults, isUpdatedSuccessfully, isLoginStatus, isGoogleLoginStatus, googleloginResults } = useSelector(state => state.register);
+	const { allCategoriesResult, isallCategory } = useSelector(state => state.shop);
 
+	const [userLogintype, setUserType] = useState('');
 
 	//Manage State
 	const [form, setForm] = useState({
@@ -43,7 +51,11 @@ const Login = () => {
 	useEffect(() => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 		if (auth.isAuthenticated()) {
-			history.push('/')
+			if (loginResults == "vendor") {
+				history.push('/vendor/app/home');
+			} else {
+				history.push('/');
+			}
 		}
 	}, [])
 
@@ -51,7 +63,19 @@ const Login = () => {
 	useEffect(() => {
 		dispatch(registerStatus(false));
 		dispatch(loginStatus(false));
+		dispatch(googleLoginStatus(false));
+		dispatch(GetAllCategories({}));
 	}, [])
+
+	const [categories, setCategories] = useState('')
+
+	useEffect(() => {
+		if (isallCategory) {
+			setCategories(allCategoriesResult)
+			dispatch(allCategoriesStatus(false))
+		}
+	}, [isallCategory])
+
 
 
 	useEffect(() => {
@@ -85,10 +109,27 @@ const Login = () => {
 				username: '',
 				password: ''
 			});
+			setUserType(loginResults)
 			dispatch(loginStatus(false));
-			history.push('/');
+			if (loginResults == "vendor") {
+				history.push('/vendor/app/home');
+			} else {
+				history.push('/');
+			}
 		}
 	}, [isLoginStatus])
+
+	useEffect(() => {
+		if (isGoogleLoginStatus) {
+			setUserType(loginResults)
+			dispatch(googleLoginStatus(false))
+			if (googleloginResults == "vendor") {
+				history.push('/vendor/app/home');
+			} else {
+				history.push('/');
+			}
+		}
+	}, [isGoogleLoginStatus])
 
 	//Functions
 
@@ -100,7 +141,6 @@ const Login = () => {
 			[name]: value
 		})
 	}
-
 	//Register Click
 	const registerClick = (e) => {
 		e.preventDefault();
@@ -135,22 +175,32 @@ const Login = () => {
 
 
 
-
+	const [userRole , setUserRole] =useState('');
 	const onSignIn = (user_role) => {
-		dispatch(GoogleLoginAPi({user_role: user_role}));
-
-
+		setUserRole(user_role);
+		signInWithRedirect(gauth, provider);
 	}
-
-	// const signOutg = () => {
-	// 	signOut(auth).then(() => {
-	// 		console.log("user is logged out")
-	// 	}).catch((error) => {
-	// 		// An error happened.
-	// 	});
-	// }
-
-
+	getRedirectResult(gauth)
+		.then((result) => {
+			console.log("atleast getting inside this ")
+			const credential = GoogleAuthProvider.credentialFromResult(result);
+			const token = credential.accessToken;
+			const user = result.user;
+			dispatch(GoogleLoginAPi(
+				{
+					user_name: user.auth.currentUser.displayName,
+					email: user.auth.currentUser.email,
+					contact_number: user.auth.currentUser.phoneNumber,
+					token: user.accessToken,
+					user_role: userRole
+				}
+			));
+		}).catch((error) => {
+			const errorCode = error.code;
+			const errorMessage = error.message;
+			const email = error.email;
+			const credential = GoogleAuthProvider.credentialFromError(error);
+		});
 
 	return (
 		<>
@@ -263,12 +313,15 @@ const Login = () => {
 												</div>
 											</div>
 											<div class="row form-group">
-												<div class="col-md-12">
+												<div class="col-md-12 text-center">
 													<input type="submit" value="Sign Up" class="btn btn-primary btn-md text-white" />
 												</div>
 											</div>
-											<h3> OR </h3>
-											<button onClick={()=>onSignIn("customer")} class="btn btn-outline-primary">Sign in with google</button>
+											<div class="p-2 bg-white text-center" onClick={() => onSignIn()}>
+												<h3 class="p-3"> OR </h3>
+												<img width="40px" style={{ marginBottom: "3px", marginRight: "5px" }} alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+												<button class="btn btn-md btn-outline-primary" style={{ textTransform: 'none' }}>Sign up with google</button>
+											</div>
 										</>)
 
 								}
@@ -314,12 +367,13 @@ const Login = () => {
 													<label class="text-black" for="fname">Select Category</label>
 													<select class="form-control" onChange={handleChange} name="v_category" value={form.v_category}>
 														<option value="">Please Select</option>
-														<option value="salon">Salon</option>
-														<option value="plumbers">Plumbers</option>
-														<option value="electrician">Electrician</option>
-														<option value="carpenter">Carpenter</option>
-														<option value="pestcontrol">Cleaning Pest and Control</option>
-														<option value="painter">Painters</option>
+														{
+															categories?.length > 0 && categories.map((item) => (
+																<>
+																	<option value={item._id}>{item.name}</option>
+																</>
+															))
+														}
 													</select>
 												</div>
 											</div>
@@ -330,17 +384,20 @@ const Login = () => {
 												</div>
 											</div>
 											<div class="row form-group">
-												<div class="col-md-12">
-													<input type="submit" value="Sign Up" class="btn btn-primary btn-md text-white" />
+												<div class="col-md-12 text-center">
+													<input type="submit" value="Sign Up" class="btn btn-primary btn-md text-white " />
 												</div>
 											</div>
-											<h3> OR </h3>
-											<button onClick={()=>onSignIn("vendor")} class="btn btn-outline-primary">Sign in with google</button>
+											<div class="p-2 bg-white text-center" onClick={() => onSignIn("vendor")}>
+												<h3> OR </h3>
+												<img width="40px" style={{ marginBottom: "3px", marginRight: "5px" }} alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+												<button class="btn btn-md btn-outline-primary" style={{ textTransform: 'none' }}>Sign up with google</button>
+											</div>
 										</>)
 								}
 							</form>
 						</div>
-						<div class="col-md-6 mb-5 mt-5">
+						<div class="col-md-6 mb-5 mt-2">
 
 							<form method="post" class="p-5 bg-white" style={{ marginTop: '-150px' }} onSubmit={loginClick}>
 								<div class="row justify-content-center mb-3">
@@ -361,14 +418,17 @@ const Login = () => {
 									</div>
 								</div>
 								<div class="row form-group">
-									<div class="col-md-12">
+									<div class="col-md-12 text-center">
 										<input type="submit" value="Log In" class="btn btn-primary btn-md text-white" />
 									</div>
 								</div>
 							</form>
 
-							<button onClick={()=>onSignIn()} class="btn btn-outline-primary">Sign in with google</button>
-
+							<div class="p-2 bg-white text-center" onClick={() => onSignIn()} >
+								<h3 class="p-3"> OR </h3>
+								<img width="40px" style={{ marginBottom: "3px", marginRight: "5px" }} alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+								<button class="btn btn-md btn-outline-primary" style={{ textTransform: 'none' }}>Sign in with google</button>
+							</div>
 						</div>
 
 					</div>

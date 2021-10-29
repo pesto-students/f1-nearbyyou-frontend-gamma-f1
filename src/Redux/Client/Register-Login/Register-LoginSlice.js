@@ -4,88 +4,41 @@ import axios from 'axios';
 
 
 //google login 
-import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, signInWithRedirect, getRedirectResult } from "firebase/auth";
 
 const gauth = getAuth();
 const provider = new GoogleAuthProvider();
 // const user = {};
-export const GoogleLoginAPi = createAsyncThunk('Google Login API CALL', async ({ user_role }, { dispatch, rejectWithValue }) => {
+export const GoogleLoginAPi = createAsyncThunk('Google Login API CALL', async ({token, user_name, email, contact_number, user_role }, { dispatch, rejectWithValue }) => {
 	try {
-		signInWithPopup(gauth, provider)
-			.then((result) => {
-				// This gives you a Google Access Token. You can use it to access the Google API.
-				const credential = GoogleAuthProvider.credentialFromResult(result);
-				const token = credential.accessToken;
-				// The signed-in user info.
-				const user = result.user;
-				// console.log("user in slice=>", user.accessToken);
-
-				const user_details = {
-					user_name: user.auth.currentUser.displayName,
-					email: user.auth.currentUser.email,
-					contact_number: user.auth.currentUser.phoneNumber,
-					user_role: user_role
-				}
-				console.log("user deatils-->", user_details)
-
-				// console.log("user email in slice=>", user.auth.currentUser.email)
-				axios.post("/user/glogin",
-					{
-						user_name: user.auth.currentUser.displayName,
-						user_email: user.auth.currentUser.email,
-						contact_number: user.auth.currentUser.phoneNumber,
-						user_role: user_role
-					})
-					.then((response) => {
-						const responseData = response.data
-						// console.log("responseData of glogin ==>", responseData);
-						if (responseData.status === "success") {
-							let authToken = user.accessToken;
-							console.log(responseData.payload.data)
-							let userInfo = responseData.payload.data.userInfo.data[0];
-							localStorage.setItem('Near_By_You_Client', JSON.stringify(userInfo));
-							axios.defaults.headers.common['g-auth-token'] = authToken;
-							localStorage.setItem('Near_By_You_google', authToken);
-							dispatch(SuccessAlert(responseData.msg));
-							return response;
-						} else {
-							dispatch(ErrorAlert(responseData.message));
-							return rejectWithValue({ message: 'No Data Found' });
-						}
-
-					})
-
-			}).catch((error) => {
-				// Handle Errors here.
-				const errorCode = error.code;
-				const errorMessage = error.message;
-				// The email of the user's account used.
-				const email = error.email;
-				// The AuthCredential type that was used.
-				const credential = GoogleAuthProvider.credentialFromError(error);
-				// ...
+		const response = await axios.post("/user/glogin",
+			{
+				user_name: user_name,
+				user_email: email,
+				contact_number: contact_number,
+				user_role: user_role,
+				token: token
 			});
+		const responseData = response.data;
+		console.log("after backend callinf==>", responseData)
+		if (responseData.status === "success") {
+			let authToken = responseData.payload.data.userInfo.token;
 
-		// if (responseData.status === "success") {
+			let userInfo = responseData.payload.data.userInfo.data[0];
 
-		//     let authToken = responseData.payload.data.token;
+			// console.log("userInfo:- ", userInfo);
 
-		//     let userInfo = responseData.payload.data.userInfo.data[0];
+			localStorage.setItem('Near_By_You_Client', JSON.stringify(userInfo));
 
-		//     console.log("userInfo:- ", userInfo);
-
-		//     localStorage.setItem('Near_By_You_Client', JSON.stringify(userInfo));
-
-		//     // axios.defaults.headers.common['Authorization'] = 'Bearer ' + authToken;
-		//     axios.defaults.headers.common['x-auth-token'] = authToken;
-		//     localStorage.setItem('Near_By_You', authToken)
-
-		//     dispatch(SuccessAlert(responseData.msg));
-		//     return response;
-		// } else {
-		//     dispatch(ErrorAlert(responseData.message));
-		//     return rejectWithValue({ message: 'No Data Found' });
-		// }
+			// axios.defaults.headers.common['Authorization'] = 'Bearer ' + authToken;
+			axios.defaults.headers.common['g-auth-token'] = authToken;
+			localStorage.setItem('Near_By_You', authToken)
+			dispatch(SuccessAlert(responseData.msg));
+			return responseData;
+		} else {
+			dispatch(ErrorAlert(responseData.message));
+			return rejectWithValue({ message: 'No Data Found' });
+		}
 	}
 	catch (e) {
 		dispatch(ErrorAlert('Something Want Wrong!!'));
@@ -157,7 +110,7 @@ export const LoginAPI = createAsyncThunk('Login API CALL', async ({ username, pa
 
 			let userInfo = responseData.payload.data.userInfo.data[0];
 
-			console.log("userInfo:- ", userInfo);
+			// console.log("userInfo:- ", userInfo);
 
 			localStorage.setItem('Near_By_You_Client', JSON.stringify(userInfo));
 
@@ -166,7 +119,8 @@ export const LoginAPI = createAsyncThunk('Login API CALL', async ({ username, pa
 			localStorage.setItem('Near_By_You', authToken)
 
 			dispatch(SuccessAlert(responseData.msg));
-			return response;
+			const userType = { user_type: userInfo.user_role }
+			return userType;
 		} else {
 			dispatch(ErrorAlert(responseData.msg));
 			return rejectWithValue({ message: 'No Data Found' });
@@ -184,6 +138,9 @@ export const slice = createSlice({
 		value: 10,
 		isUpdatedSuccessfully: false,
 		isLoginStatus: false,
+		isGoogleLoginStatus: false,
+		loginResults: '',
+		googleloginResults: ""
 	},
 	reducers: {
 		registerStatus: (state, action) => {
@@ -192,6 +149,9 @@ export const slice = createSlice({
 		loginStatus: (state, action) => {
 			state.isLoginStatus = action.payload;
 		},
+		googleLoginStatus: (state, action) => {
+			state.isGoogleLoginStatus = action.payload;
+		}
 	},
 	extraReducers: {
 		[registerAPI.fulfilled]: (state, action) => {
@@ -202,13 +162,21 @@ export const slice = createSlice({
 		},
 		[LoginAPI.fulfilled]: (state, action) => {
 			state.isLoginStatus = true;
+			state.loginResults = action.payload.user_type;
 		},
 		[LoginAPI.rejected]: (state, action) => {
 			state.isLoginStatus = false;
+		},
+		[GoogleLoginAPi.fulfilled]: (state, action) => {
+			state.isGoogleLoginStatus = true;
+			state.googleloginResults = action.payload.payload.data.userInfo.data[0].user_role;
+		},
+		[GoogleLoginAPi.rejected]: (state, action) => {
+			state.isGoogleLoginStatus = false;
 		}
 	}
 });
 
-export const { registerStatus, loginStatus } = slice.actions;
+export const { registerStatus, loginStatus, googleLoginStatus } = slice.actions;
 
 export default slice.reducer;

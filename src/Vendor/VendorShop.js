@@ -71,7 +71,9 @@ const ViewShop = () => {
 		shop_city_town: '',
 		shop_state: '',
 		shop_pincode: '',
-		shop_id: ''
+		shop_id: '',
+		shop_timings: '',
+		shop_description: ''
 	})
 
 	useEffect(() => {
@@ -124,7 +126,9 @@ const ViewShop = () => {
 			shop_city_town: shopdetails?.shop_city_town,
 			shop_state: shopdetails?.shop_state,
 			shop_pincode: shopdetails?.shop_pincode,
-			shop_id: id
+			shop_id: id,
+			shop_timings: shopdetails?.shop_timings,
+			shop_description: shopdetails?.shop_description
 		})
 	}, [isoneshopstatus])
 
@@ -135,10 +139,9 @@ const ViewShop = () => {
 			[name]: value
 		})
 	}
+	console.log(form)
 
-	console.log("edit form-->", form)
 
-	console.log("results in view page-->", shopdetails, isoneshopstatus);
 
 
 	const changeEdit = (e) => {
@@ -161,7 +164,9 @@ const ViewShop = () => {
 				shop_city_town: form.shop_city_town,
 				shop_state: form.shop_state,
 				shop_pincode: form.shop_pincode,
-				shop_id: id
+				shop_id: id,
+				shop_timings: form.shop_timings,
+				shop_description: form.shop_description
 			}
 		));
 
@@ -310,15 +315,26 @@ const ViewShop = () => {
 											<input type="text" name="shop_pincode" defaultValue={shopdetails?.shop_pincode} id="pincode" class="form-control" disabled={inputstate.disabled} onChange={handleChange} />
 										</div>
 									</div>
-
 								</div>
 							</div>
 							<div class="row form-group">
+								<div class="col-md-6 mb-3 mb-md-0">
+									<label class="text-black" for="shop_timings">Shop timings</label>
+									<input type="text" name="shop_timings" defaultValue={shopdetails?.shop_timings} id="ticket_no" class="form-control" disabled={inputstate.disabled} onChange={handleChange} />
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-md-12 mb-3 mb-md-0">
+									<label class="text-black" for="shop_description">Shop Description</label>
+									<textarea name="shop_description" id="shop_description"  defaultValue={shopdetails?.shop_description} cols="30" rows="7" class="form-control" onChange={handleChange} disabled={inputstate.disabled}></textarea>
+									{/* <input type="text" name="shop_description" defaultValue={shopdetails?.shop_description} id="ticket_no" class="form-control" disabled={inputstate.disabled} onChange={handleChange} /> */}
+								</div>
+							</div>
+
+
+							<div class="row form-group">
 								<div class="col-md-4">
 									<input type="submit" value="save" name="status_of_ticket" class="btn btn-primary btn-md text-white" style={{ display: inputstate.disabled ? "none" : "block" }} />
-								</div>
-								<div class="col-md-4">
-									{/* <input type="button" value="reject" name="status_of_ticket" onClick={() => selectStatus('closed')} class="btn btn-primary btn-md text-white" /> */}
 								</div>
 							</div>
 						</form>
@@ -331,12 +347,19 @@ const ViewShop = () => {
 					{(shopdetails?.shop_status == "active") ?
 
 						<div class="container">
-							<h2>Services</h2>
-							<label class="text-black" for="adding_new_service">Add New service</label>
-							<div onClick={() => addItem("add")}>
-								<button class="btn btn-primary btn-xs text-white" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-									<i class="fa fa-plus " aria-hidden="true"></i>
-								</button>
+
+							<h2 class="text-black">Services</h2>
+							<div class="row form-group">
+								<div class="col-md-10">
+									<h3 class="text-black" for="adding_new_service" >Add New service</h3>
+								</div>
+								<div class="col-md-2">
+									<div onClick={() => addItem("add")}>
+										<button class="btn btn-primary btn-xs text-white" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+											<i class="fa fa-plus " aria-hidden="true"></i>
+										</button>
+									</div>
+								</div>
 							</div>
 
 							<form onSubmit={addServiceClick}>
@@ -354,7 +377,7 @@ const ViewShop = () => {
 										{
 											editData.type == "edit" ?
 												<input type="text" defaultValue={editData.data.item.service_description} id="service_description" name="service_description" onChange={serviceChange} class="form-control" /> :
-												<input type="text" defaultValue={""} id="service_description" name="service_description" onChange={serviceChange} class="form-control" />
+												<input type="text" defaultValue={""} id="service_description" name="service_description" onChange={serviceChange} class="form-control" placeholder="enter the description of new service" />
 										}
 									</div>
 									<div class="col-md-3">
@@ -380,7 +403,7 @@ const ViewShop = () => {
 													<th>edit</th>
 													<th>delete</th>
 												</>
-											) :""
+											) : ""
 											}
 
 										</tr>

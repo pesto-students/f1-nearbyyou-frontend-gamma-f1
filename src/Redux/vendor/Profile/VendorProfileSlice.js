@@ -11,15 +11,11 @@ export const GetAllShopsAPI = createAsyncThunk('Get All Shops API based for user
             });
 
         const responseData = response.data;
-        // console.log("response data-> ", response);
-        // console.log("response data-> ", response.data.payload.data);
         console.log("Response : ", responseData);
 
         if (responseData.status === "success") {
-            dispatch(SuccessAlert(responseData.message));
             return response;
         } else {
-            dispatch(ErrorAlert(responseData.message));
             return rejectWithValue({ message: 'No Data Found' });
         }
 
@@ -44,10 +40,8 @@ export const GetShopAPI = createAsyncThunk('Get Shops details', async ({ shop_id
         // console.log("Response : ", response);
 
         if (responseData.status === "success") {
-            dispatch(SuccessAlert(responseData.message));
             return response;
         } else {
-            dispatch(ErrorAlert(responseData.message));
             return rejectWithValue({ message: 'No Data Found' });
         }
 
@@ -66,10 +60,12 @@ export const AddShopAPI = createAsyncThunk('Add new shop', async ({
     shop_city_town,
     shop_state,
     shop_pincode,
+    shop_timings,
     shop_category,
-    shop_category_name
+    shop_owner,
+    shop_description
 }, { dispatch, rejectWithValue }) => {
-    console.log('AddShopAPI--> ', shop_email, shop_contact_number, shop_door_number, shop_street, shop_area, shop_city_town, shop_state, shop_pincode, shop_category_name)
+    console.log('AddShopAPI--> ', shop_email, shop_contact_number, shop_door_number, shop_street, shop_area, shop_city_town, shop_state, shop_pincode, shop_timings, shop_category,shop_owner,shop_description)
     try {
         const response = await axios.post('/vendor/createShop',
             {
@@ -81,11 +77,12 @@ export const AddShopAPI = createAsyncThunk('Add new shop', async ({
                 shop_city_town,
                 shop_state,
                 shop_pincode,
-                shop_category_name,
+                shop_category,
+                shop_timings,
+                shop_owner,
+                shop_description
             });
         const responseData = response.data;
-        console.log("response data-> ", responseData)
-        // console.log("Response : ", response);
 
         if (responseData.status === "success") {
             dispatch(SuccessAlert(responseData.message));
@@ -111,9 +108,11 @@ export const EditShopAPI = createAsyncThunk('Edit shop details', async ({
     shop_state,
     shop_pincode,
     shop_id,
-    shop_status
+    shop_status,
+    shop_description,
+    shop_timings
 }, { dispatch, rejectWithValue }) => {
-    console.log('EditShopAPI--> ',shop_status, shop_id, shop_email, shop_contact_number, shop_door_number, shop_street, shop_area, shop_city_town, shop_state, shop_pincode)
+    console.log('EditShopAPI--> ',shop_timings,shop_description, shop_status, shop_id, shop_email, shop_contact_number, shop_door_number, shop_street, shop_area, shop_city_town, shop_state, shop_pincode)
     try {
         const response = await axios.put(`vendor/shop/${shop_id}`,
             {
@@ -125,7 +124,9 @@ export const EditShopAPI = createAsyncThunk('Edit shop details', async ({
                 shop_city_town,
                 shop_state,
                 shop_pincode,
-                shop_status
+                shop_status,
+                shop_description,
+                shop_timings
             });
         const responseData = response.data;
         console.log("response data-> ", responseData)
@@ -184,7 +185,6 @@ export const GetAllServiceAPI = createAsyncThunk('Get All Service API for a shop
         console.log("Response : ", responseData);
 
         if (responseData.status === "success") {
-            dispatch(SuccessAlert(responseData.message));
             return response;
         } else {
             dispatch(ErrorAlert(responseData.message));
@@ -228,8 +228,8 @@ export const EditServiceAPI = createAsyncThunk('Edit shop details', async ({
     try {
         const response = await axios.put(`vendor/service/${service_id}`,
             {
-               name,
-               service_description
+                name,
+                service_description
             });
         const responseData = response.data;
         console.log("response data-> ", responseData)
@@ -249,12 +249,41 @@ export const EditServiceAPI = createAsyncThunk('Edit shop details', async ({
 });
 
 
-export const GetAllPlans = createAsyncThunk('Get All PLANS', async ({  }, { dispatch, rejectWithValue }) => {
+export const GetAllPlans = createAsyncThunk('Get All PLANS', async ({ }, { dispatch, rejectWithValue }) => {
     try {
         const response = await axios.get('/vendor/plans');
 
         const responseData = response.data;
         console.log("Response : ", responseData);
+
+        if (responseData.status === "success") {
+            return response;
+        } else {
+            return rejectWithValue({ message: 'No Data Found' });
+        }
+
+    }
+    catch (error) {
+        console.log(error)
+    }
+});
+
+export const EditVendorProfileAPI = createAsyncThunk('Edit vendor profile details', async ({
+    shop_name,
+    email,
+    contact_number,
+    vendor_id
+}, { dispatch, rejectWithValue }) => {
+    console.log('EditVendorProfileAPI--> ', shop_name, email, contact_number, vendor_id);
+    try {
+        const response = await axios.put(`vendor/${vendor_id}`,
+            {
+                shop_name,
+                email,
+                contact_number,
+            });
+        const responseData = response.data;
+        console.log("response for editing profile data-> ", responseData)
 
         if (responseData.status === "success") {
             dispatch(SuccessAlert(responseData.message));
@@ -271,6 +300,27 @@ export const GetAllPlans = createAsyncThunk('Get All PLANS', async ({  }, { disp
 });
 
 
+export const GetAllCategories = createAsyncThunk('Get All Categories', async ({ }, { dispatch, rejectWithValue }) => {
+    try {
+        const response = await axios.get('/vendor/categories');
+
+        const responseData = response.data;
+        console.log("Response : ", responseData);
+        if (responseData.status === "success") {
+            return response;
+        } else {
+            return rejectWithValue({ message: 'No Data Found' });
+        }
+
+    }
+    catch (error) {
+        console.log(error)
+    }
+});
+
+
+
+
 
 
 export const slice = createSlice({
@@ -282,16 +332,19 @@ export const slice = createSlice({
         updateShopResults: [],
         newServiceResults: [],
         allServicesResults: [],
-        editServiceResults:[],
-        allPlansResults:[],
+        editServiceResults: [],
+        allPlansResults: [],
+        allCategoriesResult: [],
         isshopstatus: false,
         isoneshopstatus: false,
         isnewShopStatus: false,
         iseditshopstatus: false,
         isnewservicestatus: false,
         isAllServices: false,
-        isEditService:false,
-        isAllPlans:false
+        isEditService: false,
+        isAllPlans: false,
+        isVendorProfileUpdate: false,
+        isallCategory: false
     },
     reducers: {
         shopStatus: (state, action) => {
@@ -317,6 +370,12 @@ export const slice = createSlice({
         },
         allPlansStatus: (state, action) => {
             state.isAllPlans = action.payload;
+        },
+        vendorProfileUpdateStatus: (state, action) => {
+            state.isVendorProfileUpdate = action.payload;
+        },
+        allCategoriesStatus: (state, action) => {
+            state.isallCategory = action.payload;
         },
 
     },
@@ -385,11 +444,27 @@ export const slice = createSlice({
             state.isAllPlans = false;
             state.allPlansResults = [];
         },
+        [EditVendorProfileAPI.fulfilled]: (state, action) => {
+            state.isVendorProfileUpdate = true;
+        },
+        [EditVendorProfileAPI.rejected]: (state, action) => {
+            state.isAllPlans = false;
+            state.isVendorProfileUpdate = [];
+        },
+        [GetAllCategories.fulfilled]: (state, action) => {
+            state.isallCategory = true;
+            state.allCategoriesResult = action.payload.data.payload.data;
+        },
+        [GetAllCategories.rejected]: (state, action) => {
+            state.isallCategory = false;
+            state.allCategoriesResult = [];
+        },
+
 
 
     }
 });
 
-export const { allPlansStatus, shopStatus, oneShopStatus, newShopStatus, editShopStatus, newServiceStatus, allServicesStatus,editServicesStatus } = slice.actions;
+export const { vendorProfileUpdateStatus, allPlansStatus, shopStatus, oneShopStatus, newShopStatus, editShopStatus, newServiceStatus, allServicesStatus, editServicesStatus, allCategoriesStatus } = slice.actions;
 
 export default slice.reducer;
