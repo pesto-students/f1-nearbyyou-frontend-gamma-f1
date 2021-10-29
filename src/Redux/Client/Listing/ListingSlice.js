@@ -17,10 +17,10 @@ export const searchAPI = createAsyncThunk('Search API CALL', async ({ freeText, 
         const responseData = response.data;
 
         if (responseData.status == "success") {
-            dispatch(SuccessAlert(responseData.msg));
+            // dispatch(SuccessAlert(responseData.msg));
             return response;
         } else {
-            dispatch(ErrorAlert(responseData.msg));
+            // dispatch(ErrorAlert(responseData.msg));
             return rejectWithValue({ message: 'No Data Found' });
         }
     }
@@ -44,7 +44,7 @@ export const categoryAPI = createAsyncThunk('Category API CALL', async ({ type, 
             // dispatch(SuccessAlert(responseData.msg));
             return response;
         } else {
-            dispatch(ErrorAlert(responseData.msg));
+            // dispatch(ErrorAlert(responseData.msg));
             return rejectWithValue({ message: 'No Data Found' });
         }
     }
@@ -61,7 +61,7 @@ export const detailAPI = createAsyncThunk('Details API CALL', async ({ shopID },
         const responseData = response.data;
 
         if (responseData.status == "success") {
-            dispatch(SuccessAlert(responseData.msg));
+            // dispatch(SuccessAlert(responseData.msg));
             return response;
         } else {
             dispatch(ErrorAlert(responseData.msg));
@@ -113,10 +113,10 @@ export const viewTicketAPI = createAsyncThunk('Ciew Ticket API CALL', async ({ c
         const responseData = response.data;
 
         if (responseData.status == "success") {
-            dispatch(SuccessAlert(responseData.msg));
+            // dispatch(SuccessAlert(responseData.msg));
             return response;
         } else {
-            dispatch(ErrorAlert(responseData.msg));
+            // dispatch(ErrorAlert(responseData.msg));
             return rejectWithValue({ message: 'No Data Found' });
         }
     }
@@ -136,10 +136,10 @@ export const customerDetailsAPI = createAsyncThunk('Customer Details API CALL', 
         const responseData = response.data;
 
         if (responseData.status == "success") {
-            dispatch(SuccessAlert(responseData.msg));
+            // dispatch(SuccessAlert(responseData.msg));
             return response;
         } else {
-            dispatch(ErrorAlert(responseData.msg));
+            // dispatch(ErrorAlert(responseData.msg));
             return rejectWithValue({ message: 'No Data Found' });
         }
     }
@@ -196,7 +196,7 @@ export const getCategoryIDAPI = createAsyncThunk('Get Category ID API CALL', asy
             // dispatch(SuccessAlert(responseData.msg));
             return response;
         } else {
-            dispatch(ErrorAlert(responseData.msg));
+            // dispatch(ErrorAlert(responseData.msg));
             return rejectWithValue({ message: 'No Data Found' });
         }
     }

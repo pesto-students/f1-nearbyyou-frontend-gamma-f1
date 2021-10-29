@@ -79,9 +79,9 @@ const Home = () => {
 						<div class="col-md-10">
 							<div class="row justify-content-center mb-4">
 								<div class="col-md-10 text-center">
-									<h1 data-aos="fade-up">Find Nearby <span class="typed-words"></span></h1>
-									<p data-aos="fade-up" class=" w-75 mx-auto">Lorem ipsum dolor sit amet, consectetur
-										adipisicing elit. Porro provident corporis consequuntur et totam.</p>
+									<h1 data-aos="fade-up">Find Nearby 123 <span class="typed-words"></span></h1>
+									{/* <p data-aos="fade-up" class=" w-75 mx-auto">Lorem ipsum dolor sit amet, consectetur
+										adipisicing elit. Porro provident corporis consequuntur et totam.</p> */}
 								</div>
 							</div>
 							<div class="form-search-wrap p-2" data-aos="fade-up" data-aos-delay="200">
