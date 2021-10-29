@@ -225,7 +225,7 @@ const Profile = () => {
                     <div class="row">
                         <div class="col-md-7 mb-5" data-aos="fade">
                             <form method="post" onSubmit={onSubmit} class="p-5 bg-white" style={{ marginTop: '-150px' }}>
-                                <div class="row form-group">
+                                {/* <div class="row form-group">
                                     <div class="col-md-6 mb-3 mb-md-0">
                                         <label class="text-black" for="fname">Upload File</label>
                                         <input type="file" class="form-control" onChange={uploadFileButton} />
@@ -234,7 +234,7 @@ const Profile = () => {
                                         <label class="text-black" for="fname">Payment Demo</label>
                                         <input onClick={displayRazorpay} type="button" value="Donot 499" class="form-control btn btn-primary btn-md text-white" />
                                     </div>
-                                </div>
+                                </div> */}
                                 <div class="row form-group">
                                     <div class="col-md-6 mb-3 mb-md-0">
                                         <label class="text-black" for="fname">First Name</label>
