@@ -13,7 +13,7 @@ const BookSlot = () => {
     //get data from store
     const { isTicketStatus, customerDetails } = useSelector(state => state.listing);
 
-    // console.log("customerDetails-", customerDetails);
+    console.log("customerDetails-", customerDetails);
 
     //State Manage
     const [form, setForm] = useState({
@@ -39,8 +39,10 @@ const BookSlot = () => {
         dispatch(ticketStatus(false));
         let userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
 
+        console.log("userDat :- ", userData);
+
         if (userData) {
-            dispatch(customerDetailsAPI({ userID: userData.id }))
+            dispatch(customerDetailsAPI({ userID: userData._id }))
         } else {
             history.push('/');
         }
@@ -72,9 +74,10 @@ const BookSlot = () => {
         if (customerDetails) {
             if (customerDetails?.length > 0) {
                 let data = customerDetails[0];
+                console.log("data :- ", data);
                 setForm({
                     ...form,
-                    customerId: data.id,
+                    customerId: data._id,
                     fname: data?.user_name?.split(" ")[0],
                     lname: data?.user_name?.split(" ")[1],
                     email: data?.email,
