@@ -14,11 +14,8 @@ export const GetAllTicketsAPI = createAsyncThunk('Get All Ticket API based on st
             });
 
         const responseData = response.data;
-        // console.log("response data-> ", responseData)
-        // console.log("Response : ", response);
 
         if (responseData.status === "success") {
-            dispatch(SuccessAlert(responseData.message));
             return response;
         } else {
             dispatch(ErrorAlert(responseData.message));
@@ -42,7 +39,6 @@ export const GetTicketsAPI = createAsyncThunk('Get Ticket Deatils Based On ID', 
             });
         const responseData = response.data;
         if (responseData.status === "success") {
-            dispatch(SuccessAlert(responseData.message));
             return response;
         } else {
             dispatch(ErrorAlert(responseData.message));

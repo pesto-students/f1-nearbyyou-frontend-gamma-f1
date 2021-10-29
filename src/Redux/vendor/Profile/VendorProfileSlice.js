@@ -83,8 +83,6 @@ export const AddShopAPI = createAsyncThunk('Add new shop', async ({
                 shop_description
             });
         const responseData = response.data;
-        console.log("response data-> ", responseData)
-        // console.log("Response : ", response);
 
         if (responseData.status === "success") {
             dispatch(SuccessAlert(responseData.message));
