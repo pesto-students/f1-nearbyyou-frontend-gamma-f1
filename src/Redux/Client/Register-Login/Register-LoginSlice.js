@@ -32,7 +32,7 @@ export const GoogleLoginAPi = createAsyncThunk('Google Login API CALL', async ({
 
 			// axios.defaults.headers.common['Authorization'] = 'Bearer ' + authToken;
 			axios.defaults.headers.common['g-auth-token'] = authToken;
-			localStorage.setItem('Near_By_You', authToken)
+			localStorage.setItem('Near_By_You_google', authToken)
 			dispatch(SuccessAlert(responseData.msg));
 			return responseData;
 		} else {
