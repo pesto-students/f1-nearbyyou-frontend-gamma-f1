@@ -220,9 +220,9 @@ const ViewTickets = () => {
                         <div className="col-md-3">
                             <select className="form-control" value={statusDrop} onChange={(e) => setStatusDrop(e.target.value)}>
                                 <option value="">All</option>
-                                <option value="pending">Pending</option>
+                                <option value="new">Pending</option>
                                 <option value="holding">Holding</option>
-                                <option value="in_progress">In Progress</option>
+                                <option value="inprogress">In Progress</option>
                                 <option value="closed">Closed</option>
                             </select>
                         </div>
@@ -254,9 +254,12 @@ const ViewTickets = () => {
                                                             <span class="category">{item?.categoryDetails[0]?.name}</span>
                                                         </NavLink>
                                                         <div class="lh-content">
-                                                            <h3><a href="#">{item?.shopdeatils[0]?.shop_name}</a></h3>
+                                                            <h3><a href="#">{
+                                                                item?.vendorDetail && item?.vendorDetail[0] && item?.vendorDetail[0]?.shop_name ?
+                                                                    item?.vendorDetail[0]?.shop_name
+                                                                    : ''}</a></h3>
                                                             <p>{item?.shopdeatils[0]?.shop_area}, {item?.shopdeatils[0]?.shop_street}, {item?.shopdeatils[0]?.shop_city_town}, {item?.shopdeatils[0]?.shop_state}</p>
-                                                            <p><b>{item?.ticket_status == 'pending' ? item?.service_date?.split('T')[0] : item?.hold_date?.split('T')[0]}</b>,  <b>{hours}</b></p>
+                                                            <p><b>{item?.ticket_status != 'holding' ? item?.service_date?.split('T')[0] : item?.hold_date?.split('T')[0]}</b>,  <b>{hours}</b></p>
                                                             <div className="row">
                                                                 <div className="col-md-4">
                                                                     <div class="border p-3 rounded mb-2">
@@ -277,9 +280,9 @@ const ViewTickets = () => {
                                                                                     aria-controls={`collapse-hold${index}`} class="accordion-item h5 d-block mb-0">Vendor Holding Request</a>
                                                                                 <div class="collapse" id={`collapse-hold${index}`}>
                                                                                     <div class="pt-2">
-                                                                                        <p class="mb-0">
-                                                                                            {/* {item?.hold_date} {item?.hold_time} */}
-                                                                                            <b>18-10-2021 10:00 AM</b>
+                                                                                        <p class="mb-0 justify-content-space-between">
+                                                                                            <b>{item?.hold_date?.split('T')[0]}</b> <b>{item?.hold_time}</b>
+                                                                                            {/* <b>2021-11-06</b> <b>10:00 AM</b> */}
                                                                                         </p>
                                                                                         <p class="mb-0 bottom-lne text-align-center">
                                                                                             Reason
@@ -298,9 +301,8 @@ const ViewTickets = () => {
                                                                         </div>
                                                                     )
                                                                 }
-
                                                                 {
-                                                                    (item?.ticket_status == 'in_progress') && (
+                                                                    (item?.ticket_status == 'inprogress') && (
                                                                         <div className="col-md-6">
                                                                             <div className="justify-content-left" style={{ marginTop: '16px' }}>
                                                                                 <button class="reject-btn cursor-pointer" onClick={() => handleShow(item?.shopdeatils[0]?._id, item?._id)}>Close Ticket</button>
@@ -310,7 +312,7 @@ const ViewTickets = () => {
                                                                 }
                                                             </div>
                                                         </div>
-                                                        <div><span class="statusButton">{item?.ticket_status == 'in_progress' ? 'In Progress' : item?.ticket_status}</span></div>
+                                                        <div><span class="statusButton">{item?.ticket_status == 'inprogress' ? 'In Progress' : item?.ticket_status == 'new' ? 'Pending' : item?.ticket_status}</span></div>
                                                     </div>
                                                 </>
                                             )

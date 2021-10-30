@@ -35,6 +35,7 @@ const Profile = () => {
         pincode: '',
         city: '',
         state: '',
+        minDate: ''
     })
 
     //Useeffect
@@ -118,7 +119,7 @@ const Profile = () => {
 
         console.log("response: -", response);
 
-        if (response.status) { 
+        if (response.status) {
 
             setUploadFileName(response.name);
             setimages([{ preview: url }]);
@@ -191,8 +192,8 @@ const Profile = () => {
                 email: 'sdfdsjfh2@ndsfdf.com',
                 phone_number: '9899999999'
             },
-            notes:{
-                address : 'ABCd DEFGH'
+            notes: {
+                address: 'ABCd DEFGH'
             }
         }
         const paymentObject = new window.Razorpay(options)

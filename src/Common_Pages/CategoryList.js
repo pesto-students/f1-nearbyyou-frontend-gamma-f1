@@ -115,9 +115,9 @@ const CategoryList = ({ type, searchDrop }) => {
                                                         }
                                                     }}
                                                     class="popular-category h-100">
-                                                    <span class="icon mb-3"><span class='flaticon-flower'></span></span>
+                                                    <span class="icon mb-3" style={{fontSize : '35px'}}><i class={item.image} /></span>
                                                     <span class="caption mb-2 d-block">{item.name}</span>
-                                                    <span class="number">10</span>
+                                                    {/* <span class="number">10</span> */}
                                                 </NavLink>
                                             </div>
                                         ))
