@@ -195,7 +195,7 @@ const ShopList = ({ filter }) => {
                             <h3 class="h5 text-black mb-3">Filters</h3>
                             <form>
                                 <div class="form-group">
-                                    <input type="text" name="freeText" class="form-control" placeholder="What are you looking for?" value={searchForm.freeText} onChange={searchHandleChange} />
+                                    <input type="text" name="freeText" class="form-control" placeholder="Search by Shop Name" value={searchForm.freeText} onChange={searchHandleChange} />
                                 </div>
                                 <div class="form-group">
                                     <div class="select-wrap">
@@ -238,12 +238,12 @@ const ShopList = ({ filter }) => {
                                 <>
                                     <div class="d-block d-md-flex listing-horizontal">
                                         <NavLink to={`/category/${searchForm.catName}/shop/${item._id}`} class="img d-block"
-                                            style={{ backgroundImage: 'url(/images/ximg_2.jpg.pagespeed.ic.DvTe2qQitC.jpg)' }}>
+                                            style={{ backgroundImage: `url(${item?.shop_image})` }}>
                                             <span class="category">{searchForm.catName}</span>
                                         </NavLink>
                                         <div class="lh-content">
                                             <a href="#" class="bookmark"><span class="icon-heart"></span></a>
-                                            <h3><a href="#">{item.shop_name}</a></h3>
+                                            <h3><a href="#">{item?.vendorDetail && item?.vendorDetail[0]?.shop_name ? item?.vendorDetail[0]?.shop_name : ''}</a></h3>
                                             <p>{item.shop_city_town} {item.shop_state}</p>
                                             <p className="flex">
                                                 <ReactStars

@@ -80,15 +80,15 @@ const Home = () => {
 							<div class="row justify-content-center mb-4">
 								<div class="col-md-10 text-center">
 									<h1 data-aos="fade-up">Find Nearby <span class="typed-words"></span></h1>
-									<p data-aos="fade-up" class=" w-75 mx-auto">Lorem ipsum dolor sit amet, consectetur
-										adipisicing elit. Porro provident corporis consequuntur et totam.</p>
+									{/* <p data-aos="fade-up" class=" w-75 mx-auto">Lorem ipsum dolor sit amet, consectetur
+										adipisicing elit. Porro provident corporis consequuntur et totam.</p> */}
 								</div>
 							</div>
 							<div class="form-search-wrap p-2" data-aos="fade-up" data-aos-delay="200">
 								<form>
 									<div class="row align-items-center">
 										<div class="col-lg-12 col-xl-4 no-sm-border border-right">
-											<input type="text" name="freeText" class="form-control" placeholder="What are you looking for?" value={searchForm.freeText} onChange={searchHandleChange} />
+											<input type="text" name="freeText" class="form-control" placeholder="Search by Shop Name" value={searchForm.freeText} onChange={searchHandleChange} />
 										</div>
 										<div class="col-lg-12 col-xl-3 no-sm-border border-right">
 											<div class="wrap-icon">

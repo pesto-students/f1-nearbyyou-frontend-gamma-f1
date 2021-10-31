@@ -93,8 +93,8 @@ const CategoryList = ({ type, searchDrop }) => {
                                 <div class="col-md-7 text-center border-primary">
                                     {/* <h2 class="font-weight-light text-primary">Popular Categories</h2> */}
                                     <h2 class="font-weight-light text-primary">Categories</h2>
-                                    <p class="color-black-opacity-5">Far far away, behind the word mountains, far from the countries
-                                        Vokalia and Consonantia, there live the blind texts.</p>
+                                    {/* <p class="color-black-opacity-5">Far far away, behind the word mountains, far from the countries
+                                        Vokalia and Consonantia, there live the blind texts.</p> */}
                                 </div>
                             </div>
                         )
@@ -115,9 +115,9 @@ const CategoryList = ({ type, searchDrop }) => {
                                                         }
                                                     }}
                                                     class="popular-category h-100">
-                                                    <span class="icon mb-3"><span class='flaticon-flower'></span></span>
+                                                    <span class="icon mb-3" style={{fontSize : '35px'}}><i class={item.image} /></span>
                                                     <span class="caption mb-2 d-block">{item.name}</span>
-                                                    <span class="number">10</span>
+                                                    {/* <span class="number">10</span> */}
                                                 </NavLink>
                                             </div>
                                         ))

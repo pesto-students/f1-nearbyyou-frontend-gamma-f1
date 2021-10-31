@@ -11,23 +11,20 @@ const VendorHome = () => {
 	const dispatch = useDispatch();
 
 	const { ticketResults, isticketStatus } = useSelector(state => state.ticket);
-	const [activeMenu, setActiveMenu] = useState('new');
-
+	const { shopResults, isshopstatus } = useSelector(state => state.shop);
+	console.log("shop results ===>",shopResults)
 	
+	
+	const [selectShopData, setSelectShopData] = useState('');
+	const [activeMenu, setActiveMenu] = useState('new');
 	const [results, setResults] = useState('')
 	const [shop_results, setShopResults] = useState('')
 	const [user, setUser] = useState('');
-	const { shopResults, isshopstatus } = useSelector(state => state.shop);
-	console.log("results from api-->", ticketResults)
+	const [activeShop, setactiveShop] = useState({
+		shop_id:  "",
+		shop_status: ""
+	});
 
-
-	// const [results, setResults] = useState('')
-	// const [shop_results, setShopResults] = useState('')
-	// const [user, setUser] = useState('');
-    // const { shopResults, isshopstatus } = useSelector(state => state.shop);
-
-
-	// const tickets = ticketResults;
 
 	useEffect(() => {
 		if (isticketStatus) {
@@ -36,6 +33,33 @@ const VendorHome = () => {
 		}
 	}, [isticketStatus])
 
+
+
+	useEffect(() => {
+		if (isshopstatus) {
+			dispatch(shopStatus(false))
+			if(shopResults?.data?.length > 0 ){
+				setShopResults(shopResults?.data);
+				setSelectShopData((`${shopResults.data[0]._id},${shopResults.data[0].shop_status}`))
+				setactiveShop({
+					shop_id: shopResults.data[0]._id,
+					shop_status: shopResults.data[0].shop_status
+				})
+			
+			}
+		}
+	}, [isshopstatus])
+
+
+	
+
+	useEffect(() => {
+		if(activeShop?.shop_id){
+			dispatch(GetAllTicketsAPI({ ticket_status: activeMenu, shop_id: activeShop.shop_id }))
+		}else{
+			console.log("call data in else");
+		}
+	}, [activeMenu, activeShop])
 	useEffect(() => {
 		const userData = JSON.parse(localStorage.getItem('Near_By_You_Client'));
 		setUser(userData);
@@ -43,33 +67,18 @@ const VendorHome = () => {
 		dispatch(GetAllShopsAPI({ user_id: user?.id }));
 	}, [])
 
-	useEffect(() => {
-		dispatch(shopStatus(false))
-		setShopResults(shopResults?.data)
-		console.log("shop results-->", shop_results)
-	}, [isshopstatus])
-
-	const [activeShop, setactiveShop] = useState({
-		shop_id: shop_results && shopResults[0] ? shop_results[0]._id : "",
-		shop_status: ""
-	});
-
-	useEffect(() => {
-		dispatch(GetAllTicketsAPI({ ticket_status: activeMenu, shop_id: activeShop.shop_id }))
-	}, [activeMenu, activeShop])
-
-
 	const selectMenu = (type) => {
 		setActiveMenu(type);
 	}
 
 	const selectShop = (e) => {
-		//const { name, value } = e.target
 		const selected_shop = e.target.value.split(",")
+		console.log("selected_shop[0]: - ", selected_shop[0]);
 		setactiveShop({
 			shop_id: selected_shop[0],
 			shop_status: selected_shop[1]
 		});
+		setSelectShopData(e.target.value);
 		console.log(activeShop)
 	}
 
@@ -88,7 +97,7 @@ const VendorHome = () => {
 						<div class="select-wrap">
 							<span class="icon"><span class="icon-keyboard_arrow_down"></span></span>
 
-							<select class="form-control" name="shop_id" onChange={selectShop}>
+							<select class="form-control" name="shop_id" onChange={selectShop} value={selectShopData}>
 								<option value="">All Shops Pincode</option>
 								{
 									shop_results?.length > 0 && shop_results.map((item) => (
@@ -102,16 +111,16 @@ const VendorHome = () => {
 					</div>
 					<Nav variant="tabs" className="menuTab" defaultActiveKey="link-1">
 						<Nav.Item>
-							<Nav.Link className="menuItem" eventKey="new_request" onSelect={() => selectMenu('new')}  >New Request</Nav.Link>
+							<Nav.Link className={`menuItem ${activeMenu == 'new' ? 'active' : ''}`} eventKey="new_request" onSelect={() => selectMenu('new')}  >New Request</Nav.Link>
 						</Nav.Item>
 						<Nav.Item>
-							<Nav.Link className="menuItem" eventKey="pending_request" onSelect={() => selectMenu('holding')}  >Holding Request </Nav.Link>
+							<Nav.Link className={`menuItem ${activeMenu == 'holding' ? 'active' : ''}`} eventKey="pending_request" onSelect={() => selectMenu('holding')}  >Holding Request </Nav.Link>
 						</Nav.Item>
 						<Nav.Item>
-							<Nav.Link className="menuItem" eventKey="inprogress_request" onSelect={() => selectMenu('inprogress')}  >In-Progress Request </Nav.Link>
+							<Nav.Link className={`menuItem ${activeMenu == 'inprogress' ? 'active' : ''}`} eventKey="inprogress_request" onSelect={() => selectMenu('inprogress')}  >In-Progress Request </Nav.Link>
 						</Nav.Item>
 						<Nav.Item>
-							<Nav.Link className="menuItem" eventKey="closed_request" onSelect={() => selectMenu('closed')}  >Closed Request </Nav.Link>
+							<Nav.Link className={`menuItem ${activeMenu == 'closed' ? 'active' : ''}`} eventKey="closed_request" onSelect={() => selectMenu('closed')}  >Closed Request </Nav.Link>
 						</Nav.Item>
 					</Nav>
 					<Table responsive>

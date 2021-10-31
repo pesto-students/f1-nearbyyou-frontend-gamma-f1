@@ -30,7 +30,9 @@ const BookSlot = () => {
         description: '',
         date: '',
         time: '',
-        customerId: ''
+        customerId: '',
+        minDate: '',
+        minTime: ''
     })
 
     //useeffect
@@ -46,6 +48,8 @@ const BookSlot = () => {
         } else {
             history.push('/');
         }
+
+        minDateShow();
 
         // setForm({
         //     ...form,
@@ -116,6 +120,48 @@ const BookSlot = () => {
     }, [isTicketStatus])
 
     //Functions
+
+    //Set Min Date
+    const minDateShow = () => {
+
+        var today = new Date();
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1;
+        var yyyy = today.getFullYear();
+
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+
+        today = yyyy + '-' + mm + '-' + dd;
+
+        let newTime = time.split(":");
+
+        let hour = newTime[0];
+        let minut = newTime[1];
+
+        if (hour < 10) {
+            hour = "0" + hour;
+        }
+
+        if (minut < 10) {
+            minut = "0" + minut;
+        }
+        console.log("today - ", today);
+
+        console.log("time - ", hour, minut);
+        setForm({
+            ...form,
+            minDate: today,
+            minTime: `${hour}:${minut}`
+        })
+    }
+
 
     //handleChnage
     const handleChange = (e) => {
@@ -198,11 +244,11 @@ const BookSlot = () => {
                                 <div class="row form-group">
                                     <div class="col-md-6">
                                         <label class="text-black" for="email">Service Date</label>
-                                        <input type="date" min={'2021-10-11'} id="date" class="form-control" value={form.date} name="date" onChange={handleChange} required />
+                                        <input type="date" min={form.minDate} id="date" class="form-control" value={form.date} name="date" onChange={handleChange} required />
                                     </div>
                                     <div class="col-md-6">
                                         <label class="text-black" for="email">Service Time</label>
-                                        <input type="time" id="time" class="form-control" value={form.time} name="time" onChange={handleChange} required />
+                                        <input type="time" id="time" min={form.minTime} class="form-control" value={form.time} name="time" onChange={handleChange} required />
                                     </div>
                                 </div>
                                 <div class="row form-group">
