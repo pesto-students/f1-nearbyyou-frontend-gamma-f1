@@ -201,7 +201,7 @@ const VendorProfile = () => {
 			return
 		}
 
-		const data = await fetch(`http://localhost:3003/api/razorpay?plan_id=${plan_choosen?.plan_id}`, { method: 'GET' }).then((t) =>
+		const data = await fetch(`https://near-by-you-backend.herokuapp.com/api/razorpay?plan_id=${plan_choosen?.plan_id}`, { method: 'GET' }).then((t) =>
 			t.json()
 		)
 
