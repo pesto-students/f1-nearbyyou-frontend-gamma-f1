@@ -206,7 +206,7 @@ const VendorProfile = () => {
 		)
 
 		const options = {
-			key: __DEV__ ? 'rzp_test_LeuHX4bMmraCPA' : 'PRODUCTION_KEY',
+			key: __DEV__ ? 'rzp_test_LeuHX4bMmraCPA' : 'rzp_test_LeuHX4bMmraCPA',
 			currency: 'INR',
 			amount: data.amount.toString(),
 			order_id: data.id,
