@@ -24,9 +24,9 @@ const Listings = () => {
 						<div class="col-md-10" data-aos="fade-up" data-aos-delay="400">
 							<div class="row justify-content-center">
 								<div class="col-md-8 text-center">
-									<h1>Listings</h1>
-									<p data-aos="fade-up" data-aos-delay="100">Lorem ipsum dolor sit amet, consectetur
-										adipisicing elit. Cupiditate beatae quisquam perspiciatis adipisci ipsam quam.</p>
+									<h1>Shop Listings</h1>
+									{/* <p data-aos="fade-up" data-aos-delay="100">Lorem ipsum dolor sit amet, consectetur
+										adipisicing elit. Cupiditate beatae quisquam perspiciatis adipisci ipsam quam.</p> */}
 								</div>
 							</div>
 						</div>

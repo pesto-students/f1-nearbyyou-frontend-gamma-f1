@@ -195,7 +195,7 @@ const ShopList = ({ filter }) => {
                             <h3 class="h5 text-black mb-3">Filters</h3>
                             <form>
                                 <div class="form-group">
-                                    <input type="text" name="freeText" class="form-control" placeholder="What are you looking for?" value={searchForm.freeText} onChange={searchHandleChange} />
+                                    <input type="text" name="freeText" class="form-control" placeholder="Search by Shop Name" value={searchForm.freeText} onChange={searchHandleChange} />
                                 </div>
                                 <div class="form-group">
                                     <div class="select-wrap">
