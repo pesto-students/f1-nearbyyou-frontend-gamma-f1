@@ -4,13 +4,13 @@ Nearby you is a platform that helps in finding the basic necessity services
 available in one’s localities such as plumbing, electrical works, beautician, or carpentry work. A dedicated platform designed for a service provider makes it handy to market the services and also can manage his work online. Nearby you are a responsive platform, hence users can access it across all devices. Our goal is to make the best user experience UI design and easy to use.
 
 ## Table of Content
-1. Demo
-2. Installation
-3. Technology Stack
-4. Authors
+1. [Demo](#Demo)
+2. [Installation](#Installation)
+3. [Technology Stack](#technology-stack)
+4. [Authors](#Authors)
 
 
-# Demo
+## Demo
 - [Near By You Live Demo](https://near-by-you.herokuapp.com/login)
 - [Near By You Admin](https://near-by-you-admin.herokuapp.com/login)
 
@@ -22,13 +22,13 @@ available in one’s localities such as plumbing, electrical works, beautician, 
 
 
 ## Technology Stack
-- **Frontend Stacks:** ReactJS, Redux, bootstrap, HTML.
-- **Backend Stacks:** node js
-- **Database**: MongoDB
-- **External API/SDK:** Razorpay API(payment gateway)
+- React JS
+- Redux
+- React-Bootstrap
 
 
-## Author 
+
+## Authors
 1. [Bhargav Patel](https://github.com/Bhargav261)
 2. [Harshitha](https://github.com/harshithab697)
 
